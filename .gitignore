@@ -1,0 +1,19 @@
+# Eclipse
+.classpath
+.project
+.settings/
+target-eclipse/
+
+# IntelliJ
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# Maven
+target/
+pom.xml.versionsBackup
+
+# Misc
+*.bak
+*.swp
