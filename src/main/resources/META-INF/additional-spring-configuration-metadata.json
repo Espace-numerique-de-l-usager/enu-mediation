@@ -1,0 +1,18 @@
+{
+  "properties": [
+    {
+      "name": "app.formsolution.host",
+      "type": "java.lang.String",
+      "description": "Jway Form Solution - Hostname."
+    },
+    {
+      "name": "app.formsolution.port",
+      "type": "java.lang.Integer",
+      "description": "Jway Form Solution - Port."
+    },
+    {
+      "name": "app.formsolution.path",
+      "type": "java.lang.String",
+      "description": "Jway Form Solution - REST API base path - pas de / au début."
+    }
+  ] }

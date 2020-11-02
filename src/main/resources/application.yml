@@ -1,0 +1,45 @@
+app:
+  formsolution:
+    host: ***REMOVED***
+    ***REMOVED***
+    path: aelportalenu/rest
+
+camel:
+  springboot:
+    main-run-controller: false
+  dataformat:
+    json-jackson:
+      object-mapper: jackson
+      content-type-header: true
+      pretty-print: true
+      timezone: CET
+      use-list: false
+  component:
+    rabbitmq:
+      hostname: ***REMOVED***
+      ***REMOVED***
+      password***REMOVED***
+      username***REMOVED***
+    http:
+      use-global-ssl-context-parameters: true
+  ssl:
+    config:
+      key-managers:
+        key-password: "password"
+        key-store:
+          resource: "/pki/lab.jks"
+          password: "password"
+          type: "jks"
+      trust-managers:
+        key-store:
+          resource: "/pki/lab.jks"
+          password: "password"
+          type: "jks"
+
+logging:
+  level:
+    root: INFO
+    org:
+      apache:
+        camel: INFO
+      springframework: ERROR
