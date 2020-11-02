@@ -4,21 +4,12 @@ Ce projet est définit les médiations pour le système Espace numérique de l'u
 
 RabbitMQ <---> médiation <---> FormServices (services REST)
 
-## Modules
+### Keystore et Truststore TLS
+Voir src/main/resources/application.yml: camel.ssl.config.key-managers.
 
-### enu-mediation
+La configuration actuelle attend un store JKS dans: /pki/lab.jks
 
-L'application war destinée à être déployée sur un serveur Tomcat. Elle contient les médiations.
-
-### enu-mediation-client-example
-
-Contient des exemples de clients :
-- produisant des messages dans une queue RabbitMQ, qui seront consommés par la médiation
-- consommant des messages d'une queue RabbitMQ, produits par la médiation
-
-Ces exemples sont destinés :
-- aux développeurs de systèmes clients, tels l'AFC ou les Formulaires en ligne
-- aux développeurs de la médiation et des services REST de FormServices
+Ajuster au besoin soit dans application.yml soit via une variable d'environnement système (par ex. CAMEL_SSL_CONFIG_KEY-MANAGERS_etc. ). Elle remplacera automatiquement la valeur du application.yml. (Doc complète: https://docs.spring.io/spring-boot/docs/2.3.5.RELEASE/reference/html/spring-boot-features.html#boot-features-external-config)
 
 ### Doc Spring Boot + Camel:
 
