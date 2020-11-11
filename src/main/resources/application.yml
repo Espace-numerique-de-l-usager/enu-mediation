@@ -2,7 +2,7 @@ app:
   formsolution:
     host: ***REMOVED***
     ***REMOVED***
-    path: aelportalenu/rest
+    path: aelportalenu/formservices/rest
 
 camel:
   springboot:
@@ -27,12 +27,12 @@ camel:
       key-managers:
         key-password: "password"
         key-store:
-          resource: "/pki/lab.jks"
+          resource: "security/lab.jks"
           password: "password"
           type: "jks"
       trust-managers:
         key-store:
-          resource: "/pki/lab.jks"
+          resource: "security/lab.jks"
           password: "password"
           type: "jks"
 
