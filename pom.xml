@@ -5,8 +5,6 @@
     <groupId>ch.ge.ael.enu</groupId>
     <artifactId>mediation</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
-    <name>mediation</name>
     <description>Médiation et transformation de données pour l'ENU</description>
 
     <url>***REMOVED***</url>
@@ -38,6 +36,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>11</java.version>
         <camel.version>3.5.0</camel.version>
+        <!-- ne pas passer en version 2.4.0, sinon on a une "NoClassDefFoundError: org/springframework/core/metrics/ApplicationStartup" au demarrage -->
         <spring-boot.version>2.3.5.RELEASE</spring-boot.version>
         <jackson.version>2.11.1</jackson.version>
     </properties>
@@ -123,6 +122,17 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+
+        <!-- on ne peut pas ajouter hawtio, sinon on a ceci au demarrage :
+               org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerAdapter'
+               defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]:
+               Invocation of init method failed; nested exception is java.lang.NoSuchFieldError: defaultInstance
+        <dependency>
+            <groupId>io.hawt</groupId>
+            <artifactId>hawtio-springboot</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+        -->
 
         <dependency>
             <groupId>org.springframework.boot</groupId>

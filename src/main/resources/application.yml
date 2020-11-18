@@ -7,6 +7,7 @@ app:
 camel:
   springboot:
     main-run-controller: false
+    message-history: true
   dataformat:
     json-jackson:
       object-mapper: jackson
