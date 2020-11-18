@@ -12,22 +12,23 @@ public class NewDemarcheToJwayMapper {
 
     public File newDemarcheToFile(NewDemarche newDemarche) {
         File file = new File();
-        file.setName(newDemarche.getName());
+        file.setName(newDemarche.getIdClientDemande());
         User owner = new User();
-        owner.setName(newDemarche.getOwner());
+        owner.setName(newDemarche.getIdUsager());
         file.setOwner(owner);
         Application application = new Application();
-        application.setName("EDGSmartOne_afl");
+        application.setName(newDemarche.getIdPrestation());
         file.setApplication(application);
-        file.setWorkflowStatus(newDemarche.getStatus());
-        file.setStatus(newDemarche.getStatus());
+        file.setWorkflowStatus(newDemarche.getEtat());
+        file.setStatus(newDemarche.getEtat());
         Form form = new Form();
         form.setNameLabel(new Text("Label", new HashMap<>() {{
-            put("fr", "Mon lien externe");
+            put("fr", newDemarche.getLibelleAction());
         }}));
         form.setUrls(new ArrayList<>() {{
-            add(new FormUrl("https://site_externe/MON_URL_DE_TEST"));
+            add(new FormUrl(newDemarche.getUrlAction()));
         }});
         return file;
     }
+
 }

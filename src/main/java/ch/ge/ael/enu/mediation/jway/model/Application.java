@@ -14,5 +14,5 @@ public class Application {
     private String name;
     private Text nameLabel;
     private Text descriptionLabel;
-    private List<String> tags;
+//    private List<String> tags;
 }

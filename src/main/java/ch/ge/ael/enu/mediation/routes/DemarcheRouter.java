@@ -30,16 +30,21 @@ public class DemarcheRouter extends RouteBuilder {
 
         from("rabbitmq:demarche.exchange?queue=create")
                 .unmarshal(metierNewDemarcheDataFormat)
-                .setProperty("demarcheName",simple("${body.name}",String.class))
-                .setProperty("demarcheStatus",simple("${body.status}",String.class))
-                .setHeader("Content-Type",simple("application/json"))
+//                .log("Message entrant : ${body}")
+                .to("log:input")
+                .setProperty("demarcheName", simple("${body.idClientDemande}", String.class))
+                .setProperty("demarcheStatus", simple("${body.etat}", String.class))
+                .setHeader("Content-Type", simple("application/json"))
+                .setHeader("remote_user", simple("DUBOISPELERINY"))
                 .bean(NewDemarcheToJwayMapper.class)
                 .marshal().json()
+                .to("log:input")
                 .to("rest:post:alpha/file")
-                .setHeader("name",exchangeProperty("demarcheName"))
+                .setHeader("name", exchangeProperty("demarcheName"))
                 .to("rest:get:file/mine?queryParameters=name={name}&max=1&order=stepDate&reverse=true")
                 .unmarshal(jwayFileListDataFormat)
                 .setBody().simple("Nouvelle démarche dans Jway: ${body[0].uuid}")
                 .to("stream:out");
     }
+
 }
