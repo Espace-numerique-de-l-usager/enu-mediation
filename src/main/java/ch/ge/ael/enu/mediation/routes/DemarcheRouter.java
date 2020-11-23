@@ -23,15 +23,19 @@ public class DemarcheRouter extends RouteBuilder {
 
     private final JacksonDataFormat metierNewDemarcheDataFormat;
 
+    private final JacksonDataFormat metierStatusChangeDataFormat;
+
     static final String RABBITMQ_QUEUE = "rabbitmq:demarche.exchange?queue=create";
 
     @Override
-    public void configure() throws Exception {
+    public void configure() {
         restConfiguration()
                 .host("https://" + formSolutionHost + ":" + formSolutionPort + "/" + formSolutionPath)
                 .producerComponent("http");
 
         from(RABBITMQ_QUEUE)
+          .choice()
+            .when(header("Content-Type").isEqualTo(MediaType.NEW_DEMARCHE))
                 .unmarshal(metierNewDemarcheDataFormat)
                 .to("log:input")
                 .setProperty("demarcheName", simple("${body.idClientDemande}", String.class))
@@ -46,7 +50,12 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("rest:get:file/mine?queryParameters=name={name}&max=1&order=stepDate&reverse=true")
                 .unmarshal(jwayFileListDataFormat)
                 .setBody().simple("Nouvelle démarche dans Jway: ${body[0].uuid}")
-                .to("stream:out");
+                .to("stream:out")
+            .when(header("Content-Type").isEqualTo(MediaType.STATUS_CHANGE))
+                .unmarshal(metierStatusChangeDataFormat)
+                .to("log:input")
+            .otherwise()
+                .to("stream:err");
     }
 
 }
