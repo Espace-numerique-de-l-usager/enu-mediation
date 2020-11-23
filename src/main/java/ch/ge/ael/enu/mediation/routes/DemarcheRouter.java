@@ -20,7 +20,10 @@ public class DemarcheRouter extends RouteBuilder {
     private String formSolutionPath;
 
     private final JacksonDataFormat jwayFileListDataFormat;
+
     private final JacksonDataFormat metierNewDemarcheDataFormat;
+
+    static final String RABBITMQ_QUEUE = "rabbitmq:demarche.exchange?queue=create";
 
     @Override
     public void configure() throws Exception {
@@ -28,9 +31,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .host("https://" + formSolutionHost + ":" + formSolutionPort + "/" + formSolutionPath)
                 .producerComponent("http");
 
-        from("rabbitmq:demarche.exchange?queue=create")
+        from(RABBITMQ_QUEUE)
                 .unmarshal(metierNewDemarcheDataFormat)
-//                .log("Message entrant : ${body}")
                 .to("log:input")
                 .setProperty("demarcheName", simple("${body.idClientDemande}", String.class))
                 .setProperty("demarcheStatus", simple("${body.etat}", String.class))
