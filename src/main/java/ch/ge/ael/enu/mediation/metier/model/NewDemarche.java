@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 /**
+ * Donnees contenues dans un message JSON de creation d'une nouvelle demande.
  * Reference : ***REMOVED***/browse/ENU-422
  */
 public class NewDemarche {
