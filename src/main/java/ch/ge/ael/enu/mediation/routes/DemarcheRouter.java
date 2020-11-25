@@ -6,6 +6,8 @@ import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
+
 @Component
 @RequiredArgsConstructor
 public class DemarcheRouter extends RouteBuilder {
@@ -19,10 +21,13 @@ public class DemarcheRouter extends RouteBuilder {
     @Value("${app.formsolution.path}")
     private String formSolutionPath;
 
+    @Resource
     private final JacksonDataFormat jwayFileListDataFormat;
 
+    @Resource
     private final JacksonDataFormat metierNewDemarcheDataFormat;
 
+    @Resource
     private final JacksonDataFormat metierStatusChangeDataFormat;
 
     static final String RABBITMQ_QUEUE = "rabbitmq:demarche.exchange?queue=create";
@@ -42,6 +47,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setProperty("demarcheStatus", simple("${body.etat}", String.class))
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", simple("DUBOISPELERINY"))
+//                .setHeader("remote_user", simple("${body.idUsager}", String.class))
                 .bean(NewDemarcheToJwayMapper.class)
                 .marshal().json()
                 .to("log:input")
@@ -53,6 +59,11 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("stream:out")
             .when(header("Content-Type").isEqualTo(MediaType.STATUS_CHANGE))
                 .unmarshal(metierStatusChangeDataFormat)
+                .to("log:input")
+                .setHeader("Content-Type", simple("application/json"))
+                .setHeader("remote_user", simple("${body.idUsager}", String.class))
+                .bean(StatusChangeToJwayStep1Mapper.class)
+                .marshal().json()
                 .to("log:input")
             .otherwise()
                 .to("stream:err");
