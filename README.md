@@ -19,7 +19,7 @@ git clone https://argon.***REMOVED***/gitlab/ACCES_RESTREINT/3417_espace_numeriq
 - Depuis IntelliJ, lancer l'application rabbit-send. Une invite "Enter something:" s'affiche
 - Taper dans l'invite le message JSON d'une nouvelle démarche. Exemple :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUtilisateur": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "BROUILLON", "urlFormulaire": "http://www.tdg.ch", "libelleAction": "Prendre le tram", "echeanceAction": "2021-02-18"} 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-17", "etat": "BROUILLON", "urlFormulaire": "http://www.tdg.ch", "libelleAction": "Prendre le tram", "echeanceAction": "2021-02-18"} 
 ```
 (pour un autre exemple, voir ci-dessous)
 
@@ -37,7 +37,7 @@ configurer ainsi le Content-Type :
 Ensuite, lancer comme précédemment l'aplication rabbit-send.
 Taper dans l'invite le message JSON d'un changement d'état. Exemple :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "EN_TRAITEMENT", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "Un état second", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-16", "nouvelEtat": "EN_COURS", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "Un état second", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
 ```
 Le dossier (idClientDemande) doit au préalable exister.
 
