@@ -1,15 +1,24 @@
-package ch.ge.ael.enu.mediation.routes;
+package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.mediation.jway.model.Status;
 import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
 
+/**
+ * Correspondance metier <-> Jway des statuts des demarches.
+ */
 public class StatusMapper {
 
+    /**
+     * metier -> Jway, au format String.
+     */
     public String mapStringToJway(String demarcheStatus) {
         Status status = mapEnumToJway(DemarcheStatus.valueOf(demarcheStatus));
         return status == null ? null : status.name();
     }
 
+    /**
+     * metier -> Jway, au format enum.
+     */
     public Status mapEnumToJway(DemarcheStatus demarcheStatus) {
         if (demarcheStatus == DemarcheStatus.BROUILLON) {
             return Status.START;
@@ -24,11 +33,17 @@ public class StatusMapper {
         }
     }
 
+    /**
+     * Jway -> metier, au format String.
+     */
     public String mapStringToMetier(String status) {
         DemarcheStatus demarcheStatus = mapEnumToMetier(Status.valueOf(status));
         return demarcheStatus == null ? null : demarcheStatus.name();
     }
 
+    /**
+     * Jway -> metier, au format enum.
+     */
     public DemarcheStatus mapEnumToMetier(Status status) {
         if (status == Status.START) {
             return DemarcheStatus.BROUILLON;

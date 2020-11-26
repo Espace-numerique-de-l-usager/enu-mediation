@@ -1,5 +1,7 @@
 package ch.ge.ael.enu.mediation.routes;
 
+import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
+import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
@@ -25,6 +27,9 @@ public class DemarcheRouter extends RouteBuilder {
     private final JacksonDataFormat jwayFileListDataFormat;
 
     @Resource
+    private final JacksonDataFormat jwayFileDataFormat;
+
+    @Resource
     private final JacksonDataFormat metierNewDemarcheDataFormat;
 
     @Resource
@@ -43,19 +48,21 @@ public class DemarcheRouter extends RouteBuilder {
             .when(header("Content-Type").isEqualTo(MediaType.NEW_DEMARCHE))
                 .unmarshal(metierNewDemarcheDataFormat)
                 .to("log:input")
-                .setProperty("demarcheName", simple("${body.idClientDemande}", String.class))
+//                .setProperty("demarcheName", simple("${body.idClientDemande}", String.class))
                 .setProperty("demarcheStatus", simple("${body.etat}", String.class))
                 .setHeader("Content-Type", simple("application/json"))
-                .setHeader("remote_user", simple("DUBOISPELERINY"))
-//                .setHeader("remote_user", simple("${body.idUsager}", String.class))
+//                .setHeader("remote_user", simple("DUBOISPELERINY"))
+                .setHeader("remote_user", simple("${body.idUsager}", String.class))
                 .bean(NewDemarcheToJwayMapper.class)
                 .marshal().json()
                 .to("log:input")
                 .to("rest:post:alpha/file")
-                .setHeader("name", exchangeProperty("demarcheName"))
-                .to("rest:get:file/mine?queryParameters=name={name}&max=1&order=stepDate&reverse=true")
-                .unmarshal(jwayFileListDataFormat)
-                .setBody().simple("Nouvelle démarche dans Jway: ${body[0].uuid}")
+//                .setHeader("name", exchangeProperty("demarcheName"))
+//                .to("rest:get:file/mine?queryParameters=name={name}&max=1&order=stepDate&reverse=true")
+//                .unmarshal(jwayFileListDataFormat)
+//                .setBody().simple("Nouvelle démarche dans Jway: ${body[0].uuid}")
+                .unmarshal(jwayFileDataFormat)
+                .setBody().simple("Nouvelle démarche dans Jway: ${body.uuid}")
                 .to("stream:out")
             .when(header("Content-Type").isEqualTo(MediaType.STATUS_CHANGE))
                 .unmarshal(metierStatusChangeDataFormat)
