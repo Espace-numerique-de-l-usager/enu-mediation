@@ -44,9 +44,18 @@ public class DemarcheRouter extends RouteBuilder {
                 .host("https://" + formSolutionHost + ":" + formSolutionPort + "/" + formSolutionPath)
                 .producerComponent("http");
 
+        // routage principal
         from(RABBITMQ_QUEUE)
           .choice()
             .when(header("Content-Type").isEqualTo(MediaType.NEW_DEMARCHE))
+                .to("direct:nouvelleDemarche")
+            .when(header("Content-Type").isEqualTo(MediaType.STATUS_CHANGE))
+                .to("direct:changementEtatDemarche")
+            .otherwise()
+                .to("stream:err");
+
+        // nouvelle demarche
+        from("direct:nouvelleDemarche")
                 .unmarshal(metierNewDemarcheDataFormat)
                 .to("log:input")
 //                .setProperty("demarcheName", simple("${body.idClientDemande}", String.class))
@@ -64,8 +73,10 @@ public class DemarcheRouter extends RouteBuilder {
 //                .setBody().simple("Nouvelle démarche dans Jway: ${body[0].uuid}")
                 .unmarshal(jwayFileDataFormat)
                 .setBody().simple("Nouvelle démarche dans Jway: ${body.uuid}")
-                .to("stream:out")
-            .when(header("Content-Type").isEqualTo(MediaType.STATUS_CHANGE))
+                .to("stream:out");
+
+        // changement d'etat d'une demarche
+        from("direct:changementEtatDemarche")
                 .unmarshal(metierStatusChangeDataFormat)
                 .to("log:input")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
@@ -78,6 +89,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .marshal().json()
                 .to("rest:get:file/mine?queryParameters=name={name}&max=1&order=stepDate&reverse=true")
                 .unmarshal(jwayFileListDataFormat)
+                .log("uuid = ${body[0].uuid}")
                 .setProperty("uuid", simple("${body[0].uuid}", String.class))
 
                 // changement d'étape, partie 1 (step)
@@ -94,11 +106,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .bean(StatusChangeToJwayStep2Mapper.class)
                 .to("log:input")
-                .to("rest:put:alpha/file/{uuid}")
+                .to("rest:put:alpha/file/{uuid}");
                 // valider ici 204
-
-            .otherwise()
-                .to("stream:err");
     }
 
 }
