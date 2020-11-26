@@ -18,6 +18,15 @@ import org.springframework.context.annotation.Configuration;
 public class DataFormats {
 
     @Bean
+    public JacksonDataFormat jwayFileDataFormat(ObjectMapper jackson) {
+        JacksonDataFormat jwayFileDataFormat = new JacksonDataFormat();
+        jwayFileDataFormat.setUnmarshalType(File.class);
+        jwayFileDataFormat.setInclude("NON_NULL");
+        jwayFileDataFormat.setObjectMapper(jackson);
+        return jwayFileDataFormat;
+    }
+
+    @Bean
     public JacksonDataFormat jwayFileListDataFormat(ObjectMapper jackson) {
         JacksonDataFormat jwayFileDataFormat = new ListJacksonDataFormat();
         jwayFileDataFormat.setUnmarshalType(File.class);

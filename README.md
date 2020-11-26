@@ -19,7 +19,7 @@ git clone https://argon.ceti.etat-ge.ch/gitlab/ACCES_RESTREINT/3417_espace_numer
 - Depuis IntelliJ, lancer l'application rabbit-send. Une invite "Enter something:" s'affiche
 - Taper dans l'invite le message JSON d'une nouvelle démarche. Exemple :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-17", "etat": "BROUILLON", "urlFormulaire": "http://www.tdg.ch", "libelleAction": "Prendre le tram", "echeanceAction": "2021-02-18"} 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-18", "etat": "BROUILLON", "urlFormulaire": "http://www.tdg.ch", "libelleAction": "Prendre le tram", "echeanceAction": "2021-02-18"} 
 ```
 (pour un autre exemple, voir ci-dessous)
 

@@ -1,4 +1,4 @@
-package ch.ge.ael.enu.mediation.routes;
+package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.mediation.jway.model.*;
 import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
