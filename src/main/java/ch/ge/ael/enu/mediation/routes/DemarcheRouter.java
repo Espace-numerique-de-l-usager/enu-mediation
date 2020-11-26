@@ -2,6 +2,7 @@ package ch.ge.ael.enu.mediation.routes;
 
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
+import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
@@ -67,11 +68,35 @@ public class DemarcheRouter extends RouteBuilder {
             .when(header("Content-Type").isEqualTo(MediaType.STATUS_CHANGE))
                 .unmarshal(metierStatusChangeDataFormat)
                 .to("log:input")
+                .setProperty("remoteUser", simple("${body.idUsager}", String.class))
+
+                // recherche de l'uuid de la demarche
+                .setProperty("idClientDemande", simple("${body.idClientDemande}", String.class))
+                .setHeader("name", exchangeProperty("idClientDemande"))
                 .setHeader("Content-Type", simple("application/json"))
-                .setHeader("remote_user", simple("${body.idUsager}", String.class))
-                .bean(StatusChangeToJwayStep1Mapper.class)
+                .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .marshal().json()
+                .to("rest:get:file/mine?queryParameters=name={name}&max=1&order=stepDate&reverse=true")
+                .unmarshal(jwayFileListDataFormat)
+                .setProperty("uuid", simple("${body[0].uuid}", String.class))
+
+                // changement d'étape, partie 1 (step)
+                .setHeader("id", exchangeProperty("uuid"))
+                .setHeader("Content-Type", simple("application/json"))
+                .setHeader("remote_user", exchangeProperty("remoteUser"))
+                .bean(StatusChangeToJwayStep1Mapper.class)
                 .to("log:input")
+                .to("rest:post:alpha/file/{uuid}/step")
+                // valider ici 204
+
+                // changement d'étape, partie 2 (workflowStatus)
+                .setHeader("Content-Type", simple("application/json"))
+                .setHeader("remote_user", exchangeProperty("remoteUser"))
+                .bean(StatusChangeToJwayStep2Mapper.class)
+                .to("log:input")
+                .to("rest:put:alpha/file/{uuid}")
+                // valider ici 204
+
             .otherwise()
                 .to("stream:err");
     }
