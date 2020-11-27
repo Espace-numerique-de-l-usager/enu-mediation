@@ -19,8 +19,8 @@ public class NewDemarcheToJwayMapper {
         Application application = new Application();
         application.setName(newDemarche.getIdPrestation());
         file.setApplication(application);
-        file.setWorkflowStatus(newDemarche.getEtat());
-        file.setStatus(newDemarche.getEtat());
+        file.setWorkflowStatus(new StatusMapper().mapStringToJway((newDemarche.getEtat())));
+        file.setStatus(new StatusMapper().mapStringToJway((newDemarche.getEtat())));
         Form form = new Form();
         form.setNameLabel(new Text("Label", new HashMap<>() {{
             put("fr", newDemarche.getLibelleAction());
