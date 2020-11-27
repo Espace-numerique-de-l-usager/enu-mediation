@@ -1,16 +1,18 @@
 package ch.ge.ael.enu.mediation.mapping;
 
-import ch.ge.ael.enu.mediation.jway.model.File;
+import ch.ge.ael.enu.mediation.jway.model.FileForStep;
 import ch.ge.ael.enu.mediation.metier.model.StatusChange;
 
 public class StatusChangeToJwayStep1Mapper {
 
-    public File map(StatusChange statusChange) {
+    public FileForStep map(StatusChange statusChange) {
         // TODO verifier la presence des champs
 
-        File file = new File();
+//        File file = new File();
+        FileForStep file = new FileForStep();
         file.setStep(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
-        file.setLastUpdate(statusChange.getDateNouvelEtat().atStartOfDay());
+//        file.setLastUpdate(statusChange.getDateNouvelEtat().atStartOfDay());
+        file.setLastUpdate(statusChange.getDateNouvelEtat());
 
         return file;
     }

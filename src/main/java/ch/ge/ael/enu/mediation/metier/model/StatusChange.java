@@ -23,7 +23,8 @@ public class StatusChange {
      */
     private String nouvelEtat;
 
-    private LocalDate dateNouvelEtat;
+//    private LocalDate dateNouvelEtat;
+    private String dateNouvelEtat;
 
     private String libelleSousEtat;
 
