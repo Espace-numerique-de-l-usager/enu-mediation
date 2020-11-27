@@ -16,28 +16,15 @@ public class UuidPropagationStrategy implements AggregationStrategy {
 
     @Override
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
-        LOGGER.info("Dans UuidPropagationStrategy#aggregate");
-        LOGGER.info("oldExchange = {}", oldExchange);
-        LOGGER.info("newExchange = {}", newExchange);
-        /*
-        if (oldExchange != null) {
-            Object val = oldExchange.getProperty("uuid");   // en faire une statique UUID
-            if (val != null) {
-//                LOGGER.info("Setting prop uuid to " + val);
-//                newExchange.setProperty("uuid", val);  // ne marche pas
-                LOGGER.info("Setting header uuid to " + val);
-                newExchange.getIn().setHeader("uuid", val.toString());
-            }
-        }
-        return newExchange;
-         */
+        LOGGER.debug("oldExchange = {}", oldExchange);
+        LOGGER.debug("newExchange = {}", newExchange);
 
         Object val = newExchange.getProperty("uuid");   // en faire une statique UUID
         if (val != null) {
             LOGGER.info("Setting prop uuid to " + val);
             oldExchange.setProperty("uuid", val);
-            LOGGER.info("Setting header uuid to " + val);
-            oldExchange.getIn().setHeader("uuid", val.toString());
+//            LOGGER.info("Setting header uuid to " + val);
+//            oldExchange.getIn().setHeader("uuid", val.toString());
         }
         return oldExchange;
     }

@@ -8,7 +8,6 @@ public class StatusChangeToJwayStep1Mapper {
     public FileForStep map(StatusChange statusChange) {
         // TODO verifier la presence des champs
 
-//        File file = new File();
         FileForStep file = new FileForStep();
         file.setStep(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
 //        file.setLastUpdate(statusChange.getDateNouvelEtat().atStartOfDay());
