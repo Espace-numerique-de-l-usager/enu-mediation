@@ -32,12 +32,12 @@ Un autre cas exemple est celui du changement d'état d'une demande existante.
 Pour ce cas-là, il y a une étape préalable : dans l'application rabbit-send, classe MessageSender, veiller à
 configurer ainsi le Content-Type :
 ```
-   .setHeader("Content-Type", simple("application/json-status-change"))
+   .setHeader("rabbitmq.Content-Type", simple("application/json-status-change"))
 ```
 Ensuite, lancer comme précédemment l'aplication rabbit-send.
 Taper dans l'invite le message JSON d'un changement d'état. Exemple :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-20", "nouvelEtat": "EN_COURS", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "Un état second", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-21", "nouvelEtat": "EN_COURS", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "Un état second", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
 ```
 Le dossier (idClientDemande) doit au préalable exister.
 

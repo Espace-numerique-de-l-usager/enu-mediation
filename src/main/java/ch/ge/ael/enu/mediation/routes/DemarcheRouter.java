@@ -46,13 +46,16 @@ public class DemarcheRouter extends RouteBuilder {
 
         // routage principal
         from(RABBITMQ_QUEUE)
-          .choice()
-            .when(header("Content-Type").isEqualTo(MediaType.NEW_DEMARCHE))
-                .to("direct:nouvelleDemarche")
-            .when(header("Content-Type").isEqualTo(MediaType.STATUS_CHANGE))
-                .to("direct:changementEtatDemarche")
-            .otherwise()
-                .to("stream:err");
+                .log("Message recu de RabbitMQ")
+                .to("log:INFO?showHeaders=true")
+                .log("En-tête " + header("Content-Type"))
+                .choice()
+                    .when(header("rabbitmq.Content-Type").isEqualTo(MediaType.NEW_DEMARCHE))
+                        .to("direct:nouvelleDemarche")
+                    .when(header("rabbitmq.Content-Type").isEqualTo(MediaType.STATUS_CHANGE))
+                        .to("direct:changementEtatDemarche")
+                    .otherwise()
+                        .to("stream:err");
 
         // nouvelle demarche
         from("direct:nouvelleDemarche")
@@ -77,11 +80,22 @@ public class DemarcheRouter extends RouteBuilder {
 
         // changement d'etat d'une demarche
         from("direct:changementEtatDemarche")
+                .log("direct:changementEtatDemarche")
                 .unmarshal(metierStatusChangeDataFormat)
                 .to("log:input")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
+                .multicast(new UuidPropagationStrategy(), false)
+//                .aggregate(new UuidPropagationStrategy()).
+//                .multicast()
+                .to(
+                        "direct:changementEtatDemarche-Recherche",
+                        "direct:changementEtatDemarche-Step",
+                        "direct:changementEtatDemarche-Workflow")
+                .end();
 
-                // recherche de l'uuid de la demarche
+        // changement d'etat d'une demarche : recuperation de son uuid
+        from("direct:changementEtatDemarche-Recherche")
+                .log("direct:changementEtatDemarche-Recherche")
                 .setProperty("idClientDemande", simple("${body.idClientDemande}", String.class))
                 .setHeader("name", exchangeProperty("idClientDemande"))
                 .setHeader("Content-Type", simple("application/json"))
@@ -91,17 +105,23 @@ public class DemarcheRouter extends RouteBuilder {
                 .unmarshal(jwayFileListDataFormat)
                 .log("uuid = ${body[0].uuid}")
                 .setProperty("uuid", simple("${body[0].uuid}", String.class))
+                .setHeader("id", exchangeProperty("uuid"));
 
-                // changement d'étape, partie 1 (step)
+        // changement d'etat d'une demarche : changement d'etape, partie 1 (step)
+        from("direct:changementEtatDemarche-Step")
+                .log("direct:changementEtatDemarche-Step")
+//                .to("log:input")
                 .setHeader("id", exchangeProperty("uuid"))
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .bean(StatusChangeToJwayStep1Mapper.class)
-                .to("log:input")
-                .to("rest:post:alpha/file/{uuid}/step")
+                .marshal().json()
+                .to("rest:post:alpha/file/{id}/step");
                 // valider ici 204
 
-                // changement d'étape, partie 2 (workflowStatus)
+        // changement d'etat d'une demarche : changement d'etape, partie 2 (workflowStatus)
+        from("direct:changementEtatDemarche-Workflow")
+                .log("direct:changementEtatDemarche-Workflow")
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .bean(StatusChangeToJwayStep2Mapper.class)
