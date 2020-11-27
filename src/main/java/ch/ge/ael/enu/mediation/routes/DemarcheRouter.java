@@ -84,14 +84,14 @@ public class DemarcheRouter extends RouteBuilder {
                 .unmarshal(metierStatusChangeDataFormat)
                 .to("log:input")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
-                .multicast(new UuidPropagationStrategy(), false)
-//                .aggregate(new UuidPropagationStrategy()).
-//                .multicast()
-                .to(
-                        "direct:changementEtatDemarche-Recherche",
-                        "direct:changementEtatDemarche-Step",
-                        "direct:changementEtatDemarche-Workflow")
-                .end();
+//                .multicast(new UuidPropagationStrategy(), false)
+//                .to(
+//                        "direct:changementEtatDemarche-Recherche",
+//                        "direct:changementEtatDemarche-Step",
+//                        "direct:changementEtatDemarche-Workflow")
+//                .end();
+                .enrich("direct:changementEtatDemarche-Recherche", new UuidPropagationStrategy())
+                .to("direct:changementEtatDemarche-Step");
 
         // changement d'etat d'une demarche : recuperation de son uuid
         from("direct:changementEtatDemarche-Recherche")
@@ -100,23 +100,29 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader("name", exchangeProperty("idClientDemande"))
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
-                .marshal().json()
+                .marshal()
+                .json()
                 .to("rest:get:file/mine?queryParameters=name={name}&max=1&order=stepDate&reverse=true")
                 .unmarshal(jwayFileListDataFormat)
-                .log("uuid = ${body[0].uuid}")
                 .setProperty("uuid", simple("${body[0].uuid}", String.class))
-                .setHeader("id", exchangeProperty("uuid"));
+//                .setHeader("id", exchangeProperty("uuid"));
+//                .setProperty("uuid", simple("pipo1", String.class))
+//                .setHeader("id", simple("pipo2", String.class))
+                .log("uuid = ${body[0].uuid}");
 
         // changement d'etat d'une demarche : changement d'etape, partie 1 (step)
         from("direct:changementEtatDemarche-Step")
                 .log("direct:changementEtatDemarche-Step")
 //                .to("log:input")
-                .setHeader("id", exchangeProperty("uuid"))
+                .setHeader("theId", exchangeProperty("uuid"))   // donne 400 avec unrecogized field 'id'
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .bean(StatusChangeToJwayStep1Mapper.class)
+                .log("body 1 = ${body}")
                 .marshal().json()
-                .to("rest:post:alpha/file/{id}/step");
+                .log("body 2 = ${body}")
+                .to("rest:post:alpha/file/{theId}/step")
+                .log("body 3 = ${body}");
                 // valider ici 204
 
         // changement d'etat d'une demarche : changement d'etape, partie 2 (workflowStatus)

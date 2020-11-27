@@ -37,7 +37,7 @@ configurer ainsi le Content-Type :
 Ensuite, lancer comme précédemment l'aplication rabbit-send.
 Taper dans l'invite le message JSON d'un changement d'état. Exemple :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-21", "nouvelEtat": "EN_COURS", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "Un état second", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-21", "nouvelEtat": "SOUMISE", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "Un état second", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
 ```
 Le dossier (idClientDemande) doit au préalable exister.
 
