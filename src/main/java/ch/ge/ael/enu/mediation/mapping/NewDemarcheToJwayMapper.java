@@ -39,7 +39,7 @@ public class NewDemarcheToJwayMapper {
                     .append("|")
                     .append(newDemarche.getUrlAction());
             file.setStepDescription(sb.toString());
-//            file.setToDate(newDemarche.getDateEcheanceAction().atStartOfDay());  // cree une HTTP 400
+            file.setToDate(newDemarche.getDateEcheanceAction());
         }
         /*
         else if (is(newDemarche, SOUMISE)) {

@@ -27,8 +27,7 @@ public class NewDemarche {
 
     private String libelleAction;
 
-    @JsonDeserialize(using = IsoDateDeserializer.class)
-    private LocalDate dateEcheanceAction;
+    private String dateEcheanceAction;
 
     @JsonDeserialize(using = IsoDateTimeDeserializer.class)
     private LocalDateTime dateDepot;
