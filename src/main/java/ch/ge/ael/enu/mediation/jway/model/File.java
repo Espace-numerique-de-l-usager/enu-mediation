@@ -29,8 +29,12 @@ public class File {
     @JsonDeserialize(using = JwayDateDeserializer.class)
     private LocalDateTime fromDate;
 
-    @JsonDeserialize(using = JwayDateDeserializer.class)
-    private LocalDateTime toDate;
+    /**
+     * Ne pas prendre une LocalDateTime, sinon HTTP 400 lors de l'envoi a Jway.
+     */
+//    @JsonDeserialize(using = JwayDateDeserializer.class)
+//    private LocalDateTime toDate;
+    private String toDate;
 
     private String redirectUrl;
 

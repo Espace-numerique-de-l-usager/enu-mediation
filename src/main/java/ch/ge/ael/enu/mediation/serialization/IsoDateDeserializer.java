@@ -12,6 +12,7 @@ import java.util.Locale;
 
 /**
  * Transforme en LocalDate une date reçue au format 2020-02-18".
+ * @TODO CLASSE PEUT-ETRE INUTILE
  */
 public class IsoDateDeserializer extends StdDeserializer<LocalDate> {
 
