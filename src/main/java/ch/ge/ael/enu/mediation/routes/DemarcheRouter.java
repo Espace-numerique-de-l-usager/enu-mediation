@@ -1,8 +1,10 @@
 package ch.ge.ael.enu.mediation.routes;
 
+import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
+import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.Predicate;
 import org.apache.camel.builder.RouteBuilder;
@@ -53,7 +55,8 @@ public class DemarcheRouter extends RouteBuilder {
 
         // nouvelle demarche
         from("direct:nouvelleDemarche")
-                .unmarshal().json(JsonLibrary.Jackson)
+                // prevoir un ExceptionHandler pour com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
+                .unmarshal().json(JsonLibrary.Jackson, NewDemarche.class)
                 .to("log:input")
                 .setProperty("demarcheStatus", simple("${body.etat}", String.class))
                 .setHeader("Content-Type", simple("application/json"))
@@ -62,7 +65,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .marshal().json(JsonLibrary.Jackson)
                 .log("corps JSON = ${body}")
                 .to("rest:post:alpha/file")
-                .unmarshal().json(JsonLibrary.Jackson)
+                .unmarshal().json(JsonLibrary.Jackson, File.class)
                 .setBody().simple("Nouvelle démarche dans Jway: ${body.uuid}")
                 .to("stream:out");
 

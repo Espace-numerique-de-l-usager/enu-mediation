@@ -1,6 +1,7 @@
 package ch.ge.ael.enu.mediation.jway.model;
 
 import ch.ge.ael.enu.mediation.serialization.CustomDateDeserializer;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class File {
     private Integer id;
     private UUID uuid;
