@@ -4,6 +4,7 @@ import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import ch.ge.ael.enu.mediation.metier.model.StatusChange;
 import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.camel.component.jackson.JacksonDataFormat;
@@ -23,6 +24,7 @@ public class DataFormats {
         jwayFileDataFormat.setUnmarshalType(File.class);
         jwayFileDataFormat.setInclude("NON_NULL");
         jwayFileDataFormat.setObjectMapper(jackson);
+//        jackson.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         return jwayFileDataFormat;
     }
 
