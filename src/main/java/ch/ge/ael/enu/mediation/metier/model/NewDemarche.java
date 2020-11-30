@@ -1,8 +1,12 @@
 package ch.ge.ael.enu.mediation.metier.model;
 
+import ch.ge.ael.enu.mediation.serialization.IsoDateDeserializer;
+import ch.ge.ael.enu.mediation.serialization.IsoDateTimeDeserializer;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 /**
@@ -23,5 +27,13 @@ public class NewDemarche {
 
     private String libelleAction;
 
-    private String echeanceAction;
+    @JsonDeserialize(using = IsoDateDeserializer.class)
+    private LocalDate dateEcheanceAction;
+
+    @JsonDeserialize(using = IsoDateTimeDeserializer.class)
+    private LocalDateTime dateDepot;
+
+    @JsonDeserialize(using = IsoDateTimeDeserializer.class)
+    private LocalDateTime dateMiseEnTraitement;
+
 }

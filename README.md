@@ -19,25 +19,38 @@ git clone https://argon.***REMOVED***/gitlab/ACCES_RESTREINT/3417_espace_numeriq
 - Depuis IntelliJ, lancer l'application rabbit-send. Une invite "Enter something:" s'affiche
 - Taper dans l'invite le message JSON d'une nouvelle démarche. Exemple :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-22", "etat": "BROUILLON", "urlFormulaire": "http://www.tdg.ch", "libelleAction": "Prendre le tram", "echeanceAction": "2021-02-18"} 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "BROUILLON", "urlAction": "http://www.tdg.ch", "libelleAction": "Prendre le tram", "dateEcheanceAction": "2021-02-18"} 
 ```
 (pour un autre exemple, voir ci-dessous)
 
 - Depuis IntelliJ, lancer l'application enu-mediation. La console va montrer que le message ci-dessus est 
 consommé, transformé et adressé à un service REST du backend ENU.
 
-#### Autres exemples
-L'exemple ci-dessus était le plus simple : celui de la création d'une nouvelle demande.
-Un autre cas exemple est celui du changement d'état d'une demande existante.
+### Autres exemples
+
+L'exemple ci-dessus était le plus simple : celui de la création d'une nouvelle demande à l'état BROUILLON.
+Ce chapitre propose d'autres cas.
+
+#### Création d'une demande à l'état SOUMISE
+```
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "SOUMISE", "dateDepot": "2021-02-18T12:15:00.000Z"} 
+```
+
+#### Création d'une demande à l'état EN_COURS
+```
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "EN_COURS", "dateDepot": "2021-02-18T12:15:00.000Z"} 
+```
+
+#### Changement d'état d'une demande existante
 Pour ce cas-là, il y a une étape préalable : dans l'application rabbit-send, classe MessageSender, veiller à
 configurer ainsi le Content-Type :
 ```
    .setHeader("rabbitmq.Content-Type", simple("application/json-status-change"))
 ```
-Ensuite, lancer comme précédemment l'aplication rabbit-send.
+Ensuite, lancer comme précédemment l'application rabbit-send.
 Taper dans l'invite le message JSON d'un changement d'état. Exemple :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-21", "nouvelEtat": "SOUMISE", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "Un état second", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "SOUMISE", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "Un état second", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
 ```
 Le dossier (idClientDemande) doit au préalable exister.
 
