@@ -19,7 +19,7 @@ git clone https://argon.***REMOVED***/gitlab/ACCES_RESTREINT/3417_espace_numeriq
 - Depuis IntelliJ, lancer l'application rabbit-send. Une invite "Enter something:" s'affiche
 - Taper dans l'invite le message JSON d'une nouvelle démarche. Exemple :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "BROUILLON", "urlAction": "http://www.tdg.ch", "libelleAction": "Prendre le tram", "dateEcheanceAction": "2021-02-18"} 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "BROUILLON", "urlAction": "http://www.tpg.ch", "libelleAction": "Prendre le tram", "dateEcheanceAction": "2021-02-18"} 
 ```
 (pour un autre exemple, voir ci-dessous)
 
@@ -48,11 +48,20 @@ configurer ainsi le Content-Type :
    .setHeader("rabbitmq.Content-Type", simple("application/json-status-change"))
 ```
 Ensuite, lancer comme précédemment l'application rabbit-send.
-Taper dans l'invite le message JSON d'un changement d'état. Exemple :
+Taper dans l'invite le message JSON d'un changement d'état. Exemples :
+Passer à l'état SOUMISE :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "SOUMISE", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "Un état second", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "SOUMISE", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "À l'état SOUMISE", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
 ```
-Le dossier (idClientDemande) doit au préalable exister.
+Passer à l'état EN_COURS :
+```
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "EN_COURS", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "À l'état EN_COURS", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://gazeta-pravda.ru", "libelleAction": "Lire des trucs fantastiques", "echeanceAction": "2021-02-19" } 
+```
+Passer à l'état TERMINEE :
+```
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "TERMINEE", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "À l'état TERMINEE", "urlRenouvellementDemarche": "https://pcdob.org.br" } 
+```
+Dans tous les cas, le dossier (idClientDemande) doit au préalable exister.
 
 
 ## Divers
