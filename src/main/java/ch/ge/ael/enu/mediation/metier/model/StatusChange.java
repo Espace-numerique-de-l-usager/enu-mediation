@@ -39,4 +39,6 @@ public class StatusChange {
 
     private String echeanceAction;
 
+    private String urlRenouvellementDemarche;
+
 }
