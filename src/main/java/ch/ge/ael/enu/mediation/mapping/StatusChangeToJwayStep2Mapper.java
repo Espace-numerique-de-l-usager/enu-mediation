@@ -15,11 +15,11 @@ public class StatusChangeToJwayStep2Mapper {
         file.setWorkflowStatus(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
         if (statusChange.getTypeAction() != null) {
             StringBuilder sb = new StringBuilder()
-                    .append(statusChange.getLibelleSousEtat())
+                    .append(statusChange.getLibelleAction())
                     .append("|")
-                    .append(statusChange.getTypeAction())
-                    .append("|")
-                    .append(statusChange.getUrlAction());
+                    .append(statusChange.getTypeAction());
+//                    .append("|")
+//                    .append(statusChange.getUrlAction());
             file.setStepDescription(sb.toString());
         }
 

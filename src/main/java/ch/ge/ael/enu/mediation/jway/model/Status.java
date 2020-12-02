@@ -8,12 +8,12 @@ public enum Status {
     START,
 
     /**
-     * Soumise.
+     * Deposee.
      */
     VALIDATION,
 
     /**
-     * En cours.
+     * En traitement.
      */
     CORRECTION,
 

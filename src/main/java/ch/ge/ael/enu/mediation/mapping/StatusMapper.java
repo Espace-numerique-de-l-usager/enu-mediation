@@ -22,9 +22,9 @@ public class StatusMapper {
     public Status mapEnumToJway(DemarcheStatus demarcheStatus) {
         if (demarcheStatus == DemarcheStatus.BROUILLON) {
             return Status.START;
-        } else if (demarcheStatus == DemarcheStatus.SOUMISE) {
+        } else if (demarcheStatus == DemarcheStatus.DEPOSEE) {
             return Status.VALIDATION;
-        } else if (demarcheStatus == DemarcheStatus.EN_COURS) {
+        } else if (demarcheStatus == DemarcheStatus.EN_TRAITEMENT) {
             return Status.CORRECTION;
         } else if (demarcheStatus == DemarcheStatus.TERMINEE) {
             return Status.DONE;
@@ -48,9 +48,9 @@ public class StatusMapper {
         if (status == Status.START) {
             return DemarcheStatus.BROUILLON;
         } else if (status == Status.VALIDATION) {
-            return DemarcheStatus.SOUMISE;
+            return DemarcheStatus.DEPOSEE;
         } else if (status == Status.CORRECTION) {
-            return DemarcheStatus.EN_COURS;
+            return DemarcheStatus.EN_TRAITEMENT;
         } else if (status == Status.DONE) {
             return DemarcheStatus.TERMINEE;
         } else {

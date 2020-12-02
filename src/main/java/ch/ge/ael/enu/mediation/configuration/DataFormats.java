@@ -3,10 +3,7 @@ package ch.ge.ael.enu.mediation.configuration;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import ch.ge.ael.enu.mediation.metier.model.StatusChange;
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.component.jackson.ListJacksonDataFormat;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 
 /**
  * Formats de marshalling / unmarshalling pour Camel.
+ *
+ * A SUPPRIMER (laisser un exemple)
  */
 @Configuration
 public class DataFormats {

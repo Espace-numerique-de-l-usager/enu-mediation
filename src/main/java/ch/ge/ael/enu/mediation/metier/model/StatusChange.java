@@ -1,5 +1,6 @@
 package ch.ge.ael.enu.mediation.metier.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -10,6 +11,7 @@ import java.time.LocalDate;
  * Reference : ***REMOVED***/browse/ENU-427
  */
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class StatusChange {
 
     private String idPrestation;
@@ -18,15 +20,11 @@ public class StatusChange {
 
     private String idClientDemande;
 
-    /**
-     * Seules les valeurs "EN_TRAITEMENT" et "TERMINEE" sont acceptees.
-     */
     private String nouvelEtat;
 
-//    private LocalDate dateNouvelEtat;
     private String dateNouvelEtat;
 
-    private String libelleSousEtat;
+//    private String libelleSousEtat;
 
     /**
      * Seules les valeurs ENRICHISSEMENT_DE_DEMANDE et REPONSE_DEMANDE_RENSEIGNEMENT sont acceptees.

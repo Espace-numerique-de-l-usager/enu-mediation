@@ -18,7 +18,7 @@ import java.util.TimeZone;
 @Configuration
 public class JacksonConfiguration {
 
-    @Bean
+    @Bean(name = "json-jackson")
     public ObjectMapper jackson() {
         ObjectMapper jackson = new ObjectMapper();
         JavaTimeModule javaTimeModule = new JavaTimeModule();
@@ -27,7 +27,7 @@ public class JacksonConfiguration {
         jackson.setDateFormat(DateFormat.getDateInstance());
         jackson.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         jackson.enable(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY);
-//        jackson.setSerializationInclusion(JsonInclude.Include.NON_NULL);  // sans effet ; le champ "id" reste serialise'
+        jackson.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         jackson.setTimeZone(TimeZone.getDefault());
         return jackson;
     }

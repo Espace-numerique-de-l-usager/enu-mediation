@@ -4,9 +4,9 @@ public enum DemarcheStatus {
 
     BROUILLON,
 
-    SOUMISE,
+    DEPOSEE,
 
-    EN_COURS,
+    EN_TRAITEMENT,
 
     TERMINEE
 

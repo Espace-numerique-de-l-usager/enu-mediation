@@ -31,14 +31,14 @@ consommé, transformé et adressé à un service REST du backend ENU.
 L'exemple ci-dessus était le plus simple : celui de la création d'une nouvelle demande à l'état BROUILLON.
 Ce chapitre propose d'autres cas.
 
-#### Création d'une demande à l'état SOUMISE
+#### Création d'une demande à l'état DEPOSEE
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "SOUMISE", "dateDepot": "2021-02-18T12:15:00.000Z"} 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "DEPOSEE", "dateDepot": "2021-02-18T12:15:00.000Z"} 
 ```
 
-#### Création d'une demande à l'état EN_COURS
+#### Création d'une demande à l'état EN_TRAITEMENT
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "EN_COURS", "dateDepot": "2021-02-18T12:15:00.000Z", "dateMiseEnTraitement": "2021-02-19T12:15:00.000Z"} 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "EN_TRAITEMENT", "dateDepot": "2021-02-18T12:15:00.000Z", "dateMiseEnTraitement": "2021-02-19T12:15:00.000Z"} 
 ```
 
 #### Changement d'état d'une demande existante
@@ -49,17 +49,18 @@ configurer ainsi le Content-Type :
 ```
 Ensuite, lancer comme précédemment l'application rabbit-send.
 Taper dans l'invite le message JSON d'un changement d'état. Exemples :
-Passer à l'état SOUMISE :
+
+Passer à l'état DEPOSEE :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "SOUMISE", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "À l'état SOUMISE", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "DEPOSEE", "dateNouvelEtat": "2022-02-18", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
 ```
-Passer à l'état EN_COURS :
+Passer à l'état EN_TRAITEMENT :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "EN_COURS", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "À l'état EN_COURS", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://gazeta-pravda.ru", "libelleAction": "Lire des trucs fantastiques", "echeanceAction": "2021-02-19" } 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "EN_TRAITEMENT", "dateNouvelEtat": "2022-02-18", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://gazeta-pravda.ru", "libelleAction": "Lire des trucs fantastiques", "echeanceAction": "2021-02-19" } 
 ```
 Passer à l'état TERMINEE :
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "TERMINEE", "dateNouvelEtat": "2022-02-18", "libelleSousEtat": "À l'état TERMINEE", "urlRenouvellementDemarche": "https://pcdob.org.br" } 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "TERMINEE", "dateNouvelEtat": "2022-02-18", "urlRenouvellementDemarche": "https://pcdob.org.br/" } 
 ```
 Dans tous les cas, le dossier (idClientDemande) doit au préalable exister.
 

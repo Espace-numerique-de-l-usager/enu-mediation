@@ -10,9 +10,9 @@ camel:
     message-history: true
   dataformat:
     json-jackson:
-      object-mapper: jackson
+      object-mapper: json-jackson
       content-type-header: true
-      pretty-print: true
+      pretty-print: false
       timezone: CET
       use-list: false
   component:
