@@ -6,11 +6,8 @@ import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.BROUILLON;
-import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.SOUMISE;
-import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_COURS;
 
 @Configuration
 public class NewDemarcheToJwayMapper {
@@ -32,23 +29,23 @@ public class NewDemarcheToJwayMapper {
 
         file.setStatus(new StatusMapper().mapStringToJway((newDemarche.getEtat())));
 
-        if (is(newDemarche, BROUILLON) && newDemarche.getUrlAction() != null) {
-            StringBuilder sb = new StringBuilder()
+        if (is(newDemarche, BROUILLON) && newDemarche.getLibelleAction() != null) {
+            String stepDescription = new StringBuilder()
                     .append("|")
                     .append(newDemarche.getLibelleAction())
-                    .append("|")
-                    .append(newDemarche.getUrlAction());
-            file.setStepDescription(sb.toString());
+//                    .append("|")
+//                    .append(newDemarche.getUrlAction())
+                    .toString();
+            file.setStepDescription(stepDescription);
             file.setToDate(newDemarche.getDateEcheanceAction());
+
+            Form form = new Form();
+            file.setForm(form);
+            form.setUrls(new ArrayList<>());
+            FormUrl formUrl = new FormUrl();
+            form.getUrls().add(formUrl);
+            formUrl.setBaseUrl(newDemarche.getUrlAction());
         }
-        /*
-        else if (is(newDemarche, SOUMISE)) {
-            file.setFromDate(newDemarche.getDateDepot());
-        } else if (is(newDemarche, EN_COURS)) {
-            file.setFromDate(newDemarche.getDateDepot());
-            file.setToDate(newDemarche.getDateMiseEnTraitement());
-        }
-         */
 
         return file;
     }

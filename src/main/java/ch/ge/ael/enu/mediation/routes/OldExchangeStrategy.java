@@ -15,7 +15,7 @@ public class OldExchangeStrategy implements AggregationStrategy {
 
     @Override
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {
-        LOGGER.info("Dans OldExchangeStrategy");
+        LOGGER.debug("Dans OldExchangeStrategy");
         return oldExchange;
     }
 

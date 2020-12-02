@@ -7,8 +7,8 @@ import ch.ge.ael.enu.mediation.metier.model.StatusChange;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Transforme une requete de creation de demarche en une requete de changement d'etat.
- * L'etat que doit avoir la requete de changement d'etat est donne en parametre du constructeur.
+ * Transforme une requete de creation de demarche (NewDemarche) en une requete de changement d'etat (StatusChange).
+ * L'etat (par ex. SOUMIS) que doit avoir la requete de changement d'etat est donne en parametre du constructeur.
  */
 public class NewDemarcheToStatusChangeMapper {
 
@@ -26,9 +26,9 @@ public class NewDemarcheToStatusChangeMapper {
         statusChange.setIdUsager(newDemarche.getIdUsager());
         statusChange.setIdClientDemande(newDemarche.getIdClientDemande());
         statusChange.setNouvelEtat(demarcheStatus.name());
-        if (demarcheStatus == DemarcheStatus.SOUMISE) {
+        if (demarcheStatus == DemarcheStatus.DEPOSEE) {
             statusChange.setDateNouvelEtat(newDemarche.getDateDepot().format(FORMATTER));
-        } else if (demarcheStatus == DemarcheStatus.EN_COURS) {
+        } else if (demarcheStatus == DemarcheStatus.EN_TRAITEMENT) {
             statusChange.setDateNouvelEtat(newDemarche.getDateMiseEnTraitement().format(FORMATTER));
         }
 

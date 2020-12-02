@@ -1,14 +1,14 @@
 package ch.ge.ael.enu.mediation.metier.model;
 
-import ch.ge.ael.enu.mediation.serialization.IsoDateDeserializer;
 import ch.ge.ael.enu.mediation.serialization.IsoDateTimeDeserializer;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 /**
  * Donnees contenues dans un message JSON de creation d'une nouvelle demande.
  * Reference : ***REMOVED***/browse/ENU-422

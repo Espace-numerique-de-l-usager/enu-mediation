@@ -14,7 +14,8 @@ import java.util.Locale;
  */
 public class IsoDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
 
-    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.FRENCH);
+//    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.FRENCH);
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_DATE_TIME;
 
     public IsoDateTimeDeserializer() {
         this(null);
