@@ -2,16 +2,15 @@ package ch.ge.ael.enu.mediation.routes;
 
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
+import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
 import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import ch.ge.ael.enu.mediation.metier.model.StatusChange;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.CamelContext;
-import org.apache.camel.CamelContextAware;
 import org.apache.camel.Predicate;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.component.jackson.ListJacksonDataFormat;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,16 +39,15 @@ public class DemarcheRouter extends RouteBuilder {
 
     static final String RABBITMQ_QUEUE = "demarche.exchange?queue=create";
 
-    private final Predicate IS_NEW_DEMARCHE = header("rabbitmq.Content-Type").isEqualTo(MediaType.NEW_DEMARCHE);
+    private final Predicate isNewDemarche = header("rabbitmq.Content-Type").isEqualTo(MediaType.NEW_DEMARCHE);
 
-    private final Predicate IS_STATUS_CHANGE = header("rabbitmq.Content-Type").isEqualTo(MediaType.STATUS_CHANGE);
+    private final Predicate isStatusChange = header("rabbitmq.Content-Type").isEqualTo(MediaType.STATUS_CHANGE);
 
-    private final Predicate IS_NEW_DEMARCHE_SOUMISE = simple("${body.etat} == '" + SOUMISE + "'");
+    private final Predicate isNewDemarcheSoumise = jsonpath("$[?(@.etat=='" + SOUMISE + "')]");
 
-    private final Predicate IS_NEW_DEMARCHE_EN_COURS = simple("${body.etat} == '" + EN_COURS + "'");
+    private final Predicate isNewDemarcheEnCours = jsonpath("$[?(@.etat=='" + EN_COURS + "')]");
 
-    @Resource
-    private final JacksonDataFormat jwayFileListDataFormat;
+    private final UuidPropagationStrategy uuidPropagationStrategy = new UuidPropagationStrategy();
 
     @Override
     public void configure() {
@@ -64,31 +62,45 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("log:INFO?showHeaders=true")
                 .log("En-tête " + header("Content-Type"))
                 .choice()
-                    .when(IS_NEW_DEMARCHE)
+                    .when(isNewDemarche)
                         .to("direct:nouvelleDemarche")
-                    .when(IS_STATUS_CHANGE)
+                    .when(isStatusChange)
                         .to("direct:changementEtatDemarche")
                     .otherwise()
                         .to("stream:err");
 
-        // nouvelle demarche (brouillon, soumise ou en cours)
-        from("direct:nouvelleDemarche").id("route-nouvelle-demarche")
+        // nouvelle demarche (en brouillon, ou directement à soumise ou en cours)
+        from("direct:nouvelleDemarche").id("nouvelle-demarche")
                 // prevoir un ExceptionHandler pour com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
                 .log("direct:nouvelleDemarche")
-                .enrich("direct:nouvelleDemarcheBrouillon")
-
-                //.choice()
-                  //  .when(IS_NEW_DEMARCHE_EN_COURS)
-                 //       .enrich("direct:changementEtatDemarche" /* ,NewDemarcheToSoumiseStatusChangeTransformer.class */)
-                //        .enrich("direct:changementEtatDemarche" /* ,NewDemarcheToEnCoursStatusChangeTransformer.class */)
-//                    .when(IS_NEW_DEMARCHE_SOUMISE)
-//                        .enrich("direct:changementEtatDemarche", NewDemarcheToEnCoursStatusChangeStrategy.class)
-                    //.otherwise()
-//                        .to("stream:out");
-                    .to("stream:out");
+                .enrich("direct:nouvelleDemarcheBrouillon", new OldExchangeStrategy())
+                .log("Body : ${body}")
+                .setProperty("newDemarche", body())
+                .choice()
+                    .when(isNewDemarcheSoumise)
+                        .log("Passage a l'etat SOUMISE")
+                        .log("Body : ${body}")
+                        .unmarshal().json(JsonLibrary.Jackson, NewDemarche.class)
+                        .bean(new NewDemarcheToStatusChangeMapper(SOUMISE))
+                        .marshal().json()
+                        .to("direct:changementEtatDemarche")
+                    .when(isNewDemarcheEnCours)
+                        .log("Passage a l'etat SOUMISE (avant le passage a l'etat EN_COURS)")
+                        .unmarshal().json(JsonLibrary.Jackson, NewDemarche.class)
+                        .bean(new NewDemarcheToStatusChangeMapper(SOUMISE))
+                        .marshal().json()
+                        .to("direct:changementEtatDemarche")
+                        .log("Passage a l'etat EN_COURS")
+                        .setBody(exchangeProperty("newDemarche"))
+                        .unmarshal().json(JsonLibrary.Jackson, NewDemarche.class)
+                        .bean(new NewDemarcheToStatusChangeMapper(EN_COURS))
+                        .marshal().json()
+                        .to("direct:changementEtatDemarche")
+                    .otherwise()
+                        .log("On en reste a l'etat BROUILLON");
 
         // nouvelle demarche (creation a l'etat brouillon)
-        from("direct:nouvelleDemarcheBrouillon").id("route-nouvelle-demarche-brouillon")
+        from("direct:nouvelleDemarcheBrouillon").id("nouvelle-demarche-brouillon")
                 .log("direct:nouvelleDemarcheBrouillon")
                 .unmarshal().json(JsonLibrary.Jackson, NewDemarche.class)
                 .to("log:input")
@@ -100,20 +112,20 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("JSON envoye a Jway = ${body}")
                 .to("rest:post:alpha/file")
                 .unmarshal().json(JsonLibrary.Jackson, File.class)
-                .setBody().simple("Nouvelle démarche dans Jway: ${body.uuid}");
+                .log("Demarche creee avec uuid ${body.uuid}");
 
         // changement d'etat d'une demarche
-        from("direct:changementEtatDemarche").id("route-changement-etat-demarche")
+        from("direct:changementEtatDemarche").id("changement-etat-demarche")
                 .log("direct:changementEtatDemarche")
                 .unmarshal().json(JsonLibrary.Jackson, StatusChange.class)
                 .to("log:input")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
-                .enrich("direct:changementEtatDemarche-phase1", new UuidPropagationStrategy())
-                .enrich("direct:changementEtatDemarche-phase2", new UuidPropagationStrategy())
+                .enrich("direct:changementEtatDemarche-phase1", uuidPropagationStrategy)
+                .enrich("direct:changementEtatDemarche-phase2", uuidPropagationStrategy)
                 .to("direct:changementEtatDemarche-phase3");
 
         // changement d'etat d'une demarche, phase 1 : recuperation de son uuid
-        from("direct:changementEtatDemarche-phase1").id("route-changement-etat-demarche-phase-1")
+        from("direct:changementEtatDemarche-phase1").id("changement-etat-demarche-phase-1")
                 .log("direct:changementEtatDemarche-phase1")
                 .setProperty("idClientDemande", simple("${body.idClientDemande}", String.class))
                 .setHeader("name", exchangeProperty("idClientDemande"))
@@ -126,7 +138,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("uuid = ${body[0].uuid}");
 
         // changement d'etat d'une demarche, phase 2 : changement du step
-        from("direct:changementEtatDemarche-phase2").id("route-changement-etat-demarche-phase-2")
+        from("direct:changementEtatDemarche-phase2").id("changement-etat-demarche-phase-2")
                 .log("direct:changementEtatDemarche-phase2")
                 .setHeader("uuid", exchangeProperty("uuid"))
                 .bean(StatusChangeToJwayStep1Mapper.class)
@@ -136,7 +148,7 @@ public class DemarcheRouter extends RouteBuilder {
                 // valider ici 204
 
         // changement d'etat d'une demarche, phase 3 : changement du workflowStatus
-        from("direct:changementEtatDemarche-phase3").id("route-changement-etat-demarche-phase-3")
+        from("direct:changementEtatDemarche-phase3").id("changement-etat-demarche-phase-3")
                 .log("direct:changementEtatDemarche-phase3")
                 .setHeader("uuid", exchangeProperty("uuid"))
                 .bean(StatusChangeToJwayStep2Mapper.class)

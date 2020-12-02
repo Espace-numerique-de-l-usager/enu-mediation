@@ -13,7 +13,7 @@ public class StatusChangeToJwayStep2Mapper {
         FileForWorkflow file = new FileForWorkflow();
         file.setName(statusChange.getIdClientDemande());
         file.setWorkflowStatus(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
-        if (statusChange.getDateNouvelEtat() != null) {
+        if (statusChange.getTypeAction() != null) {
             StringBuilder sb = new StringBuilder()
                     .append(statusChange.getLibelleSousEtat())
                     .append("|")

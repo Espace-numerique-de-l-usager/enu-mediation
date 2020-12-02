@@ -10,9 +10,7 @@ public class StatusChangeToJwayStep1Mapper {
 
         FileForStep file = new FileForStep();
         file.setStep(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
-//        file.setLastUpdate(statusChange.getDateNouvelEtat().atStartOfDay());
         file.setLastUpdate(statusChange.getDateNouvelEtat());
-
         return file;
     }
 
