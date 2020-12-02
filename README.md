@@ -38,7 +38,7 @@ Ce chapitre propose d'autres cas.
 
 #### Création d'une demande à l'état EN_COURS
 ```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "EN_COURS", "dateDepot": "2021-02-18T12:15:00.000Z"} 
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "EN_COURS", "dateDepot": "2021-02-18T12:15:00.000Z", "dateMiseEnTraitement": "2021-02-19T12:15:00.000Z"} 
 ```
 
 #### Changement d'état d'une demande existante
