@@ -26,10 +26,15 @@ git clone https://argon.***REMOVED***/gitlab/ACCES_RESTREINT/3417_espace_numeriq
 - Depuis IntelliJ, lancer l'application enu-mediation. La console va montrer que le message ci-dessus est 
 consommé, transformé et adressé à un service REST du backend ENU.
 
-### Autres exemples
+### Exemples : création d'une démarche
 
 L'exemple ci-dessus était le plus simple : celui de la création d'une nouvelle demande à l'état BROUILLON.
-Ce chapitre propose d'autres cas.
+Ce chapitre propose une liste plus complète de cas.
+
+#### Création d'une demande à l'état BROUILLON
+```
+{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "BROUILLON", "urlAction": "http://www.tpg.ch", "libelleAction": "Prendre le tram", "dateEcheanceAction": "2021-02-18"} 
+```
 
 #### Création d'une demande à l'état DEPOSEE
 ```
@@ -41,14 +46,28 @@ Ce chapitre propose d'autres cas.
 {"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "EN_TRAITEMENT", "dateDepot": "2021-02-18T12:15:00.000Z", "dateMiseEnTraitement": "2021-02-19T12:15:00.000Z"} 
 ```
 
-#### Changement d'état d'une demande existante
-Pour ce cas-là, il y a une étape préalable : dans l'application rabbit-send, classe MessageSender, veiller à
+### Exemple : création d'une suggestion de démarche
+
+Attention : pour ce cas-là, il y a une étape préalable : dans l'application rabbit-send, classe MessageSender, veiller à
+configurer ainsi le Content-Type :
+```
+   .setHeader("rabbitmq.Content-Type", simple("application/json-new-suggestion"))
+```
+Ensuite, lancer comme précédemment l'application rabbit-send.
+Taper dans l'invite le message JSON de création d'une suggestion de démarche :
+```
+{"idUsager": "DUBOISPELERINY", "urlAction": "https://www.humanite.fr/", "libelleAction": "Se mouiller", "echeanceAction": "2021-02-19", "descriptionAction": "Il faut une fois dans sa vie faire un truc formidable."}
+```
+
+### Exemples : changement d'état d'une demande existante
+
+Attention : pour ce cas-là, il y a une étape préalable : dans l'application rabbit-send, classe MessageSender, veiller à
 configurer ainsi le Content-Type :
 ```
    .setHeader("rabbitmq.Content-Type", simple("application/json-status-change"))
 ```
 Ensuite, lancer comme précédemment l'application rabbit-send.
-Taper dans l'invite le message JSON d'un changement d'état. Exemples :
+Taper dans l'invite le message JSON d'un changement d'état :
 
 Passer à l'état DEPOSEE :
 ```

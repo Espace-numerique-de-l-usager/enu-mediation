@@ -25,18 +25,12 @@ public class NewDemarcheToJwayMapper {
         application.setName(newDemarche.getIdPrestation());
         file.setApplication(application);
 
-        file.setWorkflowStatus(new StatusMapper().mapStringToJway((newDemarche.getEtat())));
-
-        file.setStatus(new StatusMapper().mapStringToJway((newDemarche.getEtat())));
+        String jwayStatus = new StatusMapper().mapStringToJway(newDemarche.getEtat());
+        file.setWorkflowStatus(jwayStatus);
+        file.setStatus(jwayStatus);
 
         if (is(newDemarche, BROUILLON) && newDemarche.getLibelleAction() != null) {
-            String stepDescription = new StringBuilder()
-                    .append("|")
-                    .append(newDemarche.getLibelleAction())
-//                    .append("|")
-//                    .append(newDemarche.getUrlAction())
-                    .toString();
-            file.setStepDescription(stepDescription);
+            file.setStepDescription("|" + newDemarche.getLibelleAction());
             file.setToDate(newDemarche.getDateEcheanceAction());
 
             Form form = new Form();
