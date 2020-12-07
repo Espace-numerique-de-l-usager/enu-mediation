@@ -18,9 +18,8 @@ public class StatusChangeToJwayStep2Mapper {
                     .append(statusChange.getLibelleAction())
                     .append("|")
                     .append(statusChange.getTypeAction());
-//                    .append("|")
-//                    .append(statusChange.getUrlAction());
             file.setStepDescription(sb.toString());
+            file.setToDate(statusChange.getEcheanceAction());
         }
 
         return file;
