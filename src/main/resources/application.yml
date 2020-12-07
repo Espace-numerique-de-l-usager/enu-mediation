@@ -4,17 +4,22 @@ app:
     ***REMOVED***
     path: aelportalenu/formservices/rest
 
+server:
+  port: 8666
+
 camel:
   springboot:
     main-run-controller: false
     message-history: true
   dataformat:
     json-jackson:
+      auto-discover-object-mapper: true
       object-mapper: json-jackson
       content-type-header: true
       pretty-print: false
       timezone: CET
       use-list: false
+      use-default-object-mapper: false
   component:
     rabbitmq:
       hostname: ***REMOVED***
@@ -23,6 +28,9 @@ camel:
       username***REMOVED***
     http:
       use-global-ssl-context-parameters: true
+    servlet:
+      mapping:
+        context-path: /api/*
   ssl:
     config:
       key-managers:
@@ -44,3 +52,4 @@ logging:
       apache:
         camel: INFO
       springframework: ERROR
+

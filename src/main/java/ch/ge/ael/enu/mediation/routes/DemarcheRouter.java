@@ -12,6 +12,8 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.Predicate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.ListJacksonDataFormat;
+import org.apache.camel.model.DataFormatDefinition;
+import org.apache.camel.model.dataformat.JsonDataFormat;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -21,12 +23,14 @@ import javax.annotation.Resource;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 
+/**
+ * Main RabbitMQ consumer for relaying information to FormSolutions
+ */
 @Component
 @RequiredArgsConstructor
 public class DemarcheRouter extends RouteBuilder {
 
-    @Resource
-    private CamelContext camelContext;
+    private final CamelContext camelContext;
 
     @Value("${app.formsolution.host}")
     private String formSolutionHost;
@@ -49,6 +53,43 @@ public class DemarcheRouter extends RouteBuilder {
 
     private final UuidPropagationStrategy uuidPropagationStrategy = new UuidPropagationStrategy();
 
+    /**
+     * JSON Unmarshalling to POJO using Jackson taken from the Spring context
+     * @param unmarshalType Target POJO class
+     * @return Camel dataformat
+     */
+    private DataFormatDefinition jsonToPojo(Class<?> unmarshalType) {
+        JsonDataFormat json = new JsonDataFormat(JsonLibrary.Jackson);
+        json.setUnmarshalType(unmarshalType);
+        json.setAutoDiscoverObjectMapper("true");
+        return json;
+    }
+
+    /**
+     * JSON Unmarshalling to List using Jackson taken from the Spring context
+     * @param unmarshalType Target List item POJO class
+     * @return Camel dataformat
+     */
+    private ListJacksonDataFormat jsonToList(Class<?> unmarshalType) {
+        ListJacksonDataFormat json = new ListJacksonDataFormat(unmarshalType);
+        json.setUnmarshalType(unmarshalType);
+        json.setAutoDiscoverObjectMapper(true);
+        return json;
+    }
+
+    /**
+     * JSON Marshalling using Jackson taken from the Spring context
+     * @return Camel dataformat
+     */
+    private DataFormatDefinition pojoToJson() {
+        JsonDataFormat json = new JsonDataFormat(JsonLibrary.Jackson);
+        json.setAutoDiscoverObjectMapper("true");
+        return json;
+    }
+
+    /**
+     * Routes definitions
+     */
     @Override
     public void configure() {
         camelContext.setStreamCaching(true);
@@ -79,21 +120,21 @@ public class DemarcheRouter extends RouteBuilder {
                     .when(isNewDemarcheDeposee)
                         .log("Passage a l'etat SOUMISE")
                         .log("Body : ${body}")
-                        .unmarshal().json(JsonLibrary.Jackson, NewDemarche.class)
+                        .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(DEPOSEE))
-                        .marshal().json()
+                        .marshal(pojoToJson())
                         .to("direct:changementEtatDemarche")
                     .when(isNewDemarcheEnTraitement)
                         .log("Passage a l'etat SOUMISE (avant le passage a l'etat EN_TRAITEMENT)")
-                        .unmarshal().json(JsonLibrary.Jackson, NewDemarche.class)
+                        .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(DEPOSEE))
-                        .marshal().json()
+                        .marshal(pojoToJson())
                         .to("direct:changementEtatDemarche")
                         .log("Passage a l'etat EN_TRAITEMENT")
                         .setBody(exchangeProperty("newDemarche"))
-                        .unmarshal().json(JsonLibrary.Jackson, NewDemarche.class)
+                        .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(EN_TRAITEMENT))
-                        .marshal().json()
+                        .marshal(pojoToJson())
                         .to("direct:changementEtatDemarche")
                     .otherwise()
                         .log("On en reste a l'etat BROUILLON");
@@ -101,22 +142,22 @@ public class DemarcheRouter extends RouteBuilder {
         // nouvelle demarche (creation a l'etat brouillon)
         from("direct:nouvelleDemarcheBrouillon").id("nouvelle-demarche-brouillon")
                 .log("direct:nouvelleDemarcheBrouillon")
-                .unmarshal().json(JsonLibrary.Jackson, NewDemarche.class)
+                .unmarshal(jsonToPojo(NewDemarche.class))
                 .to("log:input")
                 .setProperty("demarcheStatus", simple("${body.etat}", String.class))
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", simple("${body.idUsager}", String.class))
                 .bean(NewDemarcheToJwayMapper.class)
-                .marshal().json(/*JsonLibrary.Jackson*/)
+                .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
                 .to("rest:post:alpha/file")
-                .unmarshal().json(JsonLibrary.Jackson, File.class)
+                .unmarshal(jsonToPojo(File.class))
                 .log("Demarche creee, uuid = ${body.uuid}");
 
         // changement d'etat d'une demarche
         from("direct:changementEtatDemarche").id("changement-etat-demarche")
                 .log("direct:changementEtatDemarche")
-                .unmarshal().json(JsonLibrary.Jackson, StatusChange.class)
+                .unmarshal(jsonToPojo(StatusChange.class))
                 .to("log:input")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
                 .enrich("direct:changementEtatDemarche-phase1", uuidPropagationStrategy)
@@ -133,7 +174,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .to("rest:get:file/mine?queryParameters=name={name}&max=1&order=stepDate&reverse=true")  // ajouter &application.id={idPrestation}
                 .log("JSON obtenu de Jway = ${body}")
-                .unmarshal(new ListJacksonDataFormat(File.class))   // en faire une propriété
+                .unmarshal(jsonToList(File.class))   // en faire une propriété
                 .setProperty("uuid", simple("${body[0].uuid}", String.class))
                 .log("uuid = ${body[0].uuid}");
 
@@ -143,7 +184,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("log:input")
                 .setHeader("uuid", exchangeProperty("uuid"))
                 .bean(StatusChangeToJwayStep1Mapper.class)
-                .marshal().json(JsonLibrary.Jackson)
+                .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
                 .to("rest:post:alpha/file/{uuid}/step");
                 // valider ici 204
@@ -154,7 +195,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("log:input")
                 .setHeader("uuid", exchangeProperty("uuid"))
                 .bean(StatusChangeToJwayStep2Mapper.class)
-                .marshal().json(JsonLibrary.Jackson)
+                .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
                 .to("rest:put:alpha/file/{uuid}")
                 .log("Changement d'etat OK");
