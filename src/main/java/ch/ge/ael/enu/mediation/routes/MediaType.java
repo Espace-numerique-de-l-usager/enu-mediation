@@ -4,6 +4,8 @@ public class MediaType {
 
     static final String NEW_DEMARCHE = "application/json-new-demarche";
 
+    static final String NEW_SUGGESTION = "application/json-new-suggestion";
+
     static final String STATUS_CHANGE = "application/json-status-change";
 
 }

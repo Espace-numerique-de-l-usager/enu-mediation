@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 /**
  * Donnees contenues dans un message JSON de creation d'une nouvelle demande.
- * Reference : ***REMOVED***/browse/ENU-422
+ * Reference : <a href="***REMOVED***/browse/ENU-422">ENU-422</a>.
  */
 public class NewDemarche {
 
