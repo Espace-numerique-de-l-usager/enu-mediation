@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <groupId>ch.ge.ael.enu</groupId>
     <artifactId>enu-mediation</artifactId>
     <version>0.4-SNAPSHOT</version>
@@ -37,10 +38,13 @@
         <sonar.projectKey>enu-mediation</sonar.projectKey>
         <sonar.projectName>enu-mediation</sonar.projectName>
         <java.version>8</java.version>
-        <camel.version>3.5.0</camel.version>
+        <camel.version>3.6.0</camel.version>
         <!-- ne pas passer en version 2.4.0, sinon on a une "NoClassDefFoundError: org/springframework/core/metrics/ApplicationStartup" au demarrage -->
         <spring-boot.version>2.3.5.RELEASE</spring-boot.version>
         <jackson.version>2.11.1</jackson.version>
+        <!--
+        <jackson.version>2.12.0</jackson.version>
+        -->
     </properties>
 
     <dependencyManagement>
@@ -163,6 +167,11 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -188,6 +197,11 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.2</version>
             </plugin>
             <plugin>
                 <artifactId>maven-war-plugin</artifactId>

@@ -1,14 +1,18 @@
 package ch.ge.ael.enu.mediation.routes;
 
+import ch.ge.ael.enu.mediation.error.MessageFailureEnricher;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
 import ch.ge.ael.enu.mediation.mapping.NewSuggestionToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
+import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
 import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import ch.ge.ael.enu.mediation.metier.model.NewSuggestion;
 import ch.ge.ael.enu.mediation.metier.model.StatusChange;
+import ch.ge.ael.enu.mediation.metier.validation.NewDemarcheValidator;
+import ch.ge.ael.enu.mediation.metier.validation.StatusChangeValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Predicate;
@@ -41,7 +45,12 @@ public class DemarcheRouter extends RouteBuilder {
     @Value("${app.formsolution.path}")
     private String formSolutionPath;
 
-    static final String RABBITMQ_QUEUE = "demarche.exchange?queue=create";
+    static final String MAIN_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-main&autoDelete=false";
+
+//    static final String REPLY_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-reply&routingKey=SICLI2-REPLY&autoDelete=false";
+    static final String REPLY_QUEUE = "siclient3-to-enu?queue=pipo&routingKey=PIPO&autoDelete=false";
+
+    static final String DEAD_LETTER_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-dead-letter";
 
     private final Predicate isNewDemarche = header("rabbitmq.Content-Type").isEqualTo(MediaType.NEW_DEMARCHE);
 
@@ -90,7 +99,7 @@ public class DemarcheRouter extends RouteBuilder {
     }
 
     /**
-     * Routes definitions
+     * Definition des routes.
      */
     @Override
     public void configure() {
@@ -99,9 +108,25 @@ public class DemarcheRouter extends RouteBuilder {
                 .host("https://" + formSolutionHost + ":" + formSolutionPort + "/" + formSolutionPath)
                 .producerComponent("http");
 
+        // attrape-tout
+    //    errorHandler(deadLetterChannel("rabbitmq:" + DEAD_LETTER_QUEUE).useOriginalMessage());
+
+        onException(ValidationException.class)
+                .handled(true)
+                .useOriginalMessage()
+//                .useOriginalBody()
+//                .onExceptionOccurred(new MessageFailureEnricher())
+                .log("headers dans onException (avant MessageFailureEnricher) : ${headers}")
+                .process(new MessageFailureEnricher())
+                .log("exchangeId dans onException : ${exchangeId}")
+                .log("body dans onException : ${body}")
+                .log("headers dans onException : ${headers}")
+                .log("Envoi a RabbitMQ du message d'erreur")
+                .to("rabbitmq:" + REPLY_QUEUE);
+
         // routage principal
-        from("rabbitmq:" + RABBITMQ_QUEUE).id("route-principale")
-                .log("Message recu de RabbitMQ")
+        from("rabbitmq:" + MAIN_QUEUE).id("route-principale")
+                .log("*** Message recu de RabbitMQ ***")
                 .to("log:INFO?showHeaders=true")
                 .choice()
                     .when(isNewDemarche)
@@ -146,6 +171,7 @@ public class DemarcheRouter extends RouteBuilder {
         from("direct:nouvelleDemarcheBrouillon").id("nouvelle-demarche-brouillon")
                 .log("Dans direct:nouvelleDemarcheBrouillon")
                 .unmarshal(jsonToPojo(NewDemarche.class))
+                .bean(NewDemarcheValidator.class)
                 .to("log:input")
                 .setProperty("demarcheStatus", simple("${body.etat}", String.class))
                 .setHeader("Content-Type", simple("application/json"))
@@ -175,6 +201,7 @@ public class DemarcheRouter extends RouteBuilder {
         from("direct:changementEtatDemarche").id("changement-etat-demarche")
                 .log("Dans direct:changementEtatDemarche")
                 .unmarshal(jsonToPojo(StatusChange.class))
+                .bean(StatusChangeValidator.class)
                 .to("log:input")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
                 .enrich("direct:changementEtatDemarche-phase1", uuidPropagationStrategy)
@@ -189,7 +216,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader("name", exchangeProperty("idClientDemande"))
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
-                .to("rest:get:file/mine?queryParameters=name={name}&max=1&order=stepDate&reverse=true")  // ajouter &application.id={idPrestation}
+                .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
                 .log("JSON obtenu de Jway = ${body}")
                 .unmarshal(jsonToList(File.class))   // en faire une propriété
                 .setProperty("uuid", simple("${body[0].uuid}", String.class))

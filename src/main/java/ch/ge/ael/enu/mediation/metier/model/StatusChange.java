@@ -3,8 +3,6 @@ package ch.ge.ael.enu.mediation.metier.model;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 /**
  * Donnees contenues dans un message JSON de changement d'etat d'une demande existante.
  * <p>
@@ -26,9 +24,6 @@ public class StatusChange {
 
 //    private String libelleSousEtat;
 
-    /**
-     * Seules les valeurs ENRICHISSEMENT_DE_DEMANDE et REPONSE_DEMANDE_RENSEIGNEMENT sont acceptees.
-     */
     private String typeAction;
 
     private String urlAction;
