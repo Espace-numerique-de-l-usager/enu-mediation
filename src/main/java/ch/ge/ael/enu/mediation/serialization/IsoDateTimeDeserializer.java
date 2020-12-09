@@ -7,14 +7,9 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 
-/**
- * Transforme en LocalDateTime une date reçue de FormServices, comme "2020-11-25T15:42:05.445+0000".
- */
 public class IsoDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
 
-//    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.FRENCH);
     private static final DateTimeFormatter FORMAT = DateTimeFormatter.ISO_DATE_TIME;
 
     public IsoDateTimeDeserializer() {
