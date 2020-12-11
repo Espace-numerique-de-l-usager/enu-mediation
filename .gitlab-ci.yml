@@ -13,6 +13,14 @@ variables:
   #CLM_SERVER_ID: clm_server
   #CLM_APPLICATION_ID: enu-mediation
 
+default:
+  tags:
+    - 'for:library-project'
+    - 'host:restricted-container'
+    - 'net:soca-dev'
+  image:
+    name: $DOCKER_URL/ch/ge/cti/build/docker-npm-maven:1.0.1
+
 stages:
   - build
   - deploy
@@ -20,16 +28,14 @@ stages:
 
 build_and_sonarqube_preview:
   stage: build
-  image: $DOCKER_URL/ch/ge/cti/build/docker-npm-maven:1.0.1
   script:
     - npm config set cache /cache/npm
     - mvn $MAVEN_CLI_OPTS install $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.analysis.mode=preview -Dsonar.gitlab.commit_sha=$(git log --pretty=format:%H origin/master..$CI_COMMIT_SHA | tr '\n' ',') -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.project_id=$CI_PROJECT_ID -Dsonar.gitlab.unique_issue_per_inline=true -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1
-  except :
+  except:
     - master
 
 analyse_sonar_master:
   stage: build
-  image: $DOCKER_URL/ch/ge/cti/build/docker-npm-maven:1.0.1
   script:
     - npm config set cache /cache/npm
     - mvn $MAVEN_CLI_OPTS verify $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1
@@ -39,7 +45,6 @@ analyse_sonar_master:
 
 analyse_clm_master:
   stage: build
-  image: $DOCKER_URL/ch/ge/cti/build/docker-npm-maven:1.0.1
   script:
     - npm config set cache /cache/npm
     - mvn $MAVEN_CLI_OPTS $CLM_MAVEN_GOAL -Dclm.applicationId=$CLM_APPLICATION_ID -Dclm.serverUrl=$CLM_URL -Dclm.serverId=$CLM_SERVER_ID
@@ -49,7 +54,6 @@ analyse_clm_master:
 
 deploy_master:
   stage: deploy
-  image: $DOCKER_URL/ch/ge/cti/build/docker-npm-maven:1.0.1
   script:
     - npm config set cache /cache/npm
     - mvn $MAVEN_CLI_OPTS deploy
@@ -58,7 +62,6 @@ deploy_master:
 
 release_master:
   stage: release
-  image: $DOCKER_URL/ch/ge/cti/build/docker-npm-maven:1.0.1
   script:
     - npm config set cache /cache/npm
     - mvn $MAVEN_CLI_OPTS -Dresume=false release:prepare release:perform
