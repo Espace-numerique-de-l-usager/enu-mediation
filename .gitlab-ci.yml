@@ -15,7 +15,7 @@ variables:
 
 default:
   tags:
-    - 'for:library-project'
+    - 'for:application-project'
     - 'host:restricted-container'
     - 'net:soca-dev'
   image:
