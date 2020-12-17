@@ -34,6 +34,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <sonar.projectKey>enu-mediation</sonar.projectKey>
         <java.version>8</java.version>
         <camel.version>3.5.0</camel.version>
         <!-- ne pas passer en version 2.4.0, sinon on a une "NoClassDefFoundError: org/springframework/core/metrics/ApplicationStartup" au demarrage -->
