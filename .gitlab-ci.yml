@@ -8,10 +8,10 @@ variables:
   # config SonarQube
   SONAR_MAVEN_GOAL: org.sonarsource.scanner.maven:sonar-maven-plugin:3.4.0.905:sonar
   SONAR_USER_HOME: /cache/sonar
-  # config CLM
-  #CLM_MAVEN_GOAL: com.sonatype.clm:clm-maven-plugin:2.12.1:evaluate
-  #CLM_SERVER_ID: clm_server
-  #CLM_APPLICATION_ID: enu-mediation
+  # config Nexus IQ server
+  CLM_MAVEN_GOAL: com.sonatype.clm:clm-maven-plugin:2.12.1:evaluate
+  CLM_SERVER_ID: clm_server
+  CLM_APPLICATION_ID: enu-mediation
 
 default:
   tags:
