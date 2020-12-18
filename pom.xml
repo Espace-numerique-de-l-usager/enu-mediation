@@ -19,11 +19,11 @@
     <distributionManagement>
         <repository>
             <id>internal.project.release</id>
-            <url>***REMOVED***/content/repositories/project_release</url>
+            <url>${maven2Repository_projet}/project_release</url>
         </repository>
         <snapshotRepository>
             <id>internal.project.snapshot</id>
-            <url>***REMOVED***/content/repositories/project_snapshot</url>
+            <url>${maven2Repository_projet}/project_snapshot</url>
         </snapshotRepository>
     </distributionManagement>
 
