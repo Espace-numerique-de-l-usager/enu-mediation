@@ -2,87 +2,144 @@
 
 Ce projet définit les médiations pour le système Espace numérique de l'usager :
 
-RabbitMQ <---> médiation <---> FormServices (services REST)
+SI métier <---> RabbitMQ <---> médiation <---> FormServices
+
+## Présentation
+
+Une vue d'ensemble du système Espace numérique de l'usager est disponible
+[ici](https://github.com/Espace-numerique-de-l-usager/enu-geneve).
+
 
 ## Exécution
 
-Pour tester, une méthode simple est la suivante :
-- créer un message via l'application rabbit-send (qui consiste en quelques lignes de Camel)
-- consommer le message via la médiation
+## Configuration d'un nouveau service métier
 
-Marche à suivre :
-- Récupérer les sources de l'application rabbit-send :
-```
-git clone https://argon.ceti.etat-ge.ch/gitlab/ACCES_RESTREINT/3417_espace_numerique_usager/faisabilite/rabbit-send.git
-```
-- Créer un projet IntelliJ rabbit-send
-- Depuis IntelliJ, lancer l'application rabbit-send. Une invite "Enter something:" s'affiche
-- Taper dans l'invite le message JSON d'une nouvelle démarche. Exemple :
-```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "BROUILLON", "urlAction": "http://www.tpg.ch", "libelleAction": "Prendre le tram", "dateEcheanceAction": "2021-02-18"} 
-```
-(pour un autre exemple, voir ci-dessous)
+### Travail à mener par l'équipe médiation
 
-- Depuis IntelliJ, lancer l'application enu-mediation. La console va montrer que le message ci-dessus est 
-consommé, transformé et adressé à un service REST du backend ENU.
+### Travail à mener par l'équipe SI métier
 
-### Exemples : création d'une démarche
+## Production et consommation de messages
 
-L'exemple ci-dessus était le plus simple : celui de la création d'une nouvelle demande à l'état BROUILLON.
-Ce chapitre propose une liste plus complète de cas.
+Du point de vue d'un SI métier, l'interaction avec l'Espace numérique de l'usager se fait
+uniquement avec RabbitMQ,
+au moyen de la production et de la consommation de messages JSON via le protocole AMQP.
 
-#### Création d'une demande à l'état BROUILLON
-```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "BROUILLON", "urlAction": "http://www.tpg.ch", "libelleAction": "Prendre le tram", "dateEcheanceAction": "2021-02-18"} 
-```
+### Échanges du SI métier avec enu-mediation
 
-#### Création d'une demande à l'état DEPOSEE
-```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "DEPOSEE", "dateDepot": "2021-02-18T12:15:00.000Z"} 
-```
+Le tableau ci-dessous fournit la liste des messages échangés, pour un SI métier dont le code (fourni par l'équipe
+médiation) est "SI1".
 
-#### Création d'une demande à l'état EN_TRAITEMENT
-```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "etat": "EN_TRAITEMENT", "dateDepot": "2021-02-18T12:15:00.000Z", "dateMiseEnTraitement": "2021-02-19T12:15:00.000Z"} 
-```
+| Message | Producteur | Consommateur | Exchange RabbitMQ / queue RabbitMQ |
+| ------- | ---------- | ------------ | ---------------------------------- |
+| création d'une démarche | SI métier | enu-mediation | si1-to-enu / si1-to-enu-main |
+| changement d'état d'une démarche | SI métier | enu-mediation | si1-to-enu / si1-to-enu-main |
+| ajout d'un document à une démarche | SI métier | enu-mediation | si1-to-enu / si1-to-enu-main |
+| message d'erreur | enu-mediation | SI métier | si1-to-enu / si1-to-enu-reply |
 
-### Exemple : création d'une suggestion de démarche
+Pour tous ces messages, l'exchange RabbitMQ aura pour nom 
 
-Attention : pour ce cas-là, il y a une étape préalable : dans l'application rabbit-send, classe MessageSender, veiller à
-configurer ainsi le Content-Type :
-```
-   .setHeader("rabbitmq.Content-Type", simple("application/json-new-suggestion"))
-```
-Ensuite, lancer comme précédemment l'application rabbit-send.
-Taper dans l'invite le message JSON de création d'une suggestion de démarche :
-```
-{"idUsager": "DUBOISPELERINY", "urlAction": "https://www.humanite.fr/", "libelleAction": "Se mouiller", "echeanceAction": "2021-02-19", "descriptionAction": "Il faut une fois dans sa vie faire un truc formidable."}
-```
+#### Message JSON de création d'une démarche
 
-### Exemples : changement d'état d'une demande existante
+En-tête nécessaire : `ContentType` = `application/json-new-demarche`.
 
-Attention : pour ce cas-là, il y a une étape préalable : dans l'application rabbit-send, classe MessageSender, veiller à
-configurer ainsi le Content-Type :
-```
-   .setHeader("rabbitmq.Content-Type", simple("application/json-status-change"))
-```
-Ensuite, lancer comme précédemment l'application rabbit-send.
-Taper dans l'invite le message JSON d'un changement d'état :
+Champs :
 
-Passer à l'état DEPOSEE :
-```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "DEPOSEE", "dateNouvelEtat": "2022-02-18", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://www.humanite.fr", "libelleAction": "Lire des trucs", "echeanceAction": "2021-02-19" } 
-```
-Passer à l'état EN_TRAITEMENT :
-```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "EN_TRAITEMENT", "dateNouvelEtat": "2022-02-18", "typeAction": "ENRICHISSEMENT_DE_DEMANDE", "urlAction": "https://gazeta-pravda.ru", "libelleAction": "Lire des trucs fantastiques", "echeanceAction": "2021-02-19" } 
-```
-Passer à l'état TERMINEE :
-```
-{"idPrestation": "EDGSmartOne_afl", "idUsager": "DUBOISPELERINY", "idClientDemande": "Dossier-pipo-1", "nouvelEtat": "TERMINEE", "dateNouvelEtat": "2022-02-18", "urlRenouvellementDemarche": "https://pcdob.org.br/" } 
-```
-Dans tous les cas, le dossier (idClientDemande) doit au préalable exister.
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ------- | ----------- | ----------- |
+| idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
+| idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
+| idClientDemande | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Pour une prestation donnée et pour un usager donné, doit doit être unique |
+| etat | état de la démarche | oui | BROUILLON | Doit valoir soit BROUILLON, soit DEPOSEE, soit EN_TRAITEMENT |
+| libelleAction | description de l'opération proposée à l'usager sur la démarche | non | Compléter votre démarche | - |
+| urlAction | URL de l'opération proposée à l'usager sur la démarche | oui, si libelleAction est fourni, sinon inutile | `http://etc...` | - |
+| dateEcheanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui, si libelleAction est fourni, sinon inutile | 2021-02-18 | La date uniquement, sans les heures |
 
+Exemple : voir [newdemarche/MessageSender](https://argon.ceti.etat-ge.ch/gitlab/ACCES_RESTREINT/3417_espace_numerique_usager/enu-mediation-client/-/blob/master/src/main/java/ch/ge/ael/enu/mediationclient/newdemarche/MessageSender.java).
+
+(TODO : lien à mettre à jour lors du passage à GitHub)
+
+#### Message JSON de changement d'état d'une démarche
+
+Il s'agit ici de changer l'état d'une démarche qui a été précédemment créée via un
+message comme ci-dessus.
+
+En-tête nécessaire : `Content-Type` = `application/json-status-change`.
+
+Champs :
+
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ----------- | ------- | ----------- |
+| idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
+| idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
+| idClientDemande | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné |
+| nouvelEtat | nouvel état de la démarche | oui | DEPOSEE | Doit valoir soit DEPOSEE, soit EN_TRAITEMENT, soit TERMINEE |
+| dateNouvelEtat | date à laquelle la démarche a changé d'état| oui | 2020-02-19 | - |
+
+Champs supplémentaires si `nouvelEtat` = `DEPOSEE` ou si `nouvelEtat` = `EN_TRAITEMENT` :
+
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ----------- | ------- | ----------- |
+| typeAction | type de l'opération proposée à l'usager sur la démarche | oui | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit ENRICHISSEMENT_DE_DEMANDE, soit REPONSE_DEMANDE_RENSEIGNEMENT | 
+| libelleAction | description de l'opération proposée à l'usager sur la démarche | oui, si typeAction est fourni, sinon inutile | Compléter votre démarche | - |
+| urlAction | URL de l'opération proposée à l'usager sur la démarche | oui, si typeAction est fourni, sinon inutile | `http://etc...` | - |
+| echeanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui, si typeAction est fourni, sinon inutile | 2021-02-18 | La date uniquement, sans les heures |
+
+Champs supplémentaires si `nouvelEtat` = `TERMINEE` :
+
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ----------- | ------- | ----------- |
+| urlRenouvellementDemarche | URL à présenter à l'usager pour qu'il recrée une démarche du même type | oui | `http://etc...` | - |
+
+Exemples : voir [statuschange/MessageSender](https://argon.ceti.etat-ge.ch/gitlab/ACCES_RESTREINT/3417_espace_numerique_usager/enu-mediation-client/-/blob/master/src/main/java/ch/ge/ael/enu/mediationclient/statuschange/MessageSender.java).
+
+(TODO : lien à mettre à jour lors du passage à GitHub)
+
+#### Message JSON d'ajout d'un document à une démarche
+
+Il s'agit ici de compléter une démarche qui a été précédemment créée.
+
+En-tête nécessaire : `Content-Type` = `application/json-document`.
+
+Champs :
+
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ----------- | ------- | ----------- |
+| idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
+| idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
+| idClientDemande | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné |
+| typeDocument | type de document | oui | RECAPITULATIF | Doit valoir soit RECAPITULATIF, soit JUSTIFICATIF |
+| libelleDocument | titre du document, déterminant le nom du fichier | oui | Decision administration 2020-02-19 | Maximum 50 caractères |
+| idClientDocument | identifiant permettant au SI métier d'identifier son document | non | DOC-123456789 | Maximum 50 caractères |
+| mime | type MIME du fichier | oui | application/pdf | - |
+| contenu | contenu du fichier en base64 | oui | - | - |
+
+### Échanges de enu-backend avec le SI métier
+
+L'essentiel du trafic se fait dans le sens SI métier -> Espace numérique,
+cependant certains messages vont dans l'autre sens.
+
+| Message | Producteur | Consommateur | Exchange RabbitMQ / queue RabbitMQ |
+| ------- | ---------- | ------------ | ---------------------------------- |
+| destruction d'une démarche brouillon | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
+
+#### Message JSON de destruction d'une démarche brouillon
+
+TODO
+
+## Test
+
+Pour tester enu-mediation, deux outils fonctionnellement à peu près équivalents sont proposés :
+enu-mediation et XXX.
+
+L'outil enu-mediation est une simple Java sans interface utilisateur.
+Il est plutôt adapté pour un développeur de enu-mediation ou d'un SI métier.
+Les messages JSON y sont explicites. 
+
+L'outil XXX est une petite application HTML 5.
+Il est plutôt adapté pour un analyste métier.
+Les messages JSON y sont cachés à l'utilisateur.
+
+Ces deux outils fonctionnent par l'envoi de messages JSON dans une queue RabbitMQ.
 
 ## Divers
 
