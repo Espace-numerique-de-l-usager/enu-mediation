@@ -9,14 +9,10 @@ import org.slf4j.LoggerFactory;
 
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
-//import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.URL_MAX_LENGTH;
-//import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.URL_MIN_LENGTH;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.TERMINEE;
-import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkDate;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
-import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkUrl;
 
 /**
  * Verifie qu'un message de creation d'une demarche est valide.
@@ -40,28 +36,27 @@ public class NewDemarcheValidator {
 
         checkEnum(newDemarche.getEtat(), DemarcheStatus.class, "etat");
 
-        checkDate(newDemarche.getDateEcheanceAction(), "dateEcheanceAction");
-
-        checkUrl(newDemarche.getUrlAction(), "urlAction");
-
         DemarcheStatus status = DemarcheStatus.valueOf(newDemarche.getEtat());
-        if (status == DEPOSEE && newDemarche.getDateDepot() == null) {
-            LOGGER.info("Erreur : champ [dateDepot] obligatoire quand etat = {}", DEPOSEE);
+        if ((status == DEPOSEE || status == EN_TRAITEMENT) && newDemarche.getDateDepot() == null) {
+            LOGGER.info("Erreur : champ [dateDepot] obligatoire quand etat = {}", status);
             throw new MissingFieldException("dateDepot",
-                    "Ce champ est obligatoire quand etat = " + DEPOSEE);
+                    "Ce champ est obligatoire quand etat = " + status);
         }
         if (status == EN_TRAITEMENT && newDemarche.getDateMiseEnTraitement() == null) {
-            LOGGER.info("Erreur : champ [dateMiseEnTraitement] obligatoire quand etat = {}", EN_TRAITEMENT);
+            LOGGER.info("Erreur : champ [dateMiseEnTraitement] obligatoire quand etat = {}", status);
             throw new MissingFieldException("dateMiseEnTraitement",
-                    "Ce champ est obligatoire quand etat = " + EN_TRAITEMENT);
+                    "Ce champ est obligatoire quand etat = " + status);
         }
         if (status == TERMINEE) {
             LOGGER.info("Erreur : on ne peut pas creer de demarche a l'etat {}", TERMINEE);
             throw new ValidationException("On ne peut pas creer de demarche directement a l'etat " + TERMINEE);
         }
 
-        // A VOIR :
-        // - si un parmi urlAction, libelleAction et DateEcheanceAction est present, les deux autres le sont-ils aussi ?
+        new ActionValidator().validate(
+                newDemarche.getLibelleAction(),
+                newDemarche.getTypeAction(),
+                newDemarche.getUrlAction(),
+                newDemarche.getDateEcheanceAction());
 
         LOGGER.info("Validation OK");
         return newDemarche;  // important !

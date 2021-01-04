@@ -22,15 +22,13 @@ public class StatusChange {
 
     private String dateNouvelEtat;
 
-//    private String libelleSousEtat;
+    private String libelleAction;
 
     private String typeAction;
 
     private String urlAction;
 
-    private String libelleAction;
-
-    private String echeanceAction;
+    private String dateEcheanceAction;
 
     private String urlRenouvellementDemarche;
 
