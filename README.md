@@ -38,7 +38,7 @@ médiation) est "SI1".
 
 Pour tous ces messages, l'exchange RabbitMQ aura pour nom 
 
-#### Message JSON de création d'une démarche
+#### Création d'une démarche : message JSON
 
 En-tête nécessaire : `ContentType` = `application/json-new-demarche`.
 
@@ -48,17 +48,20 @@ Champs :
 | --- | ----------- | ------- | ----------- | ----------- |
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idClientDemande | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Pour une prestation donnée et pour un usager donné, doit doit être unique |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Pour une prestation donnée et pour un usager donné, doit doit être unique |
 | etat | état de la démarche | oui | BROUILLON | Doit valoir soit BROUILLON, soit DEPOSEE, soit EN_TRAITEMENT |
-| libelleAction | description de l'opération proposée à l'usager sur la démarche | non | Compléter votre démarche | - |
-| urlAction | URL de l'opération proposée à l'usager sur la démarche | oui, si libelleAction est fourni, sinon inutile | `http://etc...` | - |
-| dateEcheanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui, si libelleAction est fourni, sinon inutile | 2021-02-18 | La date uniquement, sans les heures |
+| dateCreation | date de la création de la démarche | oui si `etat` = `BROUILLON`, non sinon | 2021-02-18T12:15:00.000Z | - |
+| dateDepot | date de soumission de la démarche | oui si `etat` = `DEPOSEE` ou `EN_TRAITEMENT`, inutile sinon | 2021-02-19T12:15:00.000Z | - | 
+| dateMiseEnTraitement | date de mise en traitement de la démarche | oui si `etat` = `EN_TRAITEMENT`, inutile sinon | 2021-02-20T12:15:00.000Z | - | 
+| libelleAction | description de l'opération proposée à l'usager sur la démarche | non | Compléter votre démarche | Taille maximale : 50 caractères |
+| typeAction | type de l'opération proposée à l'usager sur la démarche | non. Inutile si `libelleAction` n'est pas fourni  | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit ENRICHISSEMENT_DE_DEMANDE, soit REPONSE_DEMANDE_RENSEIGNEMENT |
+| urlAction | URL de l'opération proposée à l'usager sur la démarche | oui si `typeAction` est fourni, inutile sinon | `http://etc...` | - |
+| dateEcheanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui si `typeAction` est fourni, inutile sinon | 2021-02-18 | La date uniquement, sans les heures |
 
 Exemple : voir [newdemarche/MessageSender](https://argon.***REMOVED***/gitlab/ACCES_RESTREINT/3417_espace_numerique_usager/enu-mediation-client/-/blob/master/src/main/java/ch/ge/ael/enu/mediationclient/newdemarche/MessageSender.java).
+(TODO : lien à mettre à jour ci-dessus lors du passage à GitHub)
 
-(TODO : lien à mettre à jour lors du passage à GitHub)
-
-#### Message JSON de changement d'état d'une démarche
+#### Changement d'état d'une démarche : message JSON
 
 Il s'agit ici de changer l'état d'une démarche qui a été précédemment créée via un
 message comme ci-dessus.
@@ -71,7 +74,7 @@ Champs :
 | --- | ----------- | ----------- | ------- | ----------- |
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idClientDemande | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné |
 | nouvelEtat | nouvel état de la démarche | oui | DEPOSEE | Doit valoir soit DEPOSEE, soit EN_TRAITEMENT, soit TERMINEE |
 | dateNouvelEtat | date à laquelle la démarche a changé d'état| oui | 2020-02-19 | - |
 
@@ -79,22 +82,22 @@ Champs supplémentaires si `nouvelEtat` = `DEPOSEE` ou si `nouvelEtat` = `EN_TRA
 
 | Nom | Description | Obligatoire | Exemple | Commentaire |
 | --- | ----------- | ----------- | ------- | ----------- |
-| typeAction | type de l'opération proposée à l'usager sur la démarche | oui | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit ENRICHISSEMENT_DE_DEMANDE, soit REPONSE_DEMANDE_RENSEIGNEMENT | 
-| libelleAction | description de l'opération proposée à l'usager sur la démarche | oui, si typeAction est fourni, sinon inutile | Compléter votre démarche | - |
-| urlAction | URL de l'opération proposée à l'usager sur la démarche | oui, si typeAction est fourni, sinon inutile | `http://etc...` | - |
-| echeanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui, si typeAction est fourni, sinon inutile | 2021-02-18 | La date uniquement, sans les heures |
+| libelleAction | description de l'opération proposée à l'usager sur la démarche | non | Compléter votre démarche | Taille maximale : 50 caractères |
+| typeAction | type de l'opération proposée à l'usager sur la démarche | non. Inutile si `libelleAction` n'est pas fourni  | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit ENRICHISSEMENT_DE_DEMANDE, soit REPONSE_DEMANDE_RENSEIGNEMENT |
+| urlAction | URL de l'opération proposée à l'usager sur la démarche | oui si `typeAction` est fourni, inutile sinon | `http://etc...` | - |
+| dateEcheanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui si `typeAction` est fourni, inutile sinon | 2021-02-18 | La date uniquement, sans les heures |
 
 Champs supplémentaires si `nouvelEtat` = `TERMINEE` :
 
 | Nom | Description | Obligatoire | Exemple | Commentaire |
 | --- | ----------- | ----------- | ------- | ----------- |
-| urlRenouvellementDemarche | URL à présenter à l'usager pour qu'il recrée une démarche du même type | oui | `http://etc...` | - |
+| urlRenouvellementDemarche | URL à présenter à l'usager pour qu'il puisse recréer une démarche du même type | non | `https://ge.ch/bla-bla-bla` | - |
 
 Exemples : voir [statuschange/MessageSender](https://argon.***REMOVED***/gitlab/ACCES_RESTREINT/3417_espace_numerique_usager/enu-mediation-client/-/blob/master/src/main/java/ch/ge/ael/enu/mediationclient/statuschange/MessageSender.java).
 
 (TODO : lien à mettre à jour lors du passage à GitHub)
 
-#### Message JSON d'ajout d'un document à une démarche
+#### Ajout d'un document à une démarche : message JSON
 
 Il s'agit ici de compléter une démarche qui a été précédemment créée.
 
@@ -106,7 +109,7 @@ Champs :
 | --- | ----------- | ----------- | ------- | ----------- |
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idClientDemande | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné |
 | typeDocument | type de document | oui | RECAPITULATIF | Doit valoir soit RECAPITULATIF, soit JUSTIFICATIF |
 | libelleDocument | titre du document, déterminant le nom du fichier | oui | Decision administration 2020-02-19 | Maximum 50 caractères |
 | idClientDocument | identifiant permettant au SI métier d'identifier son document | non | DOC-123456789 | Maximum 50 caractères |
@@ -122,7 +125,7 @@ cependant certains messages vont dans l'autre sens.
 | ------- | ---------- | ------------ | ---------------------------------- |
 | destruction d'une démarche brouillon | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
 
-#### Message JSON de destruction d'une démarche brouillon
+#### Destruction d'une démarche brouillon : message JSON
 
 TODO
 
