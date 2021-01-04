@@ -4,6 +4,7 @@ import ch.ge.ael.enu.mediation.metier.exception.IllegalEnumValueException;
 import ch.ge.ael.enu.mediation.metier.exception.IllegalStringSizeException;
 import ch.ge.ael.enu.mediation.metier.exception.MalformedDateException;
 import ch.ge.ael.enu.mediation.metier.exception.MissingFieldException;
+import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
 import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
 import ch.ge.ael.enu.mediation.routes.MediaType;
 import org.junit.jupiter.api.Test;
@@ -110,6 +111,50 @@ class ValidationUtilsTest {
         assertThatThrownBy(() -> ValidationUtils.checkUrl(longUrl, "someUrlField2"))
                 .isInstanceOf(IllegalStringSizeException.class)
                 .hasMessage("La valeur \"" + longUrl + "\" du champ \"someUrlField2\" est d'une taille incorrecte. Taille attendue : entre 10 et 200 caracteres.");
+    }
+
+    @Test
+    void checkAbsentIfOtherAbsent_with_absent_absent_should_succeed() {
+        ValidationUtils.checkAbsentIfOtherAbsent(null, "someField", null, "someOtherField");
+    }
+
+    @Test
+    void checkAbsentIfOtherAbsent_with_present_present_should_succeed() {
+        ValidationUtils.checkAbsentIfOtherAbsent("someValue", "someField", "someOtherValue", "someOtherField");
+    }
+
+    @Test
+    void checkAbsentIfOtherAbsent_with_absent_present_should_succeed() {
+        ValidationUtils.checkAbsentIfOtherAbsent(null, "someField", "someOtherValue", "someOtherField");
+    }
+
+    @Test
+    void checkAbsentIfOtherAbsent_with_present_absent_should_fail() {
+        assertThatThrownBy(() -> ValidationUtils.checkAbsentIfOtherAbsent("someValue", "someField", null, "someOtherField"))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Le champ \"someField\" ne peut pas être fourni quand le champ \"someOtherField\" n'est pas fourni.");
+    }
+
+    @Test
+    void checkPresentIfOtherPresent_with_present_present_should_succeed() {
+        ValidationUtils.checkPresentIfOtherPresent("someValue", "someField", "someOtherValue", "someOtherField");
+    }
+
+    @Test
+    void checkPresentIfOtherPresent_with_absent_absent_should_succeed() {
+        ValidationUtils.checkPresentIfOtherPresent(null, "someField", null, "someOtherField");
+    }
+
+    @Test
+    void checkPresentIfOtherPresent_with_present_absent_should_succeed() {
+        ValidationUtils.checkPresentIfOtherPresent("someValue", "someField", null, "someOtherField");
+    }
+
+    @Test
+    void checkPresentIfOtherPresent_with_absent_present_should_fail() {
+        assertThatThrownBy(() -> ValidationUtils.checkPresentIfOtherPresent(null, "someField", "someOtherValue", "someOtherField"))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Le champ \"someField\" doit être fourni quand le champ \"someOtherField\" est fourni.");
     }
 
 }

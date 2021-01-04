@@ -4,12 +4,12 @@ import ch.ge.ael.enu.mediation.metier.exception.IllegalEnumValueException;
 import ch.ge.ael.enu.mediation.metier.exception.IllegalStringSizeException;
 import ch.ge.ael.enu.mediation.metier.exception.MalformedDateException;
 import ch.ge.ael.enu.mediation.metier.exception.MissingFieldException;
+import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -75,6 +75,32 @@ public class ValidationUtils {
         final int URL_MIN_LENGTH = 10;
         final int URL_MAX_LENGTH = 200;
         checkSize(value, URL_MIN_LENGTH, URL_MAX_LENGTH, fieldName);
+    }
+
+    /**
+     * Leve une erreur si value est non null alors que otherValue est null.
+     */
+    public static void checkAbsentIfOtherAbsent(String value, String fieldName,
+                                                String otherValue, String otherFieldName) {
+        if (value != null && otherValue == null) {
+            LOGGER.info("Erreur : le champ [{}] valant [{}] doit etre null quand le champ [{}] est null",
+                    fieldName, value, otherFieldName);
+            throw new ValidationException("Le champ \"" + fieldName + "\" ne peut pas être fourni quand le champ \""
+                    + otherFieldName + "\" n'est pas fourni.");
+        }
+    }
+
+    /**
+     * Leve une erreur si value est null alors que otherValue est non null.
+     */
+    public static void checkPresentIfOtherPresent(String value, String fieldName,
+                                                  String otherValue, String otherFieldName) {
+        if (value == null && otherValue != null) {
+            LOGGER.info("Erreur : le champ [{}] doit etre non null quand le champ [{}] valant [{}] est non null",
+                    fieldName, otherFieldName, otherValue);
+            throw new ValidationException("Le champ \"" + fieldName + "\" doit être fourni quand le champ \""
+                    + otherFieldName + "\" est fourni.");
+        }
     }
 
 }

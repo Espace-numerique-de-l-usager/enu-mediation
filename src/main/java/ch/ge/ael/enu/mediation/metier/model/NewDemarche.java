@@ -1,6 +1,5 @@
 package ch.ge.ael.enu.mediation.metier.model;
 
-import ch.ge.ael.enu.mediation.serialization.IsoDateDeserializer;
 import ch.ge.ael.enu.mediation.serialization.IsoDateTimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -24,9 +23,11 @@ public class NewDemarche {
 
     private String etat;
 
-    private String urlAction;
-
     private String libelleAction;
+
+    private String typeAction;
+
+    private String urlAction;
 
     private String dateEcheanceAction;
 
