@@ -6,7 +6,7 @@ variables:
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=/cache/.m2/repository"
   # config SonarQube
-  SONAR_MAVEN_GOAL: org.sonarsource.scanner.maven:sonar-maven-plugin:3.4.0.905:sonar
+  SONAR_MAVEN_GOAL: org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar
   SONAR_USER_HOME: /cache/sonar
   # config Nexus IQ server
   CLM_MAVEN_GOAL: com.sonatype.clm:clm-maven-plugin:2.12.1:evaluate
@@ -29,9 +29,7 @@ stages:
 build_and_analyse_sonarqube_preview:
   stage: build
   script:
-#    dans l'attente de QC-186 (sonar.analysis.mode plus pris en charge), on supprime l'analyse Sonar sur les branches
-#    - mvn $MAVEN_CLI_OPTS install $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.analysis.mode=preview -Dsonar.gitlab.commit_sha=$(git log --pretty=format:%H origin/master..$CI_COMMIT_SHA | tr '\n' ',') -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.project_id=$CI_PROJECT_ID -Dsonar.gitlab.unique_issue_per_inline=true -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1
-    - mvn $MAVEN_CLI_OPTS clean install
+    - mvn $MAVEN_CLI_OPTS clean install $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.branch.name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.project_id=$CI_PROJECT_ID -Dsonar.gitlab.unique_issue_per_inline=true -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1
   except:
     - master
 
