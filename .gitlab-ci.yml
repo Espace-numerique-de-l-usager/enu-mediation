@@ -58,6 +58,17 @@ deploy_master:
 
 release_master:
   stage: release
+  image: $DOCKER_URL/ch/ge/afc/afc-maven-multi-jdk:soca-jdk11-2
+  before_script:
+    - echo "=========Openshift runner specific script=========="
+    - user_id=$(id -u)
+    - line_content="${USER_NAME:-default}:x:$user_id:0:${USER_NAME:-default} user:${HOME}:/bin/bash"
+    - echo "$line_content" >> /etc/passwd
+    - pwd
+    - ls -hal ./
   script:
-    - mvn $MAVEN_CLI_OPTS -Dresume=false -Dusername=$Nexus_REPO_USER -Dpassword=$Nexus_REPO_PASS release:prepare release:perform
+    - git config --global user.email "***REMOVED***"
+    - git config --global user.name "***REMOVED***"
+    - git checkout $CI_COMMIT_REF_NAME
+    - mvn $MAVEN_CLI_OPTS release:prepare release:perform -Dresume=false -DskipTests -Dusername=$GITLAB_USER -Dpassword=$GITLAB_PASSWORD
   when: manual
