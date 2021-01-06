@@ -26,6 +26,9 @@ camel:
       ***REMOVED***
       password***REMOVED***
       username***REMOVED***
+      skip-exchange-declare: true
+      skip-queue-bind: true
+      skip-queue-declare: true
     http:
       use-global-ssl-context-parameters: true
     servlet:
