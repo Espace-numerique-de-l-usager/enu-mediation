@@ -45,10 +45,18 @@ public class DemarcheRouter extends RouteBuilder {
     @Value("${app.formsolution.path}")
     private String formSolutionPath;
 
-    static final String MAIN_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-main&autoDelete=false";
+    static final String MAIN_QUEUE = "siclient2-to-enu?" +
+            "queue=siclient2-to-enu-main" +
+//            "&exchangePattern=InOnly" +
+            "&autoDelete=false" +
+            "&deadLetterExchange=siclient2-to-enu" +
+            "&deadLetterQueue=siclient2-to-enu-reply" +
+            "&autoAck=false";
 
+    static final String REPLY_QUEUE = "enu-to-siclient2?queue=enu-to-siclient2-reply&autoDelete=false&requestTimeout=5000";
+//    static final String REPLY_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-reply&autoDelete=false&requestTimeout=5000";
+//    static final String REPLY_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-reply&autoDelete=false&autoAck=false";
 //    static final String REPLY_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-reply&routingKey=SICLI2-REPLY&autoDelete=false";
-    static final String REPLY_QUEUE = "siclient3-to-enu?queue=pipo&routingKey=PIPO&autoDelete=false";
 
     static final String DEAD_LETTER_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-dead-letter";
 
@@ -109,10 +117,10 @@ public class DemarcheRouter extends RouteBuilder {
                 .producerComponent("http");
 
         // attrape-tout
-    //    errorHandler(deadLetterChannel("rabbitmq:" + DEAD_LETTER_QUEUE).useOriginalMessage());
+//        errorHandler(deadLetterChannel("rabbitmq:" + DEAD_LETTER_QUEUE).useOriginalMessage());
 
         onException(ValidationException.class)
-                .handled(true)
+                .handled(false)
                 .useOriginalMessage()
 //                .useOriginalBody()
 //                .onExceptionOccurred(new MessageFailureEnricher())
@@ -122,7 +130,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("body dans onException : ${body}")
                 .log("headers dans onException : ${headers}")
                 .log("Envoi a RabbitMQ du message d'erreur")
-                .to("rabbitmq:" + REPLY_QUEUE);
+//                .to("rabbitmq:" + REPLY_QUEUE)
+                ;
 
         // routage principal
         from("rabbitmq:" + MAIN_QUEUE).id("route-principale")

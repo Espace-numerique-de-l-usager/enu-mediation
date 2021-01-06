@@ -1,6 +1,7 @@
 package ch.ge.ael.enu.mediation.error;
 
 import org.apache.camel.Exchange;
+import org.apache.camel.ExchangePattern;
 import org.apache.camel.Processor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +31,7 @@ public class MessageFailureEnricher implements Processor {
 
     private void process(Exchange exchange, Exception e) {
         exchange.getIn().setHeader("EnuFailureMessage", e.getMessage());
+//        exchange.setPattern(ExchangePattern.InOnly);
         exchange.getMessage().removeHeader("rabbitmq.ROUTING_KEY");  // de https://camel.apache.org/components/latest/rabbitmq-component.html, dans "pitfall"
         exchange.getMessage().removeHeader("rabbitmq.EXCHANGE_NAME");  // de https://camel.apache.org/components/latest/rabbitmq-component.html, dans "pitfall"
 //        exchange.getMessage().removeHeader("CamelRabbitmqRoutingKey");  // de https://camel.apache.org/components/latest/rabbitmq-component.html, dans "pitfall". Ne marche pas
