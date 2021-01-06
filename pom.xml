@@ -188,11 +188,16 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
-            <!-- Java 8 est devenu trop sourcilleux avec la javadoc -->
+            <!-- Java 8 est devenu trop sourcilleux avec la javadoc.
+                 De plus, une probable erreur du JDK 11 empeche de prendre la version 3.2.0 du plugin, sinon
+                 on prend une erreur "javadoc: error - The code being documented uses modules but the packages
+                 defined in https://docs.oracle.com/javase/8/docs/api/ are in the unnamed module" lors du
+                 mvn release.
+             -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.0.1</version>
                 <configuration>
                     <additionalJOption>-Xdoclint:none</additionalJOption>
                 </configuration>
