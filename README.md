@@ -4,13 +4,37 @@ Ce projet définit les médiations pour le système Espace numérique de l'usage
 
 SI métier <---> RabbitMQ <---> médiation <---> FormServices
 
-## Présentation
+où "SI métier" signifie "un système informatique de l'État", par exemple un système
+de l'Administration fiscale cantonale.
 
-Une vue d'ensemble du système Espace numérique de l'usager est disponible
-[ici](https://github.com/Espace-numerique-de-l-usager/enu-geneve).
-
+Une vue d'ensemble du système Espace numérique de l'usager est disponible sur
+[GitHub](https://github.com/Espace-numerique-de-l-usager/enu-geneve).
+Le rôle de l'application de médiation y est clairement présenté.
 
 ## Exécution
+
+### Construction
+
+L'application `enu-mediation` se construit avec Maven 3 et Java 8+, via la commande
+```
+mvn clean install
+```
+### Déploiement
+
+Une fois que l'application est lancée, elle consomme les messages qu'elle trouve dans
+les queues RabbitMQ.
+Elle ne s'arrête que lorsqu'on l'arrête explicitement (par exemple, par un "contrôle-C").
+
+#### Exécution en développement
+
+Dans un environnement de développement comme IntelliJ, il suffit d'exécuter la classe
+`MediationApplication`.
+
+#### Exécution sur un serveur JEE
+
+L'application est un "main" Java. Elle n'est en rien une application Web.
+Cependant, pour se conformer aux usages de l'équipe de production de l'État de Genève, 
+il a été préféré de déployer l'application comme un fichier WAR sur un serveur Tomcat. 
 
 ## Configuration d'un nouveau service métier
 
@@ -20,9 +44,10 @@ Une vue d'ensemble du système Espace numérique de l'usager est disponible
 
 ## Production et consommation de messages
 
-Du point de vue d'un SI métier, l'interaction avec l'Espace numérique de l'usager se fait
+Du point de vue d'un SI métier, les interactions avec l'Espace numérique de l'usager se font
 uniquement avec RabbitMQ,
 au moyen de la production et de la consommation de messages JSON via le protocole AMQP.
+Ces messages sont décrits ici.
 
 ### Échanges du SI métier avec enu-mediation
 
