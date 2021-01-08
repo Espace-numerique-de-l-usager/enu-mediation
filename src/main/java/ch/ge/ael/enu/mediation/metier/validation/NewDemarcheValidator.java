@@ -38,17 +38,17 @@ public class NewDemarcheValidator {
 
         DemarcheStatus status = DemarcheStatus.valueOf(newDemarche.getEtat());
         if ((status == DEPOSEE || status == EN_TRAITEMENT) && newDemarche.getDateDepot() == null) {
-            LOGGER.info("Erreur : champ [dateDepot] obligatoire quand etat = {}", status);
+            LOGGER.info("Erreur metier : champ [dateDepot] obligatoire quand etat = {}", status);
             throw new MissingFieldException("dateDepot",
                     "Ce champ est obligatoire quand etat = " + status);
         }
         if (status == EN_TRAITEMENT && newDemarche.getDateMiseEnTraitement() == null) {
-            LOGGER.info("Erreur : champ [dateMiseEnTraitement] obligatoire quand etat = {}", status);
+            LOGGER.info("Erreur metier : champ [dateMiseEnTraitement] obligatoire quand etat = {}", status);
             throw new MissingFieldException("dateMiseEnTraitement",
                     "Ce champ est obligatoire quand etat = " + status);
         }
         if (status == TERMINEE) {
-            LOGGER.info("Erreur : on ne peut pas creer de demarche a l'etat {}", TERMINEE);
+            LOGGER.info("Erreur metier : on ne peut pas creer de demarche a l'etat {}", TERMINEE);
             throw new ValidationException("On ne peut pas creer de demarche directement a l'etat " + TERMINEE);
         }
 
