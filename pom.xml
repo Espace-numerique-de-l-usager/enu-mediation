@@ -4,7 +4,7 @@
 
     <groupId>ch.ge.ael.enu</groupId>
     <artifactId>enu-mediation</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.5-SNAPSHOT</version>
     <packaging>war</packaging>
     <description>Médiation et transformation de données pour l'ENU</description>
 
