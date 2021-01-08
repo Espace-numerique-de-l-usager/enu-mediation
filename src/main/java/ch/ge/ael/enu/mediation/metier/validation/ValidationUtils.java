@@ -25,7 +25,7 @@ public class ValidationUtils {
             value = StringUtils.isBlank((String) value) ? null : value;
         }
         if (value == null) {
-            LOGGER.info("Erreur : le champ [{}] manque dans le message", fieldName);
+            LOGGER.info("Erreur metier : le champ [{}] manque dans le message", fieldName);
             throw new MissingFieldException(fieldName);
         }
     }
@@ -41,7 +41,7 @@ public class ValidationUtils {
                     .map(Object::toString)
                     .anyMatch(e -> e.equals(value));
             if (!found) {
-                LOGGER.info("Erreur : la valeur [{}] du champ [{}] n'existe pas dans l'enum {}",
+                LOGGER.info("Erreur metier : la valeur [{}] du champ [{}] n'existe pas dans l'enum {}",
                         value, fieldName, clazz.getSimpleName());
                 throw new IllegalEnumValueException(value, enumValues, fieldName);
             }
@@ -53,7 +53,7 @@ public class ValidationUtils {
             value = value.trim();
             int size = value.length();
             if (size < minSize || size > maxSize) {
-                LOGGER.info("Erreur : taille incorrecte de la valeur [{}] du champ [{}]. Intervalle permis : [{}, {}]",
+                LOGGER.info("Erreur metier : taille incorrecte de la valeur [{}] du champ [{}]. Intervalle permis : [{}, {}]",
                         value, fieldName, minSize, maxSize);
                 throw new IllegalStringSizeException(value, minSize, maxSize, fieldName);
             }
@@ -65,7 +65,7 @@ public class ValidationUtils {
             try {
                 LocalDate.parse(value);
             } catch (RuntimeException e) {
-                LOGGER.info("Erreur : valeur incorrecte [{}] du champ date [{}]", value, fieldName);
+                LOGGER.info("Erreur metier : valeur incorrecte [{}] du champ date [{}]", value, fieldName);
                 throw new MalformedDateException(value, fieldName);
             }
         }
@@ -83,7 +83,7 @@ public class ValidationUtils {
     public static void checkAbsentIfOtherAbsent(String value, String fieldName,
                                                 String otherValue, String otherFieldName) {
         if (value != null && otherValue == null) {
-            LOGGER.info("Erreur : le champ [{}] valant [{}] doit etre null quand le champ [{}] est null",
+            LOGGER.info("Erreur metier : le champ [{}] valant [{}] doit etre null quand le champ [{}] est null",
                     fieldName, value, otherFieldName);
             throw new ValidationException("Le champ \"" + fieldName + "\" ne peut pas être fourni quand le champ \""
                     + otherFieldName + "\" n'est pas fourni.");
@@ -96,7 +96,7 @@ public class ValidationUtils {
     public static void checkPresentIfOtherPresent(String value, String fieldName,
                                                   String otherValue, String otherFieldName) {
         if (value == null && otherValue != null) {
-            LOGGER.info("Erreur : le champ [{}] doit etre non null quand le champ [{}] valant [{}] est non null",
+            LOGGER.info("Erreur metier : le champ [{}] doit etre non null quand le champ [{}] valant [{}] est non null",
                     fieldName, otherFieldName, otherValue);
             throw new ValidationException("Le champ \"" + fieldName + "\" doit être fourni quand le champ \""
                     + otherFieldName + "\" est fourni.");

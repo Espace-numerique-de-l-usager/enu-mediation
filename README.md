@@ -1,3 +1,5 @@
+% Espace numérique de l'usager : médiation
+
 # Espace numérique de l'usager : médiation
 
 Ce projet définit les médiations pour le système Espace numérique de l'usager :
@@ -36,7 +38,62 @@ L'application est un "main" Java. Elle n'est en rien une application Web.
 Cependant, pour se conformer aux usages de l'équipe de production de l'État de Genève, 
 il a été préféré de déployer l'application comme un fichier WAR sur un serveur Tomcat. 
 
+### Propriétés
+
+TODO: mettre ici les infos fournies dans le
+[wiki](https://prod.etat-ge.ch/wikiadm/pages/viewpage.action?pageId=1812824302)
+et dans [ENU-704](***REMOVED***/browse/ENU-704). 
+
+## Configuration RabbitMQ de base
+
+Il s'agit de la configuration RabbitMQ qui sera valable pour tous les services métier.
+
+_Exchanges, queues et bindings :_
+
+Aucun.
+
 ## Configuration d'un nouveau service métier
+
+Il s'agit ici de la configuration à réaliser chaque fois qu'un nouveau service métier est ajouté
+à l'ENU.
+
+On commence par convenir d'un identifiant pour le nouveau service métier,
+par exemple "afc" ou "ael-form".
+Dans la suite, on considère que l'identifiant est "simetier".
+
+### Travail à mener par l'équipe RabbitMQ
+
+Il s'agit de la création d'exchanges et de queues RabbitMQ.
+
+Attention : il faut respecter scrupuleusement les noms fournis, car le code de `enu-mediation` en dépend.
+
+TODO: ajouter la sécurité
+
+_Exchanges :_
+
+| Nom de l'exchange | Producteur | Consommateur | Description |
+| ----------------- | ---------- | ------------ | ----------- |
+| simetier-to-enu-main | SI métier | enu-mediation | Pour les messages JSON de création de demande, de changement d'état d'une demande, d'ajout de document à une demande, etc. |
+| enu-to-simetier-main | enu-mediation | SI métier | Pour les messages JSON de destruction d'un brouillon de demande. |
+| enu-to-simetier-reply | enu-mediation | SI métier | Pour les messages JSON d'erreur. Il s'agit des erreurs métier détectées par `enu-mediation` dans des messages JSON envoyés par le service métier. |
+| simetier-to-enu-reply | SI métier | enu-mediation | Pour les messages JSON d'erreur. Il s'agit des erreurs métier détectées par le SI métier dans des message JSON envoyés par `enu-mediation`. |
+| enu-dead-letter | enu-mediation | un humain, exploitant de `enu-mediation` | Boîte aux lettres morte pour les messages JSON que `enu-mediation` n'est pas parvenue à traiter, suite à une anomalie : erreur dans le code, rupture de la connexion à RabbitMQ, épuisement de la mémoire, etc. |
+| simetier-dead-letter | système métier | un humain, exploitant du SI métier | Boîte aux lettres morte pour les messages JSON que le SI métier n'est pas parvenue à traiter, suite à une anomalie : erreur dans le code, rupture de la connexion à RabbitMQ, épuisement de la mémoire, etc. |
+
+_Queues :_
+
+| Nom de la queue | Commentaires |
+| --------------- | ------------ |
+| simetier-to-enu-main-q | Dans `Arguments`, spécifier que `Dead letter exchange` vaut `enu-to-simetier-reply` et que `Dead letter routing key` vaut `enu-to-simetier-reply-q`. |
+| enu-to-simetier-main-q | Dans `Arguments`, spécifier que `Dead letter exchange` vaut `simetier-to-enu-reply` et que `Dead letter routing key` vaut `simetier-to-enu-reply-q`. |
+| enu-to-simetier-reply-q | - |
+| simetier-to-enu-reply-q | - |
+| enu-dead-letter-q | - |
+| simetier-dead-letter-q | - |
+
+_Bindings :_
+
+Aucun binding entre exchanges et queues n'est nécessaire.
 
 ### Travail à mener par l'équipe médiation
 
@@ -157,9 +214,9 @@ TODO
 ## Test
 
 Pour tester enu-mediation, deux outils fonctionnellement à peu près équivalents sont proposés :
-enu-mediation et XXX.
+enu-mediation-client et XXX.
 
-L'outil enu-mediation est une simple Java sans interface utilisateur.
+L'outil enu-mediation est une simple application Java sans interface utilisateur.
 Il est plutôt adapté pour un développeur de enu-mediation ou d'un SI métier.
 Les messages JSON y sont explicites. 
 
