@@ -19,7 +19,7 @@ public class NewDemarche {
 
     private String idUsager;
 
-    private String idClientDemande;
+    private String idDemarcheSiMetier;
 
     private String etat;
 

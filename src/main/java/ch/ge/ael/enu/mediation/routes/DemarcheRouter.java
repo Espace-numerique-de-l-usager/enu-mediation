@@ -124,7 +124,6 @@ public class DemarcheRouter extends RouteBuilder {
                 // prevoir un ExceptionHandler pour com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
                 .log("Dans direct:nouvelleDemarche")
                 .enrich("direct:nouvelleDemarcheBrouillon", new OldExchangeStrategy())
-                        .log("PIPO")
                 .setProperty("newDemarche", body())
                 .choice()
                     .when(isNewDemarcheDeposee).id("nouvelle-demarche-deposee")
@@ -194,8 +193,8 @@ public class DemarcheRouter extends RouteBuilder {
         from("direct:changementEtatDemarche-phase1").id("changement-etat-demarche-phase-1")
                 .log("Dans direct:changementEtatDemarche-phase1")
                 .to("log:input")
-                .setProperty("idClientDemande", simple("${body.idClientDemande}", String.class))
-                .setHeader("name", exchangeProperty("idClientDemande"))
+                .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
+                .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}

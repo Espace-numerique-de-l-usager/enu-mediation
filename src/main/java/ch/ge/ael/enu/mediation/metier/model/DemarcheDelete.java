@@ -5,16 +5,21 @@ import org.apache.camel.Header;
 
 @Data
 public class DemarcheDelete {
-    private String idPrestation;
-    private String idUsager;
-    private String idClientDemande;
 
-    public DemarcheDelete newDemarcheDelete(@Header("idClientDemande") String idClientDemande,
+    private String idPrestation;
+
+    private String idUsager;
+
+    private String idDemarcheSiMetier;
+
+    public DemarcheDelete newDemarcheDelete(
+                          @Header("idClientDemande") String idDemarcheSiMetier,
                           @Header("idPrestation") String idPrestation,
                           @Header("idUsager") String idUsager) {
-        this.idClientDemande = idClientDemande;
+        this.idDemarcheSiMetier = idDemarcheSiMetier;
         this.idPrestation = idPrestation;
         this.idUsager = idUsager;
         return this;
     }
+
 }

@@ -16,7 +16,7 @@ public class StatusChange {
 
     private String idUsager;
 
-    private String idClientDemande;
+    private String idDemarcheSiMetier;
 
     private String nouvelEtat;
 

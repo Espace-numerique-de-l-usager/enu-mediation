@@ -23,13 +23,13 @@ public class StatusChangeValidator {
 
         checkExistence(statusChange.getIdPrestation(), "idPrestation");
         checkExistence(statusChange.getIdUsager(), "idUsager");
-        checkExistence(statusChange.getIdClientDemande(), "idClientDemande");
+        checkExistence(statusChange.getIdDemarcheSiMetier(), "idDemarcheSiMetier");
         checkExistence(statusChange.getNouvelEtat(), "nouvelEtat");
         checkExistence(statusChange.getDateNouvelEtat(), "dateNouvelEtat");
 
         checkSize(statusChange.getIdPrestation(), 1, 50, "idPrestation");
         checkSize(statusChange.getIdUsager(), 1, 50, "idUsager");
-        checkSize(statusChange.getIdClientDemande(), 1, 100, "idClientDemande");
+        checkSize(statusChange.getIdDemarcheSiMetier(), 1, 100, "idDemarcheSiMetier");
 
         checkEnum(statusChange.getNouvelEtat(), DemarcheStatus.class, "nouvelEtat");
 
