@@ -77,8 +77,8 @@ _Exchanges :_
 | enu-to-simetier-main | enu-mediation | SI métier | Pour les messages JSON de destruction d'un brouillon de demande. |
 | enu-to-simetier-reply | enu-mediation | SI métier | Pour les messages JSON d'erreur. Il s'agit des erreurs métier détectées par `enu-mediation` dans des messages JSON envoyés par le service métier. |
 | simetier-to-enu-reply | SI métier | enu-mediation | Pour les messages JSON d'erreur. Il s'agit des erreurs métier détectées par le SI métier dans des message JSON envoyés par `enu-mediation`. |
-| enu-dead-letter | enu-mediation | un humain, exploitant de `enu-mediation` | Boîte aux lettres morte pour les messages JSON que `enu-mediation` n'est pas parvenue à traiter, suite à une anomalie : erreur dans le code, rupture de la connexion à RabbitMQ, épuisement de la mémoire, etc. |
-| simetier-dead-letter | système métier | un humain, exploitant du SI métier | Boîte aux lettres morte pour les messages JSON que le SI métier n'est pas parvenue à traiter, suite à une anomalie : erreur dans le code, rupture de la connexion à RabbitMQ, épuisement de la mémoire, etc. |
+| enu-internal-error | enu-mediation | un humain, exploitant de `enu-mediation` | Boîte aux lettres morte pour les messages JSON que `enu-mediation` n'est pas parvenue à traiter, suite à une anomalie : erreur dans le code, rupture de la connexion à RabbitMQ, épuisement de la mémoire, etc. |
+| simetier-internal-error | système métier | un humain, exploitant du SI métier | Boîte aux lettres morte pour les messages JSON que le SI métier n'est pas parvenue à traiter, suite à une anomalie : erreur dans le code, rupture de la connexion à RabbitMQ, épuisement de la mémoire, etc. |
 
 _Queues :_
 
@@ -86,10 +86,10 @@ _Queues :_
 | --------------- | ------------ |
 | simetier-to-enu-main-q | Dans `Arguments`, spécifier que `Dead letter exchange` vaut `enu-to-simetier-reply` et que `Dead letter routing key` vaut `enu-to-simetier-reply-q`. |
 | enu-to-simetier-main-q | Dans `Arguments`, spécifier que `Dead letter exchange` vaut `simetier-to-enu-reply` et que `Dead letter routing key` vaut `simetier-to-enu-reply-q`. |
-| enu-to-simetier-reply-q | - |
-| simetier-to-enu-reply-q | - |
-| enu-dead-letter-q | - |
-| simetier-dead-letter-q | - |
+| enu-to-simetier-reply-q | Dans `Arguments`, spécifier que `Dead letter exchange` vaut `enu-internal-error` et que `Dead letter routing key` vaut `enu-internal-error-q`. |
+| simetier-to-enu-reply-q | Dans `Arguments`, spécifier que `Dead letter exchange` vaut `simetier-internal-error` et que `Dead letter routing key` vaut `simetier-internal-error-q`. |
+| enu-internal-error-q | - |
+| simetier-internal-error-q | - |
 
 _Bindings :_
 

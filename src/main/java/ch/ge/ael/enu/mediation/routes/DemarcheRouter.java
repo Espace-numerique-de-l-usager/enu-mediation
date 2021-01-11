@@ -58,6 +58,9 @@ public class DemarcheRouter extends RouteBuilder {
     static final String REPLY_QUEUE = "rabbitmq:" +
             "enu-to-simetier1-reply?" +
             "queue=enu-to-simetier1-reply-q" +
+//            "&deadLetterExchange=enu-internal-error" +
+//            "&deadLetterQueue=enu-internal-error-q" +
+//            "&deadLetterRoutingKey=enu-internal-error-q" +
             "&autoDelete=false";
 //    static final String REPLY_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-reply&autoDelete=false&requestTimeout=5000";
 //    static final String REPLY_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-reply&autoDelete=false&autoAck=false";
@@ -90,7 +93,7 @@ public class DemarcheRouter extends RouteBuilder {
 //        errorHandler(deadLetterChannel("rabbitmq:" + INTERNAL_ERROR_QUEUE).useOriginalMessage());
 
         onException(ValidationException.class)
-                .handled(false)
+//                .handled(true)
                 .useOriginalMessage()
 //                .useOriginalBody()
                 .log("headers dans onException (avant MessageFailureEnricher) : ${headers}")
@@ -100,7 +103,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("headers dans onException : ${headers}")
                 .log("Envoi a RabbitMQ du message d'erreur")
                 .to(REPLY_QUEUE)
-                ;
+                .continued(false);
 
         // routage principal
         from(MAIN_QUEUE).id("route-principale")
@@ -121,16 +124,17 @@ public class DemarcheRouter extends RouteBuilder {
                 // prevoir un ExceptionHandler pour com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
                 .log("Dans direct:nouvelleDemarche")
                 .enrich("direct:nouvelleDemarcheBrouillon", new OldExchangeStrategy())
+                        .log("PIPO")
                 .setProperty("newDemarche", body())
                 .choice()
-                    .when(isNewDemarcheDeposee)
+                    .when(isNewDemarcheDeposee).id("nouvelle-demarche-deposee")
                         .log("Passage a l'etat SOUMISE")
                         .log("Body : ${body}")
                         .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(DEPOSEE))
                         .marshal(pojoToJson())
                         .to("direct:changementEtatDemarche")
-                    .when(isNewDemarcheEnTraitement)
+                    .when(isNewDemarcheEnTraitement).id("nouvelle-demarche-en-traitement")
                         .log("Passage a l'etat SOUMISE (avant le passage a l'etat EN_TRAITEMENT)")
                         .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(DEPOSEE))
