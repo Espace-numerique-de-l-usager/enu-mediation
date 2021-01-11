@@ -30,7 +30,7 @@ public class ApiRouter extends RouteBuilder {
                 .setBody().constant("invalid json");
 
         rest("/demarche/")
-                .delete("/{idClientDemande}/{idPrestation}/{idUsager}")
+                .delete("/{idDemarcheSiMetier}/{idPrestation}/{idUsager}")
                 .to("direct:demarcheDelete");
 
         from("direct:demarcheDelete")

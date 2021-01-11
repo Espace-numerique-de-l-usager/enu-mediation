@@ -193,7 +193,7 @@ Champs :
 | idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné |
 | typeDocument | type de document | oui | RECAPITULATIF | Doit valoir soit RECAPITULATIF, soit JUSTIFICATIF |
 | libelleDocument | titre du document, déterminant le nom du fichier | oui | Decision administration 2020-02-19 | Maximum 50 caractères |
-| idClientDocument | identifiant permettant au SI métier d'identifier son document | non | DOC-123456789 | Maximum 50 caractères |
+| idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | non | DOC-123456789 | Maximum 50 caractères |
 | mime | type MIME du fichier | oui | application/pdf | - |
 | contenu | contenu du fichier en base64 | oui | - | - |
 

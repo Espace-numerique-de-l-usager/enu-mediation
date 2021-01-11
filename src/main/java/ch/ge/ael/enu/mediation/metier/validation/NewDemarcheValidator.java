@@ -26,12 +26,12 @@ public class NewDemarcheValidator {
 
         checkExistence(newDemarche.getIdPrestation(), "idPrestation");
         checkExistence(newDemarche.getIdUsager(), "idUsager");
-        checkExistence(newDemarche.getIdClientDemande(), "idClientDemande");
+        checkExistence(newDemarche.getIdDemarcheSiMetier(), "idDemarcheSiMetier");
         checkExistence(newDemarche.getEtat(), "etat");
 
         checkSize(newDemarche.getIdPrestation(), 1, 50, "idPrestation");
         checkSize(newDemarche.getIdUsager(), 1, 50, "idUsager");
-        checkSize(newDemarche.getIdClientDemande(), 1, 100, "idClientDemande");
+        checkSize(newDemarche.getIdDemarcheSiMetier(), 1, 100, "idDemarcheSiMetier");
         checkSize(newDemarche.getLibelleAction(), 1, 100, "libelleAction");
 
         checkEnum(newDemarche.getEtat(), DemarcheStatus.class, "etat");

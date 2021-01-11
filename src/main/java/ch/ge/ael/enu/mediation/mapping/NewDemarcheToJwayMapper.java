@@ -15,7 +15,7 @@ public class NewDemarcheToJwayMapper {
     public File newDemarcheToFile(NewDemarche newDemarche) {
         File file = new File();
 
-        file.setName(newDemarche.getIdClientDemande());
+        file.setName(newDemarche.getIdDemarcheSiMetier());
 
         User owner = new User();
         owner.setName(newDemarche.getIdUsager());

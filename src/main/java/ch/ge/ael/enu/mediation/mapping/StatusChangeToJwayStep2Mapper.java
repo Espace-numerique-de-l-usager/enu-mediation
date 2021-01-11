@@ -11,7 +11,7 @@ public class StatusChangeToJwayStep2Mapper {
         // TODO verifier la presence des champs
 
         FileForWorkflow file = new FileForWorkflow();
-        file.setName(statusChange.getIdClientDemande());
+        file.setName(statusChange.getIdDemarcheSiMetier());
         file.setWorkflowStatus(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
         if (statusChange.getTypeAction() != null) {
             StringBuilder sb = new StringBuilder()

@@ -24,7 +24,7 @@ public class NewDemarcheToStatusChangeMapper {
         StatusChange statusChange = new StatusChange();
         statusChange.setIdPrestation(newDemarche.getIdPrestation());
         statusChange.setIdUsager(newDemarche.getIdUsager());
-        statusChange.setIdClientDemande(newDemarche.getIdClientDemande());
+        statusChange.setIdDemarcheSiMetier(newDemarche.getIdDemarcheSiMetier());
         statusChange.setNouvelEtat(demarcheStatus.name());
         if (demarcheStatus == DemarcheStatus.DEPOSEE) {
             statusChange.setDateNouvelEtat(newDemarche.getDateDepot().format(FORMATTER));
