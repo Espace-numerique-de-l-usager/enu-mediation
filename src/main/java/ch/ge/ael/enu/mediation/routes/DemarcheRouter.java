@@ -9,9 +9,11 @@ import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
 import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
 import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
+import ch.ge.ael.enu.mediation.metier.model.NewDocument;
 import ch.ge.ael.enu.mediation.metier.model.NewSuggestion;
 import ch.ge.ael.enu.mediation.metier.model.StatusChange;
 import ch.ge.ael.enu.mediation.metier.validation.NewDemarcheValidator;
+import ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator;
 import ch.ge.ael.enu.mediation.metier.validation.StatusChangeValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.CamelContext;
@@ -28,7 +30,9 @@ import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
 
 /**
- * Main RabbitMQ consumer for relaying information to FormSolutions
+ * Ceci est la classe principale de toute l'application.
+ * Elle definit la consommation (et parfois la production) des messages RabbitMQ et
+ * leur transmission vers FormServices.
  */
 @Component
 @RequiredArgsConstructor
@@ -71,13 +75,18 @@ public class DemarcheRouter extends RouteBuilder {
 
     private final Predicate isNewSuggestion = header("rabbitmq.Content-Type").isEqualTo(MediaType.NEW_SUGGESTION);
 
+    @Deprecated
     private final Predicate isStatusChange = header("rabbitmq.Content-Type").isEqualTo(MediaType.STATUS_CHANGE);
+
+    private final Predicate isNewDocument = header("rabbitmq.Content-Type").isEqualTo(MediaType.NEW_DOCUMENT);
 
     private final Predicate isNewDemarcheDeposee = jsonpath("$[?(@.etat=='" + DEPOSEE + "')]");
 
     private final Predicate isNewDemarcheEnTraitement = jsonpath("$[?(@.etat=='" + EN_TRAITEMENT + "')]");
 
     private final UuidPropagationStrategy uuidPropagationStrategy = new UuidPropagationStrategy();
+
+    private final OldExchangeStrategy oldExchangeStrategy = new OldExchangeStrategy();
 
     /**
      * Definition des routes.
@@ -107,23 +116,26 @@ public class DemarcheRouter extends RouteBuilder {
 
         // routage principal
         from(MAIN_QUEUE).id("route-principale")
+                .log("********************************")
                 .log("*** Message recu de RabbitMQ ***")
                 .to("log:INFO?showHeaders=true")
                 .choice()
                     .when(isNewDemarche)
-                        .to("direct:nouvelleDemarche")
+                        .to("direct:nouvelle-demarche")
                     .when(isNewSuggestion)
                         .to("direct:nouvelleSuggestion")
                     .when(isStatusChange)
-                        .to("direct:changementEtatDemarche")
+                        .to("direct:changement-etat-demarche")
+                    .when(isNewDocument)
+                        .to("direct:nouveau-document")
                     .otherwise()
                         .to("stream:err");
 
         // nouvelle demarche (en "brouillon", ou directement a "deposee" ou a "en traitement")
-        from("direct:nouvelleDemarche").id("nouvelle-demarche")
+        from("direct:nouvelle-demarche").id("nouvelle-demarche")
                 // prevoir un ExceptionHandler pour com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
-                .log("Dans direct:nouvelleDemarche")
-                .enrich("direct:nouvelleDemarcheBrouillon", new OldExchangeStrategy())
+                .log("* ROUTE nouvelle-demarche")
+                .enrich("direct:nouvelle-demarche-brouillon", new OldExchangeStrategy())
                 .setProperty("newDemarche", body())
                 .choice()
                     .when(isNewDemarcheDeposee).id("nouvelle-demarche-deposee")
@@ -132,25 +144,25 @@ public class DemarcheRouter extends RouteBuilder {
                         .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(DEPOSEE))
                         .marshal(pojoToJson())
-                        .to("direct:changementEtatDemarche")
+                        .to("direct:changement-etat-demarche")
                     .when(isNewDemarcheEnTraitement).id("nouvelle-demarche-en-traitement")
                         .log("Passage a l'etat SOUMISE (avant le passage a l'etat EN_TRAITEMENT)")
                         .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(DEPOSEE))
                         .marshal(pojoToJson())
-                        .to("direct:changementEtatDemarche")
+                        .to("direct:changement-etat-demarche")
                         .log("Passage a l'etat EN_TRAITEMENT")
                         .setBody(exchangeProperty("newDemarche"))
                         .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(EN_TRAITEMENT))
                         .marshal(pojoToJson())
-                        .to("direct:changementEtatDemarche")
+                        .to("direct:changement-etat-demarche")
                     .otherwise()
                         .log("On en reste a l'etat BROUILLON");
 
         // nouvelle demarche (creation a l'etat brouillon)
-        from("direct:nouvelleDemarcheBrouillon").id("nouvelle-demarche-brouillon")
-                .log("Dans direct:nouvelleDemarcheBrouillon")
+        from("direct:nouvelle-demarche-brouillon").id("nouvelle-demarche-brouillon")
+                .log("* ROUTE nouvelle-demarche-brouillon")
                 .unmarshal(jsonToPojo(NewDemarche.class))
                 .bean(NewDemarcheValidator.class)
                 .to("log:input")
@@ -166,7 +178,7 @@ public class DemarcheRouter extends RouteBuilder {
 
         // nouvelle suggestion de demarche
         from("direct:nouvelleSuggestion").id("nouvelle-suggestion")
-                .log("Dans direct:nouvelleSuggestion")
+                .log("* ROUTE nouvelleSuggestion")
                 .unmarshal(jsonToPojo(NewSuggestion.class))
                 .to("log:input")
                 .setHeader("Content-Type", simple("application/json"))
@@ -179,19 +191,19 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("Suggestion creee, uuid = ${body.uuid}");
 
         // changement d'etat d'une demarche
-        from("direct:changementEtatDemarche").id("changement-etat-demarche")
-                .log("Dans direct:changementEtatDemarche")
+        from("direct:changement-etat-demarche").id("changement-etat-demarche")
+                .log("* ROUTE changement-etat-demarche")
                 .unmarshal(jsonToPojo(StatusChange.class))
                 .bean(StatusChangeValidator.class)
                 .to("log:input")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
-                .enrich("direct:changementEtatDemarche-phase1", uuidPropagationStrategy)
-                .enrich("direct:changementEtatDemarche-phase2", uuidPropagationStrategy)
-                .to("direct:changementEtatDemarche-phase3");
+                .enrich("direct:changement-etat-demarche-phase1", uuidPropagationStrategy)
+                .enrich("direct:changement-etat-demarche-phase2", uuidPropagationStrategy)
+                .to("direct:changement-etat-demarche-phase3");
 
         // changement d'etat d'une demarche, phase 1 : recuperation de son uuid
-        from("direct:changementEtatDemarche-phase1").id("changement-etat-demarche-phase-1")
-                .log("Dans direct:changementEtatDemarche-phase1")
+        from("direct:changement-etat-demarche-phase1").id("changement-etat-demarche-phase-1")
+                .log("* ROUTE changement-etat-demarche-phase1")
                 .to("log:input")
                 .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
                 .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
@@ -204,8 +216,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("uuid = ${body[0].uuid}");
 
         // changement d'etat d'une demarche, phase 2 : changement du step
-        from("direct:changementEtatDemarche-phase2").id("changement-etat-demarche-phase-2")
-                .log("Dans direct:changementEtatDemarche-phase2")
+        from("direct:changement-etat-demarche-phase2").id("changement-etat-demarche-phase-2")
+                .log("* ROUTE changement-etat-demarche-phase2")
                 .to("log:input")
                 .setHeader("uuid", exchangeProperty("uuid"))
                 .bean(StatusChangeToJwayStep1Mapper.class)
@@ -215,8 +227,8 @@ public class DemarcheRouter extends RouteBuilder {
                 // valider ici 204
 
         // changement d'etat d'une demarche, phase 3 : changement du workflowStatus
-        from("direct:changementEtatDemarche-phase3").id("changement-etat-demarche-phase-3")
-                .log("Dans direct:changementEtatDemarche-phase3")
+        from("direct:changement-etat-demarche-phase3").id("changement-etat-demarche-phase-3")
+                .log("* ROUTE changement-etat-demarche-phase3")
                 .to("log:input")
                 .setHeader("uuid", exchangeProperty("uuid"))
                 .bean(StatusChangeToJwayStep2Mapper.class)
@@ -225,6 +237,54 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("rest:put:alpha/file/{uuid}")
                 .log("Changement d'etat OK");
                 // valider ici 204
+
+        // ajout d'un document a une demarche
+        from("direct:nouveau-document").id("nouveau-document")
+                .log("* ROUTE nouveau-document")
+                .unmarshal(jsonToPojo(NewDocument.class))
+                .bean(NewDocumentValidator.class)
+                .to("log:input")      // attention à ne pas tracer le contenu du fichier !
+                .setProperty("remoteUser", simple("${body.idUsager}", String.class))
+                .enrich("direct:nouveau-document-phase1", uuidPropagationStrategy)
+                .enrich("direct:nouveau-document-phase2", oldExchangeStrategy)
+                .to("direct:nouveau-document-phase3");
+
+        // ajout d'un document a une demarche, phase 1 : recuperation de son uuid
+        from("direct:nouveau-document-phase1").id("nouveau-document-phase1")
+                .log("* ROUTE nouveau-document-phase1")
+                .to("log:input")
+                .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
+                .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
+                .setHeader("Content-Type", simple("application/json"))
+                .setHeader("remote_user", exchangeProperty("remoteUser"))
+                .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
+                .log("JSON obtenu de Jway = ${body}")
+                .unmarshal(jsonToList(File.class))   // en faire une propriété
+                .setProperty("uuid", simple("${body[0].uuid}", String.class))
+                .log("uuid = ${body[0].uuid}");
+
+        // ajout d'un document a une demarche, phase 2 : requete HEAD pour recuperer un jeton CSRF
+        from("direct:nouveau-document-phase2").id("nouveau-document-phase2")
+                .log("* ROUTE nouveau-document-phase2")
+                .setHeader("X-CSRF-Token", simple("fetch"))
+                .setHeader("remote_user", simple("${body.idUsager}", String.class))
+                .setHeader("uuid", exchangeProperty("uuid"))
+                .marshal(pojoToJson())
+                .log("Requete HEAD envoyee a Jway")
+                .to("rest:head:document/ds/{uuid}/attachment")
+                .log("Jeton CSRF obtenu = ${headers.X-CSRF-Token}")
+                .setProperty("csrf", simple("${headers.X-CSRF-Token}", String.class));
+
+        // ajout d'un document a une demarche, phase 3 : requete proprement dite d'envoi à Jway
+        from("direct:nouveau-document-phase3").id("nouveau-document-phase3")
+                .log("* ROUTE nouveau-document-phase3")
+                .unmarshal(jsonToPojo(NewDocument.class))
+                .to("log:input")
+                .setHeader("Content-Type", simple("multipart/form-data"))
+                .setHeader("remote_user", simple("${body.idUsager}", String.class))
+                .marshal(pojoToJson())
+                .log("JSON envoye a Jway = ${body}")   // attention à ne pas tracer le contenu du fichier !
+                .to("rest:post:document/ds/{uuid}/attachment");
     }
 
     /**

@@ -1,6 +1,6 @@
 package ch.ge.ael.enu.mediation.metier.validation;
 
-import ch.ge.ael.enu.mediation.metier.model.TypeAction;
+import ch.ge.ael.enu.mediation.metier.model.ActionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +12,7 @@ import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSiz
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkUrl;
 
 /**
- * Factorizes the validation of NewDemarche et StatusChange.
+ * Factorize la validation d'une "action", presente dans plusieurs messages JSON (NewDemarche, StatusChange).
  */
 public class ActionValidator {
 
@@ -34,7 +34,7 @@ public class ActionValidator {
                 checkAbsentIfOtherAbsent(urlAction, "urlAction", typeAction, "typeAction");
                 checkAbsentIfOtherAbsent(dateEcheanceAction, "dateEcheanceAction", typeAction, "typeAction");
             } else {
-                checkEnum(typeAction, TypeAction.class, "typeAction");
+                checkEnum(typeAction, ActionType.class, "typeAction");
                 checkPresentIfOtherPresent(urlAction, "urlAction", typeAction, "typeAction");
                 checkPresentIfOtherPresent(dateEcheanceAction, "dateEcheanceAction", typeAction, "typeAction");
                 checkUrl(urlAction, "urlAction");

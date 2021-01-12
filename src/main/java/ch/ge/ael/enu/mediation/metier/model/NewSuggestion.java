@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 /**
- * Donnees contenues dans un message JSON de creation d'une nouvelle suggestion de demande.
+ * Donnees contenues dans un message JSON de creation d'une nouvelle suggestion de demarche.
  * Reference : <a href="***REMOVED***/browse/ENU-369">ENU-369</a>.
  */
 public class NewSuggestion {

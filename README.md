@@ -73,8 +73,8 @@ _Exchanges :_
 
 | Nom de l'exchange | Producteur | Consommateur | Description |
 | ----------------- | ---------- | ------------ | ----------- |
-| simetier-to-enu-main | SI métier | enu-mediation | Pour les messages JSON de création de demande, de changement d'état d'une demande, d'ajout de document à une demande, etc. |
-| enu-to-simetier-main | enu-mediation | SI métier | Pour les messages JSON de destruction d'un brouillon de demande. |
+| simetier-to-enu-main | SI métier | enu-mediation | Pour les messages JSON de création de démarche, de changement d'état d'une démarche, d'ajout de document à une démarche, etc. |
+| enu-to-simetier-main | enu-mediation | SI métier | Pour les messages JSON de destruction d'un brouillon de démarche. |
 | enu-to-simetier-reply | enu-mediation | SI métier | Pour les messages JSON d'erreur. Il s'agit des erreurs métier détectées par `enu-mediation` dans des messages JSON envoyés par le service métier. |
 | simetier-to-enu-reply | SI métier | enu-mediation | Pour les messages JSON d'erreur. Il s'agit des erreurs métier détectées par le SI métier dans des message JSON envoyés par `enu-mediation`. |
 | enu-internal-error | enu-mediation | un humain, exploitant de `enu-mediation` | Boîte aux lettres morte pour les messages JSON que `enu-mediation` n'est pas parvenue à traiter, suite à une anomalie : erreur dans le code, rupture de la connexion à RabbitMQ, épuisement de la mémoire, etc. |
@@ -130,7 +130,7 @@ Champs :
 | --- | ----------- | ------- | ----------- | ----------- |
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Pour une prestation donnée et pour un usager donné, doit doit être unique |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Pour une prestation donnée et pour un usager donné, doit doit être unique. Maximum 50 caractères |
 | etat | état de la démarche | oui | BROUILLON | Doit valoir soit BROUILLON, soit DEPOSEE, soit EN_TRAITEMENT |
 | dateDepot | date de soumission de la démarche | oui si `etat` = `DEPOSEE` ou `EN_TRAITEMENT`, inutile sinon | 2021-02-19T12:15:00.000Z | - | 
 | dateMiseEnTraitement | date de mise en traitement de la démarche | oui si `etat` = `EN_TRAITEMENT`, inutile sinon | 2021-02-20T12:15:00.000Z | - | 
@@ -155,7 +155,7 @@ Champs :
 | --- | ----------- | ----------- | ------- | ----------- |
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné. Maximum 50 caractères |
 | nouvelEtat | nouvel état de la démarche | oui | DEPOSEE | Doit valoir soit DEPOSEE, soit EN_TRAITEMENT, soit TERMINEE |
 | dateNouvelEtat | date à laquelle la démarche a changé d'état| oui | 2020-02-19 | - |
 
@@ -190,12 +190,12 @@ Champs :
 | --- | ----------- | ----------- | ------- | ----------- |
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné. Maximum 50 caractères |
 | typeDocument | type de document | oui | RECAPITULATIF | Doit valoir soit RECAPITULATIF, soit JUSTIFICATIF |
 | libelleDocument | titre du document, déterminant le nom du fichier | oui | Decision administration 2020-02-19 | Maximum 50 caractères |
 | idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | non | DOC-123456789 | Maximum 50 caractères |
 | mime | type MIME du fichier | oui | application/pdf | - |
-| contenu | contenu du fichier en base64 | oui | - | - |
+| contenu | contenu du fichier en base64 | oui | - | Maximum 10'000'000 caractères |
 
 ### Échanges de enu-backend avec le SI métier
 

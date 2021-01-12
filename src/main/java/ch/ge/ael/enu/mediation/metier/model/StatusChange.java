@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 /**
- * Donnees contenues dans un message JSON de changement d'etat d'une demande existante.
+ * Donnees contenues dans un message JSON de changement d'etat d'une demarche existante.
  * <p>
  * Reference : ***REMOVED***/browse/ENU-427
  */

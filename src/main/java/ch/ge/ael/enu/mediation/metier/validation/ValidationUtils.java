@@ -103,4 +103,16 @@ public class ValidationUtils {
         }
     }
 
+    public static void checkSizeIdPrestation(String value) {
+        checkSize(value, 1, 50, "idPrestation");
+    }
+
+    public static void checkSizeIdUsager(String value) {
+        checkSize(value, 1, 50, "idUsager");
+    }
+
+    public static void checkSizeIdDemarcheSiMetier(String value) {
+        checkSize(value, 1, 50, "idDemarcheSiMetier");
+    }
+
 }

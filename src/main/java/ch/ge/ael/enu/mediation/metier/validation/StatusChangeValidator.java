@@ -9,43 +9,46 @@ import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkDat
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdDemarcheSiMetier;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdPrestation;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdUsager;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkUrl;
 
 /**
- * Verifie qu'un message de changement d'etat d'une demarche est valide.
+ * Verifie qu'un message JSON de changement d'etat d'une demarche est valide.
  */
 public class StatusChangeValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(StatusChangeValidator.class);
 
-    public StatusChange validate(StatusChange statusChange) {
+    public StatusChange validate(StatusChange message) {
         LOGGER.info("Dans StatusChangeValidator");
 
-        checkExistence(statusChange.getIdPrestation(), "idPrestation");
-        checkExistence(statusChange.getIdUsager(), "idUsager");
-        checkExistence(statusChange.getIdDemarcheSiMetier(), "idDemarcheSiMetier");
-        checkExistence(statusChange.getNouvelEtat(), "nouvelEtat");
-        checkExistence(statusChange.getDateNouvelEtat(), "dateNouvelEtat");
+        checkExistence(message.getIdPrestation(), "idPrestation");
+        checkExistence(message.getIdUsager(), "idUsager");
+        checkExistence(message.getIdDemarcheSiMetier(), "idDemarcheSiMetier");
+        checkExistence(message.getNouvelEtat(), "nouvelEtat");
+        checkExistence(message.getDateNouvelEtat(), "dateNouvelEtat");
 
-        checkSize(statusChange.getIdPrestation(), 1, 50, "idPrestation");
-        checkSize(statusChange.getIdUsager(), 1, 50, "idUsager");
-        checkSize(statusChange.getIdDemarcheSiMetier(), 1, 100, "idDemarcheSiMetier");
+        checkSizeIdPrestation(message.getIdPrestation());
+        checkSizeIdUsager(message.getIdUsager());
+        checkSizeIdDemarcheSiMetier(message.getIdDemarcheSiMetier());
 
-        checkEnum(statusChange.getNouvelEtat(), DemarcheStatus.class, "nouvelEtat");
+        checkEnum(message.getNouvelEtat(), DemarcheStatus.class, "nouvelEtat");
 
-        checkDate(statusChange.getDateEcheanceAction(), "dateEcheanceAction");
+        checkDate(message.getDateEcheanceAction(), "dateEcheanceAction");
 
-        checkUrl(statusChange.getUrlAction(), "urlAction");
-        checkUrl(statusChange.getUrlRenouvellementDemarche(), "urlRenouvellementDemarche");
+        checkUrl(message.getUrlAction(), "urlAction");
+        checkUrl(message.getUrlRenouvellementDemarche(), "urlRenouvellementDemarche");
 
         new ActionValidator().validate(
-                statusChange.getLibelleAction(),
-                statusChange.getTypeAction(),
-                statusChange.getUrlAction(),
-                statusChange.getDateEcheanceAction());
+                message.getLibelleAction(),
+                message.getTypeAction(),
+                message.getUrlAction(),
+                message.getDateEcheanceAction());
 
         LOGGER.info("Validation OK");
-        return statusChange;  // important !
+        return message;  // important !
     }
 
 }

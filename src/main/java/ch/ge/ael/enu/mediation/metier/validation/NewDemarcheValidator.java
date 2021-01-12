@@ -13,36 +13,39 @@ import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.TERMINEE;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdDemarcheSiMetier;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdPrestation;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdUsager;
 
 /**
- * Verifie qu'un message de creation d'une demarche est valide.
+ * Verifie qu'un message JSON de creation d'une demarche est valide.
  */
 public class NewDemarcheValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewDemarcheValidator.class);
 
-    public NewDemarche validate(NewDemarche newDemarche) {
+    public NewDemarche validate(NewDemarche message) {
         LOGGER.info("Dans NewDemarcheValidator");
 
-        checkExistence(newDemarche.getIdPrestation(), "idPrestation");
-        checkExistence(newDemarche.getIdUsager(), "idUsager");
-        checkExistence(newDemarche.getIdDemarcheSiMetier(), "idDemarcheSiMetier");
-        checkExistence(newDemarche.getEtat(), "etat");
+        checkExistence(message.getIdPrestation(), "idPrestation");
+        checkExistence(message.getIdUsager(), "idUsager");
+        checkExistence(message.getIdDemarcheSiMetier(), "idDemarcheSiMetier");
+        checkExistence(message.getEtat(), "etat");
 
-        checkSize(newDemarche.getIdPrestation(), 1, 50, "idPrestation");
-        checkSize(newDemarche.getIdUsager(), 1, 50, "idUsager");
-        checkSize(newDemarche.getIdDemarcheSiMetier(), 1, 100, "idDemarcheSiMetier");
-        checkSize(newDemarche.getLibelleAction(), 1, 100, "libelleAction");
+        checkSizeIdPrestation(message.getIdPrestation());
+        checkSizeIdUsager(message.getIdUsager());
+        checkSizeIdDemarcheSiMetier(message.getIdDemarcheSiMetier());
+        checkSize(message.getLibelleAction(), 1, 100, "libelleAction");
 
-        checkEnum(newDemarche.getEtat(), DemarcheStatus.class, "etat");
+        checkEnum(message.getEtat(), DemarcheStatus.class, "etat");
 
-        DemarcheStatus status = DemarcheStatus.valueOf(newDemarche.getEtat());
-        if ((status == DEPOSEE || status == EN_TRAITEMENT) && newDemarche.getDateDepot() == null) {
+        DemarcheStatus status = DemarcheStatus.valueOf(message.getEtat());
+        if ((status == DEPOSEE || status == EN_TRAITEMENT) && message.getDateDepot() == null) {
             LOGGER.info("Erreur metier : champ [dateDepot] obligatoire quand etat = {}", status);
             throw new MissingFieldException("dateDepot",
                     "Ce champ est obligatoire quand etat = " + status);
         }
-        if (status == EN_TRAITEMENT && newDemarche.getDateMiseEnTraitement() == null) {
+        if (status == EN_TRAITEMENT && message.getDateMiseEnTraitement() == null) {
             LOGGER.info("Erreur metier : champ [dateMiseEnTraitement] obligatoire quand etat = {}", status);
             throw new MissingFieldException("dateMiseEnTraitement",
                     "Ce champ est obligatoire quand etat = " + status);
@@ -53,13 +56,13 @@ public class NewDemarcheValidator {
         }
 
         new ActionValidator().validate(
-                newDemarche.getLibelleAction(),
-                newDemarche.getTypeAction(),
-                newDemarche.getUrlAction(),
-                newDemarche.getDateEcheanceAction());
+                message.getLibelleAction(),
+                message.getTypeAction(),
+                message.getUrlAction(),
+                message.getDateEcheanceAction());
 
         LOGGER.info("Validation OK");
-        return newDemarche;  // important !
+        return message;  // important !
     }
 
 }
