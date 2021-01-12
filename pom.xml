@@ -146,6 +146,17 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
+
+        
+        <!--
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>1.25</version>
+        </dependency>
+        -->
+
+
         <!-- on ne peut pas ajouter hawtio, sinon on a ceci au demarrage :
                org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerAdapter'
                defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]:
