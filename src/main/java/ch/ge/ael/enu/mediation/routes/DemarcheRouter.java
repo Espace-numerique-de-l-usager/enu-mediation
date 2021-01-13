@@ -86,9 +86,13 @@ public class DemarcheRouter extends RouteBuilder {
 
     private final Predicate isNewDemarcheEnTraitement = jsonpath("$[?(@.etat=='" + EN_TRAITEMENT + "')]");
 
-    private final UuidPropagationStrategy uuidPropagationStrategy = new UuidPropagationStrategy();
+//    private final UuidPropagationStrategy uuidPropagationStrategy = new UuidPropagationStrategy();
 
-    private final OldExchangeStrategy oldExchangeStrategy = new OldExchangeStrategy();
+//    private final OldExchangeStrategy oldExchangeStrategy = new OldExchangeStrategy();
+
+    public static final String UUID = "uuid";
+
+    public static final String CSRF_TOKEN = "csrf-token";
 
     /**
      * Definition des routes.
@@ -199,8 +203,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .bean(StatusChangeValidator.class)
                 .to("log:input")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
-                .enrich("direct:changement-etat-demarche-phase-1", uuidPropagationStrategy)
-                .enrich("direct:changement-etat-demarche-phase-2", uuidPropagationStrategy)
+                .enrich("direct:changement-etat-demarche-phase-1", new PropertyPropagationStrategy(UUID))
+                .enrich("direct:changement-etat-demarche-phase-2", new PropertyPropagationStrategy(UUID))
                 .to("direct:changement-etat-demarche-phase-3");
 
         // changement d'etat d'une demarche, phase 1 : recuperation de son uuid
@@ -214,14 +218,14 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
                 .log("JSON obtenu de Jway = ${body}")
                 .unmarshal(jsonToList(File.class))   // en faire une propriété
-                .setProperty("uuid", simple("${body[0].uuid}", String.class))
+                .setProperty(UUID, simple("${body[0].uuid}", String.class))
                 .log("uuid = ${body[0].uuid}");
 
         // changement d'etat d'une demarche, phase 2 : changement du step
         from("direct:changement-etat-demarche-phase-2").id("changement-etat-demarche-phase-2")
                 .log("* ROUTE changement-etat-demarche-phase-2")
                 .to("log:input")
-                .setHeader("uuid", exchangeProperty("uuid"))
+                .setHeader("uuid", exchangeProperty(UUID))
                 .bean(StatusChangeToJwayStep1Mapper.class)
                 .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
@@ -232,7 +236,7 @@ public class DemarcheRouter extends RouteBuilder {
         from("direct:changement-etat-demarche-phase-3").id("changement-etat-demarche-phase-3")
                 .log("* ROUTE changement-etat-demarche-phase-3")
                 .to("log:input")
-                .setHeader("uuid", exchangeProperty("uuid"))
+                .setHeader(UUID, exchangeProperty(UUID))
                 .bean(StatusChangeToJwayStep2Mapper.class)
                 .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
@@ -247,8 +251,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .bean(NewDocumentValidator.class)
                 .to("log:input")      // attention à ne pas tracer le contenu du fichier !
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
-                .enrich("direct:nouveau-document-phase-1", uuidPropagationStrategy)
-                .enrich("direct:nouveau-document-phase-2", oldExchangeStrategy)
+                .enrich("direct:nouveau-document-phase-1", new PropertyPropagationStrategy(UUID))
+                .enrich("direct:nouveau-document-phase-2", new PropertyPropagationStrategy(UUID, CSRF_TOKEN))
                 .to("direct:nouveau-document-phase-3");
 
         // ajout d'un document a une demarche, phase 1 : recuperation de son uuid
@@ -262,7 +266,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
                 .log("JSON obtenu de Jway = ${body}")
                 .unmarshal(jsonToList(File.class))   // en faire une propriété
-                .setProperty("uuid", simple("${body[0].uuid}", String.class))
+                .setProperty(UUID, simple("${body[0].uuid}", String.class))
                 .log("uuid = ${body[0].uuid}");
 
         // ajout d'un document a une demarche, phase 2 : requete HEAD pour recuperer un jeton CSRF
@@ -270,20 +274,21 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("* ROUTE nouveau-document-phase-2")
                 .setHeader("X-CSRF-Token", simple("fetch"))
                 .setHeader("remote_user", simple("${body.idUsager}", String.class))
-                .setHeader("uuid", exchangeProperty("uuid"))
+                .setHeader(UUID, exchangeProperty(UUID))
                 .marshal(pojoToJson())
                 .log("Requete HEAD envoyee a Jway")
                 .to("rest:head:document/ds/{uuid}/attachment")
                 .log("Jeton CSRF obtenu = ${headers.X-CSRF-Token}")
-                .setProperty("csrf-token", simple("${headers.X-CSRF-Token}", String.class));
+                .setProperty(CSRF_TOKEN, simple("${headers.X-CSRF-Token}", String.class));
 
         // ajout d'un document a une demarche, phase 3 : requete proprement dite d'envoi à Jway
         from("direct:nouveau-document-phase-3").id("nouveau-document-phase-3")
                 .log("* ROUTE nouveau-document-phase-3")
                 .to("log:input")
                 .setHeader("Content-Type", simple("multipart/form-data;boundary=" + MULTIPART_BOUNDARY))
-                .setHeader("X-CSRF-Token", exchangeProperty("csrf-token"))
+                .setHeader("X-CSRF-Token", exchangeProperty(CSRF_TOKEN))
                 .setHeader("remote_user", simple("${body.idUsager}", String.class))
+                .setHeader(UUID, exchangeProperty(UUID))
                 .bean(NewDocumentToJwayMapper.class)
                 .log("Headers envoyes a Jway = ${headers}")
                 .log("JSON envoye a Jway = ${body}")   // attention à ne pas tracer le contenu du fichier !
