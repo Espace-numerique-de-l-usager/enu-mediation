@@ -4,6 +4,7 @@ import ch.ge.ael.enu.mediation.error.MessageFailureEnricher;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
+import ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewSuggestionToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
@@ -26,6 +27,7 @@ import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import static ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapper.MULTIPART_BOUNDARY;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
 
@@ -197,13 +199,13 @@ public class DemarcheRouter extends RouteBuilder {
                 .bean(StatusChangeValidator.class)
                 .to("log:input")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
-                .enrich("direct:changement-etat-demarche-phase1", uuidPropagationStrategy)
-                .enrich("direct:changement-etat-demarche-phase2", uuidPropagationStrategy)
-                .to("direct:changement-etat-demarche-phase3");
+                .enrich("direct:changement-etat-demarche-phase-1", uuidPropagationStrategy)
+                .enrich("direct:changement-etat-demarche-phase-2", uuidPropagationStrategy)
+                .to("direct:changement-etat-demarche-phase-3");
 
         // changement d'etat d'une demarche, phase 1 : recuperation de son uuid
-        from("direct:changement-etat-demarche-phase1").id("changement-etat-demarche-phase-1")
-                .log("* ROUTE changement-etat-demarche-phase1")
+        from("direct:changement-etat-demarche-phase-1").id("changement-etat-demarche-phase-1")
+                .log("* ROUTE changement-etat-demarche-phase-1")
                 .to("log:input")
                 .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
                 .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
@@ -216,8 +218,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("uuid = ${body[0].uuid}");
 
         // changement d'etat d'une demarche, phase 2 : changement du step
-        from("direct:changement-etat-demarche-phase2").id("changement-etat-demarche-phase-2")
-                .log("* ROUTE changement-etat-demarche-phase2")
+        from("direct:changement-etat-demarche-phase-2").id("changement-etat-demarche-phase-2")
+                .log("* ROUTE changement-etat-demarche-phase-2")
                 .to("log:input")
                 .setHeader("uuid", exchangeProperty("uuid"))
                 .bean(StatusChangeToJwayStep1Mapper.class)
@@ -227,8 +229,8 @@ public class DemarcheRouter extends RouteBuilder {
                 // valider ici 204
 
         // changement d'etat d'une demarche, phase 3 : changement du workflowStatus
-        from("direct:changement-etat-demarche-phase3").id("changement-etat-demarche-phase-3")
-                .log("* ROUTE changement-etat-demarche-phase3")
+        from("direct:changement-etat-demarche-phase-3").id("changement-etat-demarche-phase-3")
+                .log("* ROUTE changement-etat-demarche-phase-3")
                 .to("log:input")
                 .setHeader("uuid", exchangeProperty("uuid"))
                 .bean(StatusChangeToJwayStep2Mapper.class)
@@ -245,13 +247,13 @@ public class DemarcheRouter extends RouteBuilder {
                 .bean(NewDocumentValidator.class)
                 .to("log:input")      // attention à ne pas tracer le contenu du fichier !
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
-                .enrich("direct:nouveau-document-phase1", uuidPropagationStrategy)
-                .enrich("direct:nouveau-document-phase2", oldExchangeStrategy)
-                .to("direct:nouveau-document-phase3");
+                .enrich("direct:nouveau-document-phase-1", uuidPropagationStrategy)
+                .enrich("direct:nouveau-document-phase-2", oldExchangeStrategy)
+                .to("direct:nouveau-document-phase-3");
 
         // ajout d'un document a une demarche, phase 1 : recuperation de son uuid
-        from("direct:nouveau-document-phase1").id("nouveau-document-phase1")
-                .log("* ROUTE nouveau-document-phase1")
+        from("direct:nouveau-document-phase-1").id("nouveau-document-phase-1")
+                .log("* ROUTE nouveau-document-phase-1")
                 .to("log:input")
                 .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
                 .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
@@ -264,8 +266,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("uuid = ${body[0].uuid}");
 
         // ajout d'un document a une demarche, phase 2 : requete HEAD pour recuperer un jeton CSRF
-        from("direct:nouveau-document-phase2").id("nouveau-document-phase2")
-                .log("* ROUTE nouveau-document-phase2")
+        from("direct:nouveau-document-phase-2").id("nouveau-document-phase-2")
+                .log("* ROUTE nouveau-document-phase-2")
                 .setHeader("X-CSRF-Token", simple("fetch"))
                 .setHeader("remote_user", simple("${body.idUsager}", String.class))
                 .setHeader("uuid", exchangeProperty("uuid"))
@@ -273,16 +275,17 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("Requete HEAD envoyee a Jway")
                 .to("rest:head:document/ds/{uuid}/attachment")
                 .log("Jeton CSRF obtenu = ${headers.X-CSRF-Token}")
-                .setProperty("csrf", simple("${headers.X-CSRF-Token}", String.class));
+                .setProperty("csrf-token", simple("${headers.X-CSRF-Token}", String.class));
 
         // ajout d'un document a une demarche, phase 3 : requete proprement dite d'envoi à Jway
-        from("direct:nouveau-document-phase3").id("nouveau-document-phase3")
-                .log("* ROUTE nouveau-document-phase3")
-                .unmarshal(jsonToPojo(NewDocument.class))
+        from("direct:nouveau-document-phase-3").id("nouveau-document-phase-3")
+                .log("* ROUTE nouveau-document-phase-3")
                 .to("log:input")
-                .setHeader("Content-Type", simple("multipart/form-data"))
+                .setHeader("Content-Type", simple("multipart/form-data;boundary=" + MULTIPART_BOUNDARY))
+                .setHeader("X-CSRF-Token", exchangeProperty("csrf-token"))
                 .setHeader("remote_user", simple("${body.idUsager}", String.class))
-                .marshal(pojoToJson())
+                .bean(NewDocumentToJwayMapper.class)
+                .log("Headers envoyes a Jway = ${headers}")
                 .log("JSON envoye a Jway = ${body}")   // attention à ne pas tracer le contenu du fichier !
                 .to("rest:post:document/ds/{uuid}/attachment");
     }
