@@ -2,7 +2,6 @@ package ch.ge.ael.enu.mediation.metier.validation;
 
 import ch.ge.ael.enu.mediation.metier.model.DocumentType;
 import ch.ge.ael.enu.mediation.metier.model.NewDocument;
-import org.apache.tika.config.TikaConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
