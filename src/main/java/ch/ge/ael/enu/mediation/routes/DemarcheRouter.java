@@ -86,10 +86,6 @@ public class DemarcheRouter extends RouteBuilder {
 
     private final Predicate isNewDemarcheEnTraitement = jsonpath("$[?(@.etat=='" + EN_TRAITEMENT + "')]");
 
-//    private final UuidPropagationStrategy uuidPropagationStrategy = new UuidPropagationStrategy();
-
-//    private final OldExchangeStrategy oldExchangeStrategy = new OldExchangeStrategy();
-
     public static final String UUID = "uuid";
 
     public static final String CSRF_TOKEN = "csrf-token";
@@ -102,6 +98,8 @@ public class DemarcheRouter extends RouteBuilder {
         camelContext.setStreamCaching(true);
         restConfiguration()
                 .host("https://" + formSolutionHost + ":" + formSolutionPort + "/" + formSolutionPath)
+                // TEMP !
+//                .host("http://lab-rh712tomc143a:8080/aelportalenu/formservices/rest")
                 .producerComponent("http");
 
         // attrape-tout
@@ -264,12 +262,14 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
+                .log("Reponse : ${header.CamelHttpResponseCode}")
                 .log("JSON obtenu de Jway = ${body}")
                 .unmarshal(jsonToList(File.class))   // en faire une propriété
                 .setProperty(UUID, simple("${body[0].uuid}", String.class))
                 .log("uuid = ${body[0].uuid}");
 
-        // ajout d'un document a une demarche, phase 2 : requete HEAD pour recuperer un jeton CSRF
+        // ajout d'un document a une demarche, phase 2 : requete HEAD pour recuperer un jeton CSRF.
+        // Sans cette phase, on obtient une erreur 403 dans la phase suivante
         from("direct:nouveau-document-phase-2").id("nouveau-document-phase-2")
                 .log("* ROUTE nouveau-document-phase-2")
                 .setHeader("X-CSRF-Token", simple("fetch"))
@@ -278,6 +278,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .marshal(pojoToJson())
                 .log("Requete HEAD envoyee a Jway")
                 .to("rest:head:document/ds/{uuid}/attachment")
+                .log("Reponse : ${header.CamelHttpResponseCode}")
                 .log("Jeton CSRF obtenu = ${headers.X-CSRF-Token}")
                 .setProperty(CSRF_TOKEN, simple("${headers.X-CSRF-Token}", String.class));
 
@@ -291,8 +292,9 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader(UUID, exchangeProperty(UUID))
                 .bean(NewDocumentToJwayMapper.class)
                 .log("Headers envoyes a Jway = ${headers}")
-                .log("JSON envoye a Jway = ${body}")   // attention à ne pas tracer le contenu du fichier !
-                .to("rest:post:document/ds/{uuid}/attachment");
+//                .log("JSON envoye a Jway = ${body}")   // attention à ne pas tracer le contenu du fichier !
+                .to("rest:post:document/ds/{uuid}/attachment")
+                .log("Reponse : ${header.CamelHttpResponseCode}");
     }
 
     /**

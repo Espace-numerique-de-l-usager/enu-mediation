@@ -55,4 +55,3 @@ logging:
       apache:
         camel: INFO
       springframework: ERROR
-

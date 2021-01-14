@@ -8,12 +8,15 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.Base64;
 
+/**
+ * Cree le body de la requete multipart pour Jway.
+ */
 @Configuration
 public class NewDocumentToJwayMapper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewDocumentToJwayMapper.class);
 
-    public static final String MULTIPART_BOUNDARY = "------FormBoundaryForEnuMediation";
+    public static final String MULTIPART_BOUNDARY = "----FormBoundaryForEnuMediation";
 
     public String newDocumentToBody(NewDocument newDocument) {
 
@@ -33,31 +36,33 @@ Salut camarade !
 
          */
 
+        final String DASH_MULTIPART_BOUNDARY = "--" + MULTIPART_BOUNDARY;
+        final String SEPARATOR = "\r\n";
+
         byte[] decodedContentAsBytes = Base64.getDecoder().decode(newDocument.getContenu());
         String decodedContent = new String(decodedContentAsBytes);
+        LOGGER.info("Taille du fichier : {} bytes", decodedContent.length());
 
         String fileName = newDocument.getLibelleDocument() + "." + MimeUtils.getFileExtension(newDocument.getMime());
 
-        StringBuilder sb = new StringBuilder()
-                // champ JSON "form"
-                .append(MULTIPART_BOUNDARY).append("\n")
-                .append("Content-Disposition: form-data; name=\"form\"").append("\n")
-                .append("\n")     // ligne vide pour les en-tetes
-                .append(newDocument.getTypeDocument()).append("\n")   // a controler
+        String body = new StringBuilder()
+                // champ "form"
+                .append(DASH_MULTIPART_BOUNDARY).append(SEPARATOR)
+                .append("Content-Disposition: form-data; name=\"form\"").append(SEPARATOR)
+                .append(SEPARATOR)
+                .append(newDocument.getTypeDocument()).append(SEPARATOR)   // a controler
 
-                // champ JSON "files" avec le fichier proprement dit
-                .append(MULTIPART_BOUNDARY).append("\n")
-                .append("Content-Disposition: form-data; name=\"files\"; filename=\"").append(fileName).append("\"").append("\n")
-                .append("Content-Type: ").append(newDocument.getMime())
-                .append("\n")
-                .append("[message-part-body; type: ").append(newDocument.getMime()).append(", size: " ).append(decodedContent.length()).append(" bytes]").append("\n")
-                .append("\n")
-                .append(decodedContent).append("\n")
+                // champ "files" avec le fichier proprement dit
+                .append(DASH_MULTIPART_BOUNDARY).append(SEPARATOR)
+                .append("Content-Disposition: form-data; name=\"files\"; filename=\"").append(fileName).append("\"").append(SEPARATOR)
+                .append("Content-Type: ").append(newDocument.getMime()).append(SEPARATOR)
+                .append(SEPARATOR)
+                .append(decodedContent).append(SEPARATOR)
 
                 // fin de message
-                .append(MULTIPART_BOUNDARY).append("--");
+                .append(DASH_MULTIPART_BOUNDARY).append("--").append(SEPARATOR)
+                .toString();
 
-        String body = sb.toString();
         // trace dangereuse, a ne pas envoyer en prod, meme en DEBUG !
         LOGGER.info("body = \n{}", body);
 
