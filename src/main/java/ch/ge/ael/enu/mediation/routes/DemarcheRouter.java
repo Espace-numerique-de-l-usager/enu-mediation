@@ -4,7 +4,7 @@ import ch.ge.ael.enu.mediation.error.MessageFailureEnricher;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
-import ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapper;
+import ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapperProcessor;
 import ch.ge.ael.enu.mediation.mapping.NewSuggestionToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
@@ -18,6 +18,7 @@ import ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator;
 import ch.ge.ael.enu.mediation.metier.validation.StatusChangeValidator;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.CamelContext;
+import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.ListJacksonDataFormat;
@@ -27,7 +28,7 @@ import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import static ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapper.MULTIPART_BOUNDARY;
+import static ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapperProcessor.MULTIPART_BOUNDARY;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
 
@@ -86,9 +87,11 @@ public class DemarcheRouter extends RouteBuilder {
 
     private final Predicate isNewDemarcheEnTraitement = jsonpath("$[?(@.etat=='" + EN_TRAITEMENT + "')]");
 
-    public static final String UUID = "uuid";
+    private static final String UUID = "uuid";
 
-    public static final String CSRF_TOKEN = "csrf-token";
+    private static final String CSRF_TOKEN = "csrf-token";
+
+    private static final String CODE_REPONSE = "Reponse : HTTP ${header.CamelHttpResponseCode}";
 
     /**
      * Definition des routes.
@@ -177,6 +180,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
                 .to("rest:post:alpha/file")
+                .log(CODE_REPONSE)
                 .unmarshal(jsonToPojo(File.class))
                 .log("Demarche creee, uuid = ${body.uuid}");
 
@@ -191,6 +195,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
                 .to("rest:post:alpha/file")
+                .log(CODE_REPONSE)
                 .unmarshal(jsonToPojo(File.class))
                 .log("Suggestion creee, uuid = ${body.uuid}");
 
@@ -214,6 +219,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
+                .log(CODE_REPONSE)
                 .log("JSON obtenu de Jway = ${body}")
                 .unmarshal(jsonToList(File.class))   // en faire une propriété
                 .setProperty(UUID, simple("${body[0].uuid}", String.class))
@@ -227,7 +233,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .bean(StatusChangeToJwayStep1Mapper.class)
                 .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
-                .to("rest:post:alpha/file/{uuid}/step");
+                .to("rest:post:alpha/file/{uuid}/step")
+                .log(CODE_REPONSE);
                 // valider ici 204
 
         // changement d'etat d'une demarche, phase 3 : changement du workflowStatus
@@ -239,7 +246,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
                 .to("rest:put:alpha/file/{uuid}")
-                .log("Changement d'etat OK");
+                .log("Changement d'etat OK")
+                .log(CODE_REPONSE);
                 // valider ici 204
 
         // ajout d'un document a une demarche
@@ -262,7 +270,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", exchangeProperty("remoteUser"))
                 .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
-                .log("Reponse : ${header.CamelHttpResponseCode}")
+                .log(CODE_REPONSE)
                 .log("JSON obtenu de Jway = ${body}")
                 .unmarshal(jsonToList(File.class))   // en faire une propriété
                 .setProperty(UUID, simple("${body[0].uuid}", String.class))
@@ -278,23 +286,23 @@ public class DemarcheRouter extends RouteBuilder {
                 .marshal(pojoToJson())
                 .log("Requete HEAD envoyee a Jway")
                 .to("rest:head:document/ds/{uuid}/attachment")
-                .log("Reponse : ${header.CamelHttpResponseCode}")
+                .log(CODE_REPONSE)
                 .log("Jeton CSRF obtenu = ${headers.X-CSRF-Token}")
                 .setProperty(CSRF_TOKEN, simple("${headers.X-CSRF-Token}", String.class));
 
         // ajout d'un document a une demarche, phase 3 : requete proprement dite d'envoi à Jway
         from("direct:nouveau-document-phase-3").id("nouveau-document-phase-3")
                 .log("* ROUTE nouveau-document-phase-3")
-                .to("log:input")
-                .setHeader("Content-Type", simple("multipart/form-data;boundary=" + MULTIPART_BOUNDARY))
                 .setHeader("X-CSRF-Token", exchangeProperty(CSRF_TOKEN))
                 .setHeader("remote_user", simple("${body.idUsager}", String.class))
                 .setHeader(UUID, exchangeProperty(UUID))
-                .bean(NewDocumentToJwayMapper.class)
+                .setHeader(Exchange.CONTENT_TYPE, simple("multipart/form-data;boundary=" + MULTIPART_BOUNDARY))
+//                .bean(NewDocumentToJwayMapper.class)
+                .process(new NewDocumentToJwayMapperProcessor())
                 .log("Headers envoyes a Jway = ${headers}")
-//                .log("JSON envoye a Jway = ${body}")   // attention à ne pas tracer le contenu du fichier !
+                .log("JSON envoye a Jway = ${body}")   // attention à ne pas tracer le contenu du fichier !
                 .to("rest:post:document/ds/{uuid}/attachment")
-                .log("Reponse : ${header.CamelHttpResponseCode}");
+                .log(CODE_REPONSE);
     }
 
     /**

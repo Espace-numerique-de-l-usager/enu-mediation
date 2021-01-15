@@ -10,6 +10,8 @@ import java.util.Base64;
 
 /**
  * Cree le body de la requete multipart pour Jway.
+ *
+ * Classe pas utilisee : la classe NewDocumentToJwayMapperProcessor fait la meme chose plus proprement.
  */
 @Configuration
 public class NewDocumentToJwayMapper {
@@ -18,6 +20,10 @@ public class NewDocumentToJwayMapper {
 
     public static final String MULTIPART_BOUNDARY = "----FormBoundaryForEnuMediation";
 
+    /**
+     * Cette methode cree le Body a la main. Une maniere de faire plus elegante serait d'utiliser
+     * un MultipartEntityBuilder, cf. par ex. https://hilton.org.uk/blog/camel-multipart-form-data.
+     */
     public String newDocumentToBody(NewDocument newDocument) {
 
         /*
@@ -46,11 +52,6 @@ Salut camarade !
         String fileName = newDocument.getLibelleDocument() + "." + MimeUtils.getFileExtension(newDocument.getMime());
 
         String body = new StringBuilder()
-                // champ "form"
-                .append(DASH_MULTIPART_BOUNDARY).append(SEPARATOR)
-                .append("Content-Disposition: form-data; name=\"form\"").append(SEPARATOR)
-                .append(SEPARATOR)
-                .append(newDocument.getTypeDocument()).append(SEPARATOR)   // a controler
 
                 // champ "files" avec le fichier proprement dit
                 .append(DASH_MULTIPART_BOUNDARY).append(SEPARATOR)
