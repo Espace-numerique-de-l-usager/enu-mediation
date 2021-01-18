@@ -3,6 +3,9 @@ app:
     host: ***REMOVED***
     ***REMOVED***
     path: aelportalenu/formservices/rest
+  mediation:
+    logging:
+      max-file-content-size: 100
 
 server:
   port: 8666

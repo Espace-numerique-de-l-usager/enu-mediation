@@ -1,9 +1,7 @@
 package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.mediation.jway.model.JwayDocumentType;
-import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
 import ch.ge.ael.enu.mediation.metier.model.DocumentType;
-import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import ch.ge.ael.enu.mediation.metier.model.NewDocument;
 import ch.ge.ael.enu.mediation.util.mime.MimeUtils;
 import org.apache.camel.Exchange;
@@ -19,7 +17,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static ch.ge.ael.enu.mediation.metier.model.DocumentType.JUSTIFICATIF;
@@ -39,7 +36,7 @@ import static ch.ge.ael.enu.mediation.metier.model.DocumentType.JUSTIFICATIF;
  *
  */
 @Configuration
-public class NewDocumentToJwayMapperProcessor implements Processor{
+public class NewDocumentToJwayMapperProcessor implements Processor {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewDocumentToJwayMapperProcessor.class);
 

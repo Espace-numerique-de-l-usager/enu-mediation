@@ -16,6 +16,8 @@ import ch.ge.ael.enu.mediation.metier.model.StatusChange;
 import ch.ge.ael.enu.mediation.metier.validation.NewDemarcheValidator;
 import ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator;
 import ch.ge.ael.enu.mediation.metier.validation.StatusChangeValidator;
+import ch.ge.ael.enu.mediation.util.logging.BodyReducer;
+import ch.ge.ael.enu.mediation.util.logging.MultipartJwayBodyReducer;
 import lombok.RequiredArgsConstructor;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
@@ -51,6 +53,9 @@ public class DemarcheRouter extends RouteBuilder {
 
     @Value("${app.formsolution.path}")
     private String formSolutionPath;
+
+    @Value("${app.mediation.logging.max-file-content-size}")
+    private int maxFileContentSize;
 
     static final String MAIN_QUEUE = "rabbitmq:" +
             "simetier1-to-enu-main?" +
@@ -125,7 +130,7 @@ public class DemarcheRouter extends RouteBuilder {
         from(MAIN_QUEUE).id("route-principale")
                 .log("********************************")
                 .log("*** Message recu de RabbitMQ ***")
-                .to("log:INFO?showHeaders=true")
+                .enrich("direct:log-message", new OldExchangeStrategy())
                 .choice()
                     .when(isNewDemarche)
                         .to("direct:nouvelle-demarche")
@@ -137,6 +142,11 @@ public class DemarcheRouter extends RouteBuilder {
                         .to("direct:nouveau-document")
                     .otherwise()
                         .to("stream:err");
+
+        // trace du message entrant
+        from("direct:log-message").id("log-message")
+                .bean(new BodyReducer(maxFileContentSize))
+                .to("log:INFO?showHeaders=true");
 
         // nouvelle demarche (en "brouillon", ou directement a "deposee" ou a "en traitement")
         from("direct:nouvelle-demarche").id("nouvelle-demarche")
@@ -255,7 +265,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("* ROUTE nouveau-document")
                 .unmarshal(jsonToPojo(NewDocument.class))
                 .bean(NewDocumentValidator.class)
-                .to("log:input")      // attention à ne pas tracer le contenu du fichier !
+//                .to("log:input")      // attention à ne pas tracer le contenu du fichier !
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
                 .enrich("direct:nouveau-document-phase-1", new PropertyPropagationStrategy(UUID))
                 .enrich("direct:nouveau-document-phase-2", new PropertyPropagationStrategy(UUID, CSRF_TOKEN))
@@ -264,7 +274,7 @@ public class DemarcheRouter extends RouteBuilder {
         // ajout d'un document a une demarche, phase 1 : recuperation de son uuid
         from("direct:nouveau-document-phase-1").id("nouveau-document-phase-1")
                 .log("* ROUTE nouveau-document-phase-1")
-                .to("log:input")
+//                .to("log:input")
                 .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
                 .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
                 .setHeader("Content-Type", simple("application/json"))
@@ -300,9 +310,15 @@ public class DemarcheRouter extends RouteBuilder {
 //                .bean(NewDocumentToJwayMapper.class)
                 .process(new NewDocumentToJwayMapperProcessor())
                 .log("Headers envoyes a Jway = ${headers}")
-                .log("JSON envoye a Jway = ${body}")   // attention à ne pas tracer le contenu du fichier !
+                .enrich("direct:log-multipart-message", new OldExchangeStrategy())
                 .to("rest:post:document/ds/{uuid}/attachment")
                 .log(CODE_REPONSE);
+
+        // trace du message de creation de document envoye a Jway
+        from("direct:log-multipart-message").id("log-multipart-message")
+                .bean(new MultipartJwayBodyReducer(maxFileContentSize))
+                .log("JSON envoye a Jway = ${body}")
+                .to("log:INFO?showHeaders=true");
     }
 
     /**
