@@ -13,7 +13,7 @@ public class DemarcheDelete {
     private String idDemarcheSiMetier;
 
     public DemarcheDelete newDemarcheDelete(
-                          @Header("idClientDemande") String idDemarcheSiMetier,
+                          @Header("idDemarcheSiMetier") String idDemarcheSiMetier,
                           @Header("idPrestation") String idPrestation,
                           @Header("idUsager") String idUsager) {
         this.idDemarcheSiMetier = idDemarcheSiMetier;
