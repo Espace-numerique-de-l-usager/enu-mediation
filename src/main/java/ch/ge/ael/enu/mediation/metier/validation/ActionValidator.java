@@ -20,8 +20,8 @@ public class ActionValidator {
 
     void validate(
             String libelleAction,
-            String typeAction,
             String urlAction,
+            String typeAction,
             String dateEcheanceAction) {
 
         if (libelleAction == null) {
@@ -30,13 +30,12 @@ public class ActionValidator {
             checkAbsentIfOtherAbsent(dateEcheanceAction, "dateEcheanceAction", libelleAction, "libelleAction");
         } else {
             checkSize(libelleAction, 2, 50, "libelleAction");
-            if (typeAction == null) {
-                checkAbsentIfOtherAbsent(urlAction, "urlAction", typeAction, "typeAction");
-                checkAbsentIfOtherAbsent(dateEcheanceAction, "dateEcheanceAction", typeAction, "typeAction");
+            if (urlAction == null) {
+                checkAbsentIfOtherAbsent(typeAction, "typeAction", urlAction, "urlAction");
+                checkAbsentIfOtherAbsent(dateEcheanceAction, "dateEcheanceAction", urlAction, "urlAction");
             } else {
                 checkEnum(typeAction, ActionType.class, "typeAction");
-                checkPresentIfOtherPresent(urlAction, "urlAction", typeAction, "typeAction");
-                checkPresentIfOtherPresent(dateEcheanceAction, "dateEcheanceAction", typeAction, "typeAction");
+                checkPresentIfOtherPresent(dateEcheanceAction, "dateEcheanceAction", urlAction, "urlAction");
                 checkUrl(urlAction, "urlAction");
                 checkDate(dateEcheanceAction, "dateEcheanceAction");
             }

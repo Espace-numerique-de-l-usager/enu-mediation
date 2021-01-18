@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkDate;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
-import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdDemarcheSiMetier;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdPrestation;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdUsager;
@@ -43,8 +42,8 @@ public class StatusChangeValidator {
 
         new ActionValidator().validate(
                 message.getLibelleAction(),
-                message.getTypeAction(),
                 message.getUrlAction(),
+                message.getTypeAction(),
                 message.getDateEcheanceAction());
 
         LOGGER.info("Validation OK");

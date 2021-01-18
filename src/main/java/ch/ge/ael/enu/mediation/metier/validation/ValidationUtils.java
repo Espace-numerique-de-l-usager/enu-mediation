@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class ValidationUtils {
 
@@ -91,15 +92,41 @@ public class ValidationUtils {
     }
 
     /**
+     * Leve une erreur si value est non null alors que otherValue vaut someOtherValue.
+     */
+    public static void checkAbsentIfOtherHasValue(String value, String fieldName,
+                                                  String otherValue, String otherFieldName, String someOtherValue) {
+        if (value != null && Objects.equals(otherValue, someOtherValue)) {
+            LOGGER.info("Erreur metier : le champ [{}] doit etre nul quand le champ [{}] vaut [{}]",
+                    fieldName, otherFieldName, someOtherValue);
+            throw new ValidationException("Le champ \"" + fieldName + "\" ne peut pas être fourni quand le champ \""
+                    + otherFieldName + "\" vaut \"" + someOtherValue + "\".");
+        }
+    }
+
+    /**
      * Leve une erreur si value est null alors que otherValue est non null.
      */
     public static void checkPresentIfOtherPresent(String value, String fieldName,
                                                   String otherValue, String otherFieldName) {
         if (value == null && otherValue != null) {
-            LOGGER.info("Erreur metier : le champ [{}] doit etre non null quand le champ [{}] valant [{}] est non null",
+            LOGGER.info("Erreur metier : le champ [{}] doit etre non nul quand le champ [{}] valant [{}] est non nul",
                     fieldName, otherFieldName, otherValue);
             throw new ValidationException("Le champ \"" + fieldName + "\" doit être fourni quand le champ \""
                     + otherFieldName + "\" est fourni.");
+        }
+    }
+
+    /**
+     * Leve une erreur si value est null alors que otherValue vaut someOtherValue.
+     */
+    public static void checkPresentIfOtherHasValue(String value, String fieldName,
+                                                   String otherValue, String otherFieldName, String someOtherValue) {
+        if (value == null && Objects.equals(otherValue, someOtherValue)) {
+            LOGGER.info("Erreur metier : le champ [{}] doit etre non nul quand le champ [{}] vaut [{}]",
+                    fieldName, otherFieldName, someOtherValue);
+            throw new ValidationException("Le champ \"" + fieldName + "\" doit etre fourni quand le champ \""
+                    + otherFieldName + "\" vaut \"" + someOtherValue + "\".");
         }
     }
 

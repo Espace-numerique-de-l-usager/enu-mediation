@@ -7,11 +7,13 @@ import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.BROUILLON;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.TERMINEE;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkPresentIfOtherPresent;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdDemarcheSiMetier;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdPrestation;
@@ -55,11 +57,18 @@ public class NewDemarcheValidator {
             throw new ValidationException("On ne peut pas creer de demarche directement a l'etat " + TERMINEE);
         }
 
-        new ActionValidator().validate(
-                message.getLibelleAction(),
-                message.getTypeAction(),
-                message.getUrlAction(),
-                message.getDateEcheanceAction());
+        if (status == BROUILLON) {
+            ValidationUtils.checkAbsentIfOtherHasValue(message.getLibelleAction(), "libelleAction", status.name(), "status", BROUILLON.name());
+            ValidationUtils.checkPresentIfOtherHasValue(message.getUrlAction(), "urlAction", status.name(), "status", BROUILLON.name());
+            ValidationUtils.checkAbsentIfOtherHasValue(message.getTypeAction(), "typeAction", status.name(), "status", BROUILLON.name());
+        } else {
+            checkPresentIfOtherPresent(message.getTypeAction(), "typeAction", message.getUrlAction(), "urlAction");
+            new ActionValidator().validate(
+                    message.getLibelleAction(),
+                    message.getUrlAction(),
+                    message.getTypeAction(),
+                    message.getDateEcheanceAction());
+        }
 
         LOGGER.info("Validation OK");
         return message;  // important !
