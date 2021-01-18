@@ -32,7 +32,7 @@ public class BodyReducer {
             int lengthContenu = sBody.substring(indexStartContenu).indexOf("\"");        // longueur du champ "contenu"
             if (lengthContenu > getEffectiveMaxFileSize()) {
                 toLog = sBody.substring(0, indexStartContenu + SHOW_BEFORE)
-                        + "... (champ tronque, car trop long) ..."
+                        + TRUNCATION
                         + sBody.substring(indexStartContenu + lengthContenu - SHOW_AFTER);
             }
         }
@@ -46,8 +46,7 @@ public class BodyReducer {
      * Un contenu de fichier plus grand que cette valeur sera affiche de maniere tronquee.
      */
     private int getEffectiveMaxFileSize() {
-        int minMaxFileSize = (SHOW_BEFORE + TRUNCATION + SHOW_AFTER).length();;
-        return maxFileSize > minMaxFileSize ? maxFileSize : minMaxFileSize;
+        return Math.max(maxFileSize, SHOW_BEFORE + TRUNCATION.length() + SHOW_AFTER);
     }
 
 }
