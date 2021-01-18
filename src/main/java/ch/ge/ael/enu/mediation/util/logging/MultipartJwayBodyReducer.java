@@ -48,8 +48,7 @@ public class MultipartJwayBodyReducer {
      * Un contenu de fichier plus grand que cette valeur sera affiche de maniere tronquee.
      */
     private int getEffectiveMaxFileSize() {
-        final int minMaxFileSize = SHOW_BEFORE + TRUNCATION.length() + SHOW_AFTER;
-        return maxFileSize > minMaxFileSize ? maxFileSize : minMaxFileSize;
+        return Math.max(maxFileSize, SHOW_BEFORE + TRUNCATION.length() + SHOW_AFTER);
     }
 
 }
