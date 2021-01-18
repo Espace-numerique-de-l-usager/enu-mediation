@@ -26,4 +26,7 @@ public class NewSuggestion {
     /** Description complete de l'action. */
     private String descriptionAction;
 
+    /** URL du livret de la prestation */
+    private String urlPrestation;
+
 }
