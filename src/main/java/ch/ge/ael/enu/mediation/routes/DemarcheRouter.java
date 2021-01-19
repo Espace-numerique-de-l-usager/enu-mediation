@@ -30,6 +30,8 @@ import org.apache.camel.model.dataformat.JsonLibrary;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 import static ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapperProcessor.MULTIPART_BOUNDARY;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
@@ -54,8 +56,20 @@ public class DemarcheRouter extends RouteBuilder {
     @Value("${app.formsolution.path}")
     private String formSolutionPath;
 
+    /**
+     * Taille (en bytes Base 64) des fichiers au-dela de laquelle le contenu des fichiers n'est plus trace
+     * dans la console et dans les fichiers de traces.
+     */
     @Value("${app.mediation.logging.max-file-content-size}")
     private int maxFileContentSize;
+
+    /**
+     * Types MIME (par ex. 'applicatiopn/pdf') de documents acceptes par la mediation.
+     * Si un type est ajoute a cette liste, le document n'est pas pour autant forcement accepte par FormServices,
+     * qui a sa propre liste de types acceptes.
+     */
+    @Value("${app.mediation.document.mime-types}")
+    private List<String> allowedMimeTypes;
 
     static final String MAIN_QUEUE = "rabbitmq:" +
             "simetier1-to-enu-main?" +
@@ -264,8 +278,7 @@ public class DemarcheRouter extends RouteBuilder {
         from("direct:nouveau-document").id("nouveau-document")
                 .log("* ROUTE nouveau-document")
                 .unmarshal(jsonToPojo(NewDocument.class))
-                .bean(NewDocumentValidator.class)
-//                .to("log:input")      // attention à ne pas tracer le contenu du fichier !
+                .bean(new NewDocumentValidator(allowedMimeTypes))
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
                 .enrich("direct:nouveau-document-phase-1", new PropertyPropagationStrategy(UUID))
                 .enrich("direct:nouveau-document-phase-2", new PropertyPropagationStrategy(UUID, CSRF_TOKEN))
@@ -274,7 +287,6 @@ public class DemarcheRouter extends RouteBuilder {
         // ajout d'un document a une demarche, phase 1 : recuperation de son uuid
         from("direct:nouveau-document-phase-1").id("nouveau-document-phase-1")
                 .log("* ROUTE nouveau-document-phase-1")
-//                .to("log:input")
                 .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
                 .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
                 .setHeader("Content-Type", simple("application/json"))
