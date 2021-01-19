@@ -1,13 +1,12 @@
 app:
+  document:
+    mime-types: application/pdf
   formsolution:
     host: ***REMOVED***
     ***REMOVED***
     path: aelportalenu/formservices/rest
-  mediation:
-    document:
-      mime-types: application/pdf
-    logging:
-      max-file-content-size: 100
+  logging:
+    max-file-content-size: 100
 
 server:
   port: 8666

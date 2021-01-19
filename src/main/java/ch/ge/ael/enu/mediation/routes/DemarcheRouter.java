@@ -60,7 +60,7 @@ public class DemarcheRouter extends RouteBuilder {
      * Taille (en bytes Base 64) des fichiers au-dela de laquelle le contenu des fichiers n'est plus trace
      * dans la console et dans les fichiers de traces.
      */
-    @Value("${app.mediation.logging.max-file-content-size}")
+    @Value("${app.logging.max-file-content-size}")
     private int maxFileContentSize;
 
     /**
@@ -68,7 +68,7 @@ public class DemarcheRouter extends RouteBuilder {
      * Si un type est ajoute a cette liste, le document n'est pas pour autant forcement accepte par FormServices,
      * qui a sa propre liste de types acceptes.
      */
-    @Value("${app.mediation.document.mime-types}")
+    @Value("${app.document.mime-types}")
     private List<String> allowedMimeTypes;
 
     static final String MAIN_QUEUE = "rabbitmq:" +
@@ -144,6 +144,7 @@ public class DemarcheRouter extends RouteBuilder {
         from(MAIN_QUEUE).id("route-principale")
                 .log("********************************")
                 .log("*** Message recu de RabbitMQ ***")
+                .log("********************************")
                 .enrich("direct:log-message", new OldExchangeStrategy())
                 .choice()
                     .when(isNewDemarche)
