@@ -4,6 +4,8 @@ app:
     ***REMOVED***
     path: aelportalenu/formservices/rest
   mediation:
+    document:
+      mime-types: application/pdf
     logging:
       max-file-content-size: 100
 
