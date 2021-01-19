@@ -29,8 +29,11 @@ public class NewDemarcheToJwayMapper {
         file.setWorkflowStatus(jwayStatus);
         file.setStatus(jwayStatus);
 
-        if (is(newDemarche, BROUILLON) && newDemarche.getLibelleAction() != null) {
-            file.setStepDescription("|" + newDemarche.getLibelleAction());
+        if (is(newDemarche, BROUILLON)) {
+            if (newDemarche.getLibelleAction() != null) {
+                file.setStepDescription("|" + newDemarche.getLibelleAction());
+            }
+
             file.setToDate(newDemarche.getDateEcheanceAction());
 
             Form form = new Form();
