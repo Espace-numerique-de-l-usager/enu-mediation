@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<!-- this default value is used only in deployed WAR execution. In spring-boot:run execution, see the POM -->
+	<springProperty scope="context" name="logDir" source="app.log.directory" defaultValue="../logs"/>
+
+	<!-- Console appender -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %msg  \(%logger{36}.%M %line\)%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+	</appender>
+
+	<!-- File appender -->
+	<appender name="FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- log file name -->
+			<fileNamePattern>./logs/enu-mediation-%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>5MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- keep 30 days' worth of history -->
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{HH:mm:ss.SSS} %-5level %msg%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+	</appender>
+
+	<!-- Root logger -->
+	<root level="INFO">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+
+</configuration>
