@@ -8,6 +8,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MIME;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,17 +24,6 @@ import static ch.ge.ael.enu.mediation.metier.model.DocumentType.JUSTIFICATIF;
 
 /**
  * Cree le body de la requete <strong>multipart</strong> pour Jway.
- * <p/>
- * Ne fonctionne pas : on obtient une erreur HTTP 400. Differences avec la version NewDocumentToJwayMapper :
- * - l'en-tete principal vaut
- *     Content-Type=multipart/form-data;boundary=----FormBoundaryForEnuMediation (version OK, avec NewDocumentToJwayMapper)
- *     Content-Type=multipart/form-data                                          (version KO, avec cette classe-ci)
- * - dans la partie du fichier, en plus des en-tetes 'Content-Disposition: form-data; name="files"; filename="Un manifeste.jpg"'
- *   et 'Content-Type: image/jpeg', on a :
- *     (rien)                            (version OK, avec NewDocumentToJwayMapper)
- *     Content-Transfer-Encoding: binary (version KO, avec cette classe-ci)
- *  C'est surement la 1ere difference qui fait planter. Avec NewDocumentToJwayMapper, sans "boundary=...", ça plante aussi.
- *
  */
 @Configuration
 public class NewDocumentToJwayMapperProcessor implements Processor {
@@ -48,20 +38,20 @@ public class NewDocumentToJwayMapperProcessor implements Processor {
 
         // preparation des donnees
         byte[] decodedContentAsBytes = Base64.getDecoder().decode(newDocument.getContenu());
-        String decodedContent = new String(decodedContentAsBytes);
-        LOGGER.info("Taille du fichier : {} bytes", decodedContent.length());
         String mime = newDocument.getMime();
         String name = newDocument.getLibelleDocument() + "|" + newDocument.getIdDocumentSiMetier();
         String fileName = (newDocument.getLibelleDocument() + "." + MimeUtils.getFileExtension(newDocument.getMime()));
 //                .replaceAll("\\s", "_");    // ne marche pas : l'upload enleve les underscores
-        LOGGER.info("fileName = {}", fileName);
-        JwayDocumentType type = is(newDocument, JUSTIFICATIF) ? JwayDocumentType.ATTACHMENT : JwayDocumentType.REPORT;
+        JwayDocumentType type = isJustificatif(newDocument) ? JwayDocumentType.ATTACHMENT : JwayDocumentType.REPORT;
+
+        // pour le champ "name", il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
+        ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
 
         // construction de la requete multipart
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setBoundary(MULTIPART_BOUNDARY);
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
-        builder.addTextBody("name", name);
+        builder.addTextBody("name", name, textPlainUtf8);
         builder.addTextBody("type", type.name());   // pas encore pret, dixit Julien F.
         builder.addBinaryBody("files", decodedContentAsBytes, ContentType.create(mime), fileName);
 
@@ -72,8 +62,8 @@ public class NewDocumentToJwayMapperProcessor implements Processor {
         exchange.getIn().setBody(in);
     }
 
-    private boolean is(NewDocument newDocument, DocumentType type) {
-        return DocumentType.valueOf(newDocument.getTypeDocument()) == type;
+    private boolean isJustificatif(NewDocument newDocument) {
+        return DocumentType.valueOf(newDocument.getTypeDocument()) == JUSTIFICATIF;
     }
 
 }
