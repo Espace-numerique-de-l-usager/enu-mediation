@@ -72,12 +72,6 @@ public class ValidationUtils {
         }
     }
 
-    public static void checkUrl(String value, String fieldName) {
-        final int URL_MIN_LENGTH = 10;
-        final int URL_MAX_LENGTH = 200;
-        checkSize(value, URL_MIN_LENGTH, URL_MAX_LENGTH, fieldName);
-    }
-
     /**
      * Leve une erreur si value est non null alors que otherValue est null.
      */
@@ -87,7 +81,7 @@ public class ValidationUtils {
             LOGGER.info("Erreur metier : le champ [{}] valant [{}] doit etre null quand le champ [{}] est null",
                     fieldName, value, otherFieldName);
             throw new ValidationException("Le champ \"" + fieldName + "\" ne peut pas être fourni quand le champ \""
-                    + otherFieldName + "\" n'est pas fourni.");
+                    + otherFieldName + "\" n'est pas fourni");
         }
     }
 
@@ -100,7 +94,7 @@ public class ValidationUtils {
             LOGGER.info("Erreur metier : le champ [{}] doit etre nul quand le champ [{}] vaut [{}]",
                     fieldName, otherFieldName, someOtherValue);
             throw new ValidationException("Le champ \"" + fieldName + "\" ne peut pas être fourni quand le champ \""
-                    + otherFieldName + "\" vaut \"" + someOtherValue + "\".");
+                    + otherFieldName + "\" vaut \"" + someOtherValue + "\"");
         }
     }
 
@@ -113,7 +107,7 @@ public class ValidationUtils {
             LOGGER.info("Erreur metier : le champ [{}] doit etre non nul quand le champ [{}] valant [{}] est non nul",
                     fieldName, otherFieldName, otherValue);
             throw new ValidationException("Le champ \"" + fieldName + "\" doit être fourni quand le champ \""
-                    + otherFieldName + "\" est fourni.");
+                    + otherFieldName + "\" est fourni");
         }
     }
 
@@ -126,7 +120,7 @@ public class ValidationUtils {
             LOGGER.info("Erreur metier : le champ [{}] doit etre non nul quand le champ [{}] vaut [{}]",
                     fieldName, otherFieldName, someOtherValue);
             throw new ValidationException("Le champ \"" + fieldName + "\" doit etre fourni quand le champ \""
-                    + otherFieldName + "\" vaut \"" + someOtherValue + "\".");
+                    + otherFieldName + "\" vaut \"" + someOtherValue + "\"");
         }
     }
 
@@ -140,6 +134,16 @@ public class ValidationUtils {
 
     public static void checkSizeIdDemarcheSiMetier(String value) {
         checkSize(value, 1, 50, "idDemarcheSiMetier");
+    }
+
+    public static void checkSizeUrl(String value, String fieldName) {
+        final int URL_MIN_LENGTH = 10;
+        final int URL_MAX_LENGTH = 200;
+        checkSize(value, URL_MIN_LENGTH, URL_MAX_LENGTH, fieldName);
+    }
+
+    public static void checkSizeDate(String value, String fieldName) {
+        checkSize(value, 4, 30, fieldName);
     }
 
 }

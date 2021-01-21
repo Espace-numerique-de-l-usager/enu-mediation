@@ -14,9 +14,9 @@ class ActionValidatorTest {
 
     @Test
     void check2() {
-        assertThatThrownBy(() -> new ActionValidator().validate(null, null, "pipo", null))
+        assertThatThrownBy(() -> new ActionValidator().validate(null, null, null, "2023-02-18"))
                 .isInstanceOf(ValidationException.class)
-                .hasMessage("Le champ \"typeAction\" ne peut pas être fourni quand le champ \"libelleAction\" n'est pas fourni.");
+                .hasMessage("Le champ \"dateEcheanceAction\" ne peut pas être fourni quand le champ \"libelleAction\" n'est pas fourni");
     }
 
 }

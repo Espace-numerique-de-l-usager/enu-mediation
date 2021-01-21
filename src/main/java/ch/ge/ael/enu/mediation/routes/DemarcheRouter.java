@@ -15,6 +15,7 @@ import ch.ge.ael.enu.mediation.metier.model.NewSuggestion;
 import ch.ge.ael.enu.mediation.metier.model.StatusChange;
 import ch.ge.ael.enu.mediation.metier.validation.NewDemarcheValidator;
 import ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator;
+import ch.ge.ael.enu.mediation.metier.validation.NewSuggestionValidator;
 import ch.ge.ael.enu.mediation.metier.validation.StatusChangeValidator;
 import ch.ge.ael.enu.mediation.util.logging.BodyReducer;
 import ch.ge.ael.enu.mediation.util.logging.MultipartJwayBodyReducer;
@@ -216,6 +217,7 @@ public class DemarcheRouter extends RouteBuilder {
         from("direct:nouvelleSuggestion").id("nouvelle-suggestion")
                 .log("* ROUTE nouvelleSuggestion")
                 .unmarshal(jsonToPojo(NewSuggestion.class))
+                .bean(NewSuggestionValidator.class)
                 .to("log:input")
                 .setHeader("Content-Type", simple("application/json"))
                 .setHeader("remote_user", simple("${body.idUsager}", String.class))

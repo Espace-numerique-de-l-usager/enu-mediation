@@ -7,7 +7,7 @@ public class IllegalStringSizeException extends ValidationException {
 
     public IllegalStringSizeException(String value, int minSize, int maxSize, String fieldName) {
         super("La valeur \"" + truncateIfTooLong(value) + "\" du champ \"" + fieldName + "\" est d'une taille incorrecte."
-                + " Taille attendue : entre " + minSize + " et " + maxSize + " caracteres.");
+                + " Taille attendue : entre " + minSize + " et " + maxSize + " caracteres");
     }
 
     /**

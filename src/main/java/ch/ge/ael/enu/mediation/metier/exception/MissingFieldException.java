@@ -6,7 +6,7 @@ package ch.ge.ael.enu.mediation.metier.exception;
 public class MissingFieldException extends ValidationException {
 
     public MissingFieldException(String fieldName) {
-      super("Le champ \"" + fieldName + "\" manque.");
+      super("Le champ \"" + fieldName + "\" manque");
     }
 
     public MissingFieldException(String fieldName, String complement) {

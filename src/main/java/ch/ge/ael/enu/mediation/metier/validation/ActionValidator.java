@@ -9,14 +9,22 @@ import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkDat
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkPresentIfOtherPresent;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
-import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkUrl;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeUrl;
 
 /**
- * Factorize la validation d'une "action", presente dans plusieurs messages JSON (NewDemarche, StatusChange).
+ * Factorise la validation d'une "action", presente dans plusieurs messages JSON (NewDemarche, StatusChange).
  */
 public class ActionValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ActionValidator.class);
+
+    static final String TYPE_ACTION = "typeAction";
+
+    static final String URL_ACTION = "urlAction";
+
+    static final String LIBELLE_ACTION = "libelleAction";
+
+    static final String DATE_ECHEANCE_ACTION = "dateEcheanceAction";
 
     void validate(
             String libelleAction,
@@ -25,19 +33,17 @@ public class ActionValidator {
             String dateEcheanceAction) {
 
         if (libelleAction == null) {
-            checkAbsentIfOtherAbsent(typeAction, "typeAction", libelleAction, "libelleAction");
-            checkAbsentIfOtherAbsent(urlAction, "urlAction", libelleAction, "libelleAction");
-            checkAbsentIfOtherAbsent(dateEcheanceAction, "dateEcheanceAction", libelleAction, "libelleAction");
+            checkAbsentIfOtherAbsent(urlAction, URL_ACTION, libelleAction, LIBELLE_ACTION);
+            checkAbsentIfOtherAbsent(dateEcheanceAction, DATE_ECHEANCE_ACTION, libelleAction, LIBELLE_ACTION);
         } else {
-            checkSize(libelleAction, 2, 50, "libelleAction");
+            checkSize(libelleAction, 2, 50, LIBELLE_ACTION);
+            checkEnum(typeAction, ActionType.class, TYPE_ACTION);
             if (urlAction == null) {
-                checkAbsentIfOtherAbsent(typeAction, "typeAction", urlAction, "urlAction");
-                checkAbsentIfOtherAbsent(dateEcheanceAction, "dateEcheanceAction", urlAction, "urlAction");
+                checkAbsentIfOtherAbsent(dateEcheanceAction, DATE_ECHEANCE_ACTION, urlAction, URL_ACTION);
             } else {
-                checkEnum(typeAction, ActionType.class, "typeAction");
-                checkPresentIfOtherPresent(dateEcheanceAction, "dateEcheanceAction", urlAction, "urlAction");
-                checkUrl(urlAction, "urlAction");
-                checkDate(dateEcheanceAction, "dateEcheanceAction");
+                checkPresentIfOtherPresent(dateEcheanceAction, DATE_ECHEANCE_ACTION, urlAction, URL_ACTION);
+                checkSizeUrl(urlAction, URL_ACTION);
+                checkDate(dateEcheanceAction, DATE_ECHEANCE_ACTION);
             }
         }
     }

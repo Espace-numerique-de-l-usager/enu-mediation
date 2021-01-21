@@ -26,31 +26,43 @@ public class NewDemarcheValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewDemarcheValidator.class);
 
+    private static final String ID_PRESTATION = "idPrestation";
+
+    private static final String ID_USAGER = "idUsager";
+
+    private static final String ID_DEMARCHE_SI_METIER = "idDemarcheSiMetier";
+
+    private static final String ETAT = "etat";
+
+    private static final String DATE_DEPOT = "dateDepot";
+
+    private static final String DATE_MISE_EN_TRAITEMENT = "dateMiseEnTraitement";
+
     public NewDemarche validate(NewDemarche message) {
         LOGGER.info("Dans NewDemarcheValidator");
 
-        checkExistence(message.getIdPrestation(), "idPrestation");
-        checkExistence(message.getIdUsager(), "idUsager");
-        checkExistence(message.getIdDemarcheSiMetier(), "idDemarcheSiMetier");
-        checkExistence(message.getEtat(), "etat");
+        checkExistence(message.getIdPrestation(), ID_PRESTATION);
+        checkExistence(message.getIdUsager(), ID_USAGER);
+        checkExistence(message.getIdDemarcheSiMetier(), ID_DEMARCHE_SI_METIER);
+        checkExistence(message.getEtat(), ETAT);
 
         checkSizeIdPrestation(message.getIdPrestation());
         checkSizeIdUsager(message.getIdUsager());
         checkSizeIdDemarcheSiMetier(message.getIdDemarcheSiMetier());
-        checkSize(message.getLibelleAction(), 1, 100, "libelleAction");
+        checkSize(message.getEtat(), 1, 20, ETAT);
 
-        checkEnum(message.getEtat(), DemarcheStatus.class, "etat");
+        checkEnum(message.getEtat(), DemarcheStatus.class, ETAT);
 
         DemarcheStatus status = DemarcheStatus.valueOf(message.getEtat());
         if ((status == DEPOSEE || status == EN_TRAITEMENT) && message.getDateDepot() == null) {
-            LOGGER.info("Erreur metier : champ [dateDepot] obligatoire quand etat = {}", status);
-            throw new MissingFieldException("dateDepot",
-                    "Ce champ est obligatoire quand etat = " + status);
+            LOGGER.info("Erreur metier : champ [{}] obligatoire quand {} = {}", DATE_DEPOT, ETAT, status);
+            throw new MissingFieldException(DATE_DEPOT,
+                    "Ce champ est obligatoire quand " + ETAT + " = " + status);
         }
         if (status == EN_TRAITEMENT && message.getDateMiseEnTraitement() == null) {
-            LOGGER.info("Erreur metier : champ [dateMiseEnTraitement] obligatoire quand etat = {}", status);
-            throw new MissingFieldException("dateMiseEnTraitement",
-                    "Ce champ est obligatoire quand etat = " + status);
+            LOGGER.info("Erreur metier : champ [{}] obligatoire quand {} = {}", DATE_MISE_EN_TRAITEMENT, ETAT, status);
+            throw new MissingFieldException(DATE_MISE_EN_TRAITEMENT,
+                    "Ce champ est obligatoire quand " + ETAT + " = " + status);
         }
         if (status == TERMINEE) {
             LOGGER.info("Erreur metier : on ne peut pas creer de demarche a l'etat {}", TERMINEE);
@@ -58,11 +70,13 @@ public class NewDemarcheValidator {
         }
 
         if (status == BROUILLON) {
-            ValidationUtils.checkAbsentIfOtherHasValue(message.getLibelleAction(), "libelleAction", status.name(), "status", BROUILLON.name());
-            ValidationUtils.checkPresentIfOtherHasValue(message.getUrlAction(), "urlAction", status.name(), "status", BROUILLON.name());
-            ValidationUtils.checkAbsentIfOtherHasValue(message.getTypeAction(), "typeAction", status.name(), "status", BROUILLON.name());
+            ValidationUtils.checkAbsentIfOtherHasValue(message.getLibelleAction(), ActionValidator.LIBELLE_ACTION,
+                    status.name(), ETAT, BROUILLON.name());
+            ValidationUtils.checkPresentIfOtherHasValue(message.getUrlAction(), ActionValidator.URL_ACTION,
+                    status.name(), ETAT, BROUILLON.name());
+            ValidationUtils.checkAbsentIfOtherHasValue(message.getTypeAction(), ActionValidator.TYPE_ACTION,
+                    status.name(), ETAT, BROUILLON.name());
         } else {
-            checkPresentIfOtherPresent(message.getTypeAction(), "typeAction", message.getUrlAction(), "urlAction");
             new ActionValidator().validate(
                     message.getLibelleAction(),
                     message.getUrlAction(),

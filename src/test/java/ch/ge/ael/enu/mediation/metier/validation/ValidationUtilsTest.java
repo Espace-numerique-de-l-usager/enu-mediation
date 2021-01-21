@@ -22,7 +22,7 @@ class ValidationUtilsTest {
     void checkExistence_of_null_value_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkExistence(null, "someField"))
                 .isInstanceOf(MissingFieldException.class)
-                .hasMessage("Le champ \"someField\" manque.");
+                .hasMessage("Le champ \"someField\" manque");
     }
 
     @Test
@@ -56,17 +56,17 @@ class ValidationUtilsTest {
     void checkSize_with_too_small_value_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkSize("tooShort", 20, 30, "someField"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"tooShort\" du champ \"someField\" est d'une taille incorrecte. Taille attendue : entre 20 et 30 caracteres.");
+                .hasMessage("La valeur \"tooShort\" du champ \"someField\" est d'une taille incorrecte. Taille attendue : entre 20 et 30 caracteres");
         assertThatThrownBy(() -> ValidationUtils.checkSize("   abc   ", 4, 30, "someField"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"abc\" du champ \"someField\" est d'une taille incorrecte. Taille attendue : entre 4 et 30 caracteres.");
+                .hasMessage("La valeur \"abc\" du champ \"someField\" est d'une taille incorrecte. Taille attendue : entre 4 et 30 caracteres");
     }
 
     @Test
     void checkSize_with_too_large_value_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkSize("tooLong", 1, 5, "someField"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"tooLong\" du champ \"someField\" est d'une taille incorrecte. Taille attendue : entre 1 et 5 caracteres.");
+                .hasMessage("La valeur \"tooLong\" du champ \"someField\" est d'une taille incorrecte. Taille attendue : entre 1 et 5 caracteres");
     }
 
     @Test
@@ -79,27 +79,27 @@ class ValidationUtilsTest {
     void checkDate_with_wrong_date_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkDate("2021", "someDateField1"))
                 .isInstanceOf(MalformedDateException.class)
-                .hasMessage("La valeur \"2021\" du champ \"someDateField1\" est incorrecte. Le format attendu est \"yyyy-MM-dd\".");
+                .hasMessage("La valeur \"2021\" du champ \"someDateField1\" est incorrecte. Le format attendu est \"yyyy-MM-dd\"");
         assertThatThrownBy(() -> ValidationUtils.checkDate("2021_02_18", "someDateField2"))
                 .isInstanceOf(MalformedDateException.class)
-                .hasMessage("La valeur \"2021_02_18\" du champ \"someDateField2\" est incorrecte. Le format attendu est \"yyyy-MM-dd\".");
+                .hasMessage("La valeur \"2021_02_18\" du champ \"someDateField2\" est incorrecte. Le format attendu est \"yyyy-MM-dd\"");
         assertThatThrownBy(() -> ValidationUtils.checkDate("2021-02-18T09:00:00", "someDateField3"))
                 .isInstanceOf(MalformedDateException.class)
-                .hasMessage("La valeur \"2021-02-18T09:00:00\" du champ \"someDateField3\" est incorrecte. Le format attendu est \"yyyy-MM-dd\".");
+                .hasMessage("La valeur \"2021-02-18T09:00:00\" du champ \"someDateField3\" est incorrecte. Le format attendu est \"yyyy-MM-dd\"");
     }
 
     @Test
-    void checkUrl_with_correct_url_should_succeed() {
-        ValidationUtils.checkUrl(null, "someUrlField");
-        ValidationUtils.checkUrl("https://www.pcp.pt", "someUrlField");
-        ValidationUtils.checkUrl("Une URL un peu bizarre", "someUrlField");
+    void checkSizeUrl_with_correct_url_should_succeed() {
+        ValidationUtils.checkSizeUrl(null, "someUrlField");
+        ValidationUtils.checkSizeUrl("https://www.pcp.pt", "someUrlField");
+        ValidationUtils.checkSizeUrl("Une URL un peu bizarre", "someUrlField");
     }
 
     @Test
-    void checkUrl_with_wrong_url_should_fail() {
-        assertThatThrownBy(() -> ValidationUtils.checkUrl("short", "someUrlField1"))
+    void checkSizeUrl_with_wrong_url_should_fail() {
+        assertThatThrownBy(() -> ValidationUtils.checkSizeUrl("short", "someUrlField1"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"short\" du champ \"someUrlField1\" est d'une taille incorrecte. Taille attendue : entre 10 et 200 caracteres.");
+                .hasMessage("La valeur \"short\" du champ \"someUrlField1\" est d'une taille incorrecte. Taille attendue : entre 10 et 200 caracteres");
 
         String longUrl = "https://someSite/path?" +
                 " 123456789 123456789 123456789 123456789 123456789" +
@@ -108,9 +108,9 @@ class ValidationUtilsTest {
                 " 123456789 123456789 123456789 123456789 123456789" +
                 " 123456789 123456789 123456789 123456789 123456789" +
                 " 123456789 123456789 123456789 123456789 123456789";
-        assertThatThrownBy(() -> ValidationUtils.checkUrl(longUrl, "someUrlField2"))
+        assertThatThrownBy(() -> ValidationUtils.checkSizeUrl(longUrl, "someUrlField2"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"" + longUrl + "\" du champ \"someUrlField2\" est d'une taille incorrecte. Taille attendue : entre 10 et 200 caracteres.");
+                .hasMessage("La valeur \"" + longUrl + "\" du champ \"someUrlField2\" est d'une taille incorrecte. Taille attendue : entre 10 et 200 caracteres");
     }
 
     @Test
@@ -132,7 +132,7 @@ class ValidationUtilsTest {
     void checkAbsentIfOtherAbsent_with_present_absent_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkAbsentIfOtherAbsent("someValue", "someField", null, "someOtherField"))
                 .isInstanceOf(ValidationException.class)
-                .hasMessage("Le champ \"someField\" ne peut pas être fourni quand le champ \"someOtherField\" n'est pas fourni.");
+                .hasMessage("Le champ \"someField\" ne peut pas être fourni quand le champ \"someOtherField\" n'est pas fourni");
     }
 
     @Test
@@ -154,7 +154,7 @@ class ValidationUtilsTest {
     void checkPresentIfOtherPresent_with_absent_present_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkPresentIfOtherPresent(null, "someField", "someOtherValue", "someOtherField"))
                 .isInstanceOf(ValidationException.class)
-                .hasMessage("Le champ \"someField\" doit être fourni quand le champ \"someOtherField\" est fourni.");
+                .hasMessage("Le champ \"someField\" doit être fourni quand le champ \"someOtherField\" est fourni");
     }
 
 }
