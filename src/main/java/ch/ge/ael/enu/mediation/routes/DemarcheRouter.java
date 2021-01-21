@@ -35,6 +35,10 @@ import java.util.List;
 import static ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapperProcessor.MULTIPART_BOUNDARY;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
+import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_DEMARCHE;
+import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_DOCUMENT;
+import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_SUGGESTION;
+import static ch.ge.ael.enu.mediation.routes.MediaType.STATUS_CHANGE;
 
 /**
  * Ceci est la classe principale de toute l'application.
@@ -57,16 +61,16 @@ public class DemarcheRouter extends RouteBuilder {
     private String formSolutionPath;
 
     /**
-     * Taille (en bytes Base 64) des fichiers au-dela de laquelle le contenu des fichiers n'est plus trace
-     * dans la console et dans les fichiers de traces.
+     * Taille (en bytes Base 64) des fichiers au-dela de laquelle le contenu des fichiers n'est plus trace dans
+     * son integralite dans la console et dans les fichiers de traces.
      */
     @Value("${app.logging.max-file-content-size}")
     private int maxFileContentSize;
 
     /**
      * Types MIME (par ex. 'applicatiopn/pdf') de documents acceptes par la mediation.
-     * Si un type est ajoute a cette liste, le document n'est pas pour autant forcement accepte par FormServices,
-     * qui a sa propre liste de types acceptes.
+     * Noter que s un type est ajoute a cette liste, le document n'est pas pour autant forcement accepte par
+     * FormServices, qui a sa propre liste de types acceptes.
      */
     @Value("${app.document.mime-types}")
     private List<String> allowedMimeTypes;
@@ -93,14 +97,13 @@ public class DemarcheRouter extends RouteBuilder {
 
     static final String INTERNAL_ERROR_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-internal-error";
 
-    private final Predicate isNewDemarche = header("rabbitmq.Content-Type").isEqualTo(MediaType.NEW_DEMARCHE);
+    private final Predicate isNewDemarche = header("rabbitmq.Content-Type").isEqualTo(NEW_DEMARCHE);
 
-    private final Predicate isNewSuggestion = header("rabbitmq.Content-Type").isEqualTo(MediaType.NEW_SUGGESTION);
+    private final Predicate isNewSuggestion = header("rabbitmq.Content-Type").isEqualTo(NEW_SUGGESTION);
 
-    @Deprecated
-    private final Predicate isStatusChange = header("rabbitmq.Content-Type").isEqualTo(MediaType.STATUS_CHANGE);
+    private final Predicate isStatusChange = header("rabbitmq.Content-Type").isEqualTo(STATUS_CHANGE);
 
-    private final Predicate isNewDocument = header("rabbitmq.Content-Type").isEqualTo(MediaType.NEW_DOCUMENT);
+    private final Predicate isNewDocument = header("rabbitmq.Content-Type").isEqualTo(NEW_DOCUMENT);
 
     private final Predicate isNewDemarcheDeposee = jsonpath("$[?(@.etat=='" + DEPOSEE + "')]");
 
