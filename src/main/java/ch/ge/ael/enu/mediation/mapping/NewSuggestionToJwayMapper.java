@@ -5,11 +5,13 @@ import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.jway.model.Form;
 import ch.ge.ael.enu.mediation.jway.model.FormUrl;
 import ch.ge.ael.enu.mediation.jway.model.User;
-import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
 import ch.ge.ael.enu.mediation.metier.model.NewSuggestion;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
+
+import static ch.ge.ael.enu.mediation.jway.model.Status.BLANK;
 
 @Configuration
 public class NewSuggestionToJwayMapper {
@@ -17,19 +19,21 @@ public class NewSuggestionToJwayMapper {
     public File newDemarcheToFile(NewSuggestion newSuggestion) {
         File file = new File();
 
+        file.setName("suggestion-" + newSuggestion.getIdPrestation() + "-" + ZonedDateTime.now().toEpochSecond());
+
         User owner = new User();
         owner.setName(newSuggestion.getIdUsager());
         file.setOwner(owner);
 
         Application application = new Application();
-        application.setName("suggestion2");
+        application.setName(newSuggestion.getIdPrestation());
         file.setApplication(application);
 
-        String jwayStatus = new StatusMapper().mapStringToJway(DemarcheStatus.BROUILLON.name());
-        file.setWorkflowStatus(jwayStatus);
-        file.setStatus(jwayStatus);
+        file.setWorkflowStatus(BLANK.name());
+        file.setStatus(BLANK.name());
 
-        file.setStepDescription(newSuggestion.getDescriptionAction() + "|" + newSuggestion.getLibelleAction());
+        file.setStepDescription(newSuggestion.getDescriptionAction() + "|" + newSuggestion.getLibelleAction() +
+                "|" + newSuggestion.getUrlPrestation());
 
         file.setToDate(newSuggestion.getDateEcheanceAction());
 

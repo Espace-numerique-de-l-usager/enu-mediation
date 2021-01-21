@@ -3,6 +3,11 @@ package ch.ge.ael.enu.mediation.jway.model;
 public enum Status {
 
     /**
+     * Suggestion de demarche.
+     */
+    BLANK,
+
+    /**
      * Brouillon.
      */
     START,

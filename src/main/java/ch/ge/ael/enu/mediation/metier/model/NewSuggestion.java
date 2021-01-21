@@ -11,22 +11,22 @@ import lombok.Data;
  */
 public class NewSuggestion {
 
+    private String idPrestation;
+
     private String idUsager;
-
-//    private String idClientSuggestion;
-
-    /** URL du bouton. */
-    private String urlAction;
 
     /** Texte du bouton. */
     private String libelleAction;
+
+    /** URL du bouton. */
+    private String urlAction;
 
     private String dateEcheanceAction;
 
     /** Description complete de l'action. */
     private String descriptionAction;
 
-    /** URL du livret de la prestation */
+    /** URL du livret de la prestation. */
     private String urlPrestation;
 
 }
