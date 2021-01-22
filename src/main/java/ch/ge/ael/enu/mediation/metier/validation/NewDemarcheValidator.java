@@ -13,7 +13,6 @@ import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.TERMINEE;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
-import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkPresentIfOtherPresent;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdDemarcheSiMetier;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdPrestation;

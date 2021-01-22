@@ -1,6 +1,9 @@
 app:
   document:
     mime-types: application/pdf
+  file:
+    name:
+      sanitization-regex: "[^a-zA-Z0-9âàçéèêôùÂÀÉÈ\\.]"
   formsolution:
     host: ***REMOVED***
     ***REMOVED***

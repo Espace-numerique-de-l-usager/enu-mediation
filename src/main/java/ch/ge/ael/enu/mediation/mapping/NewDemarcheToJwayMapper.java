@@ -1,15 +1,17 @@
 package ch.ge.ael.enu.mediation.mapping;
 
-import ch.ge.ael.enu.mediation.jway.model.*;
+import ch.ge.ael.enu.mediation.jway.model.Application;
+import ch.ge.ael.enu.mediation.jway.model.File;
+import ch.ge.ael.enu.mediation.jway.model.Form;
+import ch.ge.ael.enu.mediation.jway.model.FormUrl;
+import ch.ge.ael.enu.mediation.jway.model.User;
 import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
 import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
-import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.BROUILLON;
 
-@Configuration
 public class NewDemarcheToJwayMapper {
 
     public File newDemarcheToFile(NewDemarche newDemarche) {

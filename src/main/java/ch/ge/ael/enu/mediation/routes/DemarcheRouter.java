@@ -4,7 +4,6 @@ import ch.ge.ael.enu.mediation.error.MessageFailureEnricher;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
-import ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapperProcessor;
 import ch.ge.ael.enu.mediation.mapping.NewSuggestionToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
@@ -23,11 +22,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
+import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.ListJacksonDataFormat;
 import org.apache.camel.model.DataFormatDefinition;
 import org.apache.camel.model.dataformat.JsonDataFormat;
 import org.apache.camel.model.dataformat.JsonLibrary;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -75,6 +76,9 @@ public class DemarcheRouter extends RouteBuilder {
      */
     @Value("${app.document.mime-types}")
     private List<String> allowedMimeTypes;
+
+    @Autowired
+    private Processor newDocumentToJwayMapper;
 
     static final String MAIN_QUEUE = "rabbitmq:" +
             "simetier1-to-enu-main?" +
@@ -325,8 +329,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader("remote_user", simple("${body.idUsager}", String.class))
                 .setHeader(UUID, exchangeProperty(UUID))
                 .setHeader(Exchange.CONTENT_TYPE, simple("multipart/form-data;boundary=" + MULTIPART_BOUNDARY))
-//                .bean(NewDocumentToJwayMapper.class)
-                .process(new NewDocumentToJwayMapperProcessor())
+                .process(newDocumentToJwayMapper)
                 .log("Headers envoyes a Jway = ${headers}")
                 .enrich("direct:log-multipart-message", new OldExchangeStrategy())
                 .to("rest:post:document/ds/{uuid}/attachment")
