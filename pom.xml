@@ -38,9 +38,8 @@
         <sonar.projectKey>enu-mediation</sonar.projectKey>
         <sonar.projectName>enu-mediation</sonar.projectName>
         <java.version>8</java.version>
-        <camel.version>3.6.0</camel.version>
-        <!-- ne pas passer en version 2.4.0, sinon on a une "NoClassDefFoundError: org/springframework/core/metrics/ApplicationStartup" au demarrage -->
-        <spring-boot.version>2.3.5.RELEASE</spring-boot.version>
+        <camel.version>3.7.1</camel.version>
+        <spring-boot.version>2.4.2</spring-boot.version>
         <jackson.version>2.11.1</jackson.version>
         <!--
         <jackson.version>2.12.0</jackson.version>
@@ -222,6 +221,7 @@
                 <version>3.3.1</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <containerConfigXML></containerConfigXML>
                 </configuration>
             </plugin>
             <!-- Java 8 est devenu trop sourcilleux avec la javadoc.
