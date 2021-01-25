@@ -51,7 +51,8 @@ public class NewDocumentValidator {
 
         if (! allowedMimeTypes.contains(message.getMime())) {
             LOGGER.info("Erreur metier : type MIME [{}] pas pris en charge", message.getMime());
-            throw new ValidationException("Le type MIME \"" + message.getMime() + "\" n'est pas pris en charge");
+            throw new ValidationException("Le type MIME \"" + message.getMime() + "\" n'est pas pris en charge." +
+                    " Les types MIME pris en charge sont : " + allowedMimeTypes);
         }
 
         LOGGER.info("Validation OK");
