@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<!-- this default value is used only in deployed WAR execution. In spring-boot:run execution, see the POM -->
-	<springProperty scope="context" name="logDir" source="app.log.directory" defaultValue="../logs"/>
-
 	<!-- Console appender -->
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
