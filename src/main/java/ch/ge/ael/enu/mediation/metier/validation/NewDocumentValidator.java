@@ -31,6 +31,11 @@ public class NewDocumentValidator {
     public NewDocument validate(NewDocument message) {
         LOGGER.info("Dans NewDocumentValidator");
 
+        final int MAX_SIZE_LIBELLE = 50;
+        final int MAX_SIZE_ID_DOCUMENT_SI_METIER = 50;
+        final int MAX_SIZE_MIME = 50;
+        final int MAX_SIZE_CONTENU = 10 * 1000 * 1000;
+
         checkExistence(message.getIdPrestation(), "idPrestation");
         checkExistence(message.getIdUsager(), "idUsager");
         checkExistence(message.getIdDemarcheSiMetier(), "idDemarcheSiMetier");
@@ -42,10 +47,10 @@ public class NewDocumentValidator {
         checkSizeIdPrestation(message.getIdPrestation());
         checkSizeIdUsager(message.getIdUsager());
         checkSizeIdDemarcheSiMetier(message.getIdDemarcheSiMetier());
-        checkSize(message.getLibelleDocument(), 1, 50, "libelleDocument");
-        checkSize(message.getIdDocumentSiMetier(), 1, 50, "idDocumentSiMetier");
-        checkSize(message.getMime(), 1, 50, "mime");
-        checkSize(message.getContenu(), 1, 10 * 1000 * 1000, "contenu");
+        checkSize(message.getLibelleDocument(), 1, MAX_SIZE_LIBELLE, "libelleDocument");
+        checkSize(message.getIdDocumentSiMetier(), 1, MAX_SIZE_ID_DOCUMENT_SI_METIER, "idDocumentSiMetier");
+        checkSize(message.getMime(), 1, MAX_SIZE_LIBELLE, "mime");
+        checkSize(message.getContenu(), 1, MAX_SIZE_CONTENU, "contenu");
 
         checkEnum(message.getTypeDocument(), DocumentType.class, "typeDocument");
 

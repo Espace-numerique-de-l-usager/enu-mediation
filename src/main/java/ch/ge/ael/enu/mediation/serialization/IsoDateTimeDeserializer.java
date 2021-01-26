@@ -22,7 +22,7 @@ public class IsoDateTimeDeserializer extends StdDeserializer<LocalDateTime> {
 
     @Override
     public LocalDateTime deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-        return LocalDateTime.parse(parser.getText().toString(), FORMAT);
+        return LocalDateTime.parse(parser.getText(), FORMAT);
     }
 
 }

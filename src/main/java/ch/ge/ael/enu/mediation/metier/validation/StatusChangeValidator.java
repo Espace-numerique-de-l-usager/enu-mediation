@@ -36,6 +36,8 @@ public class StatusChangeValidator {
     public StatusChange validate(StatusChange message) {
         LOGGER.info("Dans StatusChangeValidator");
 
+        int MAX_SIZE_NOUVEL_ETAT = 20;
+
         checkExistence(message.getIdPrestation(), ID_PRESTATION);
         checkExistence(message.getIdUsager(), ID_USAGER);
         checkExistence(message.getIdDemarcheSiMetier(), ID_DEMARCHE_SI_METIER);
@@ -45,7 +47,7 @@ public class StatusChangeValidator {
         checkSizeIdPrestation(message.getIdPrestation());
         checkSizeIdUsager(message.getIdUsager());
         checkSizeIdDemarcheSiMetier(message.getIdDemarcheSiMetier());
-        checkSize(message.getNouvelEtat(), 1, 20, NOUVEL_ETAT);
+        checkSize(message.getNouvelEtat(), 1, MAX_SIZE_NOUVEL_ETAT, NOUVEL_ETAT);
         checkSizeUrl(message.getUrlAction(), ActionValidator.URL_ACTION);
         checkSizeUrl(message.getUrlRenouvellementDemarche(), URL_RENOUVELLEMENT_DEMARCHE);
 

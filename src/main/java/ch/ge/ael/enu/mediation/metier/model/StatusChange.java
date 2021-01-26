@@ -12,24 +12,24 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class StatusChange {
 
-    private String idPrestation;
+    private String idPrestation = null;
 
-    private String idUsager;
+    private String idUsager = null;
 
-    private String idDemarcheSiMetier;
+    private String idDemarcheSiMetier = null;
 
-    private String nouvelEtat;
+    private String nouvelEtat = null;
 
-    private String dateNouvelEtat;
+    private String dateNouvelEtat = null;
 
-    private String libelleAction;
+    private String libelleAction = null;
 
-    private String typeAction;
+    private String typeAction = null;
 
-    private String urlAction;
+    private String urlAction = null;
 
-    private String dateEcheanceAction;
+    private String dateEcheanceAction = null;
 
-    private String urlRenouvellementDemarche;
+    private String urlRenouvellementDemarche = null;
 
 }

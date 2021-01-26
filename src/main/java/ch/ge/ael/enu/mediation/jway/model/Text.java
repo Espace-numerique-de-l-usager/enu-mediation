@@ -10,6 +10,9 @@ import java.util.HashMap;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Text {
+
     private String label;
+
     private HashMap<String,String> texts;
+
 }

@@ -11,33 +11,44 @@ import java.util.UUID;
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class File {
-    private Integer id;
-    private UUID uuid;
-    private String name;
-    private User owner;
-    private Application application;
-    private String workflowStatus;
-    private String status;
-    private Form form;
-    private String step;
-    private String stepDescription;
+
+    private Integer id = null;
+
+    private UUID uuid = null;
+
+    private String name = null;
+
+    private User owner = null;
+
+    private Application application = null;
+
+    private String workflowStatus = null;
+
+    private String status = null;
+
+    private Form form = null;
+
+    private String step = null;
+
+    private String stepDescription = null;
 
     @JsonDeserialize(using = JwayDateDeserializer.class)
-    private LocalDateTime stepDate;
-    private Boolean validated;
+    private LocalDateTime stepDate = null;
+
+    private Boolean validated = null;
 
     @JsonDeserialize(using = JwayDateDeserializer.class)
-    private LocalDateTime fromDate;
+    private LocalDateTime fromDate = null;
 
     /**
      * Ne pas prendre une LocalDateTime, sinon HTTP 400 lors de l'envoi a Jway.
      */
 //    @JsonDeserialize(using = JwayDateDeserializer.class)
 //    private LocalDateTime toDate;
-    private String toDate;
+    private String toDate = null;
 
-    private String redirectUrl;
+    private String redirectUrl = null;
 
     @JsonDeserialize(using = JwayDateDeserializer.class)
-    private LocalDateTime lastUpdate;
+    private LocalDateTime lastUpdate = null;
 }

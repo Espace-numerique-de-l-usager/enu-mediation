@@ -120,6 +120,8 @@ public class DemarcheRouter extends RouteBuilder {
 
     private static final String CODE_REPONSE = "Reponse : HTTP ${header.CamelHttpResponseCode}";
 
+    private static final String REMOTE_USER = "remote_user";
+
     /**
      * Definition des routes.
      */
@@ -208,7 +210,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("log:input")
                 .setProperty("demarcheStatus", simple("${body.etat}", String.class))
                 .setHeader("Content-Type", simple("application/json"))
-                .setHeader("remote_user", simple("${body.idUsager}", String.class))
+                .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .bean(NewDemarcheToJwayMapper.class)
                 .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
@@ -224,7 +226,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .bean(NewSuggestionValidator.class)
                 .to("log:input")
                 .setHeader("Content-Type", simple("application/json"))
-                .setHeader("remote_user", simple("${body.idUsager}", String.class))
+                .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .bean(NewSuggestionToJwayMapper.class)
                 .marshal(pojoToJson())
                 .log("JSON envoye a Jway = ${body}")
@@ -251,7 +253,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
                 .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
                 .setHeader("Content-Type", simple("application/json"))
-                .setHeader("remote_user", exchangeProperty("remoteUser"))
+                .setHeader(REMOTE_USER, exchangeProperty("remoteUser"))
                 .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
                 .log(CODE_REPONSE)
                 .log("JSON obtenu de Jway = ${body}")
@@ -300,7 +302,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
                 .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
                 .setHeader("Content-Type", simple("application/json"))
-                .setHeader("remote_user", exchangeProperty("remoteUser"))
+                .setHeader(REMOTE_USER, exchangeProperty("remoteUser"))
                 .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
                 .log(CODE_REPONSE)
                 .log("JSON obtenu de Jway = ${body}")
@@ -313,7 +315,7 @@ public class DemarcheRouter extends RouteBuilder {
         from("direct:nouveau-document-phase-2").id("nouveau-document-phase-2")
                 .log("* ROUTE nouveau-document-phase-2")
                 .setHeader("X-CSRF-Token", simple("fetch"))
-                .setHeader("remote_user", simple("${body.idUsager}", String.class))
+                .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .setHeader(UUID, exchangeProperty(UUID))
                 .marshal(pojoToJson())
                 .log("Requete HEAD envoyee a Jway")
@@ -326,7 +328,7 @@ public class DemarcheRouter extends RouteBuilder {
         from("direct:nouveau-document-phase-3").id("nouveau-document-phase-3")
                 .log("* ROUTE nouveau-document-phase-3")
                 .setHeader("X-CSRF-Token", exchangeProperty(CSRF_TOKEN))
-                .setHeader("remote_user", simple("${body.idUsager}", String.class))
+                .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .setHeader(UUID, exchangeProperty(UUID))
                 .setHeader(Exchange.CONTENT_TYPE, simple("multipart/form-data;boundary=" + MULTIPART_BOUNDARY))
                 .process(newDocumentToJwayMapper)

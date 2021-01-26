@@ -5,14 +5,10 @@ import lombok.Data;
 @Data
 public class FileForStep {
 
-    private String step;
+    private String step = null;
 
-    private Form form;
+    private Form form = null;
 
-    /*
-    @JsonDeserialize(using = CustomDateDeserializer.class)
-    private LocalDateTime lastUpdate;
-     */
-    private String lastUpdate;
+    private String lastUpdate = null;
 
 }
