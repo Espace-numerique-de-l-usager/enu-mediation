@@ -36,6 +36,7 @@ public class NewSuggestionValidator {
     public NewSuggestion validate(NewSuggestion message) {
         LOGGER.info("Dans NewSuggestionValidator");
 
+        final int MAX_SIZE_LIBELLE_ACTION = 50;
         final int MAX_SIZE_DESCRIPTION_ACTION = 150;
 
         checkExistence(message.getIdPrestation(), ID_PRESTATION);
@@ -48,7 +49,7 @@ public class NewSuggestionValidator {
 
         checkSizeIdPrestation(message.getIdPrestation());
         checkSizeIdUsager(message.getIdUsager());
-        checkSize(message.getLibelleAction(), 1, 50, LIBELLE_ACTION);
+        checkSize(message.getLibelleAction(), 1, MAX_SIZE_LIBELLE_ACTION, LIBELLE_ACTION);
         checkSizeUrl(message.getUrlAction(), URL_ACTION);
         checkSizeDate(message.getDateEcheanceAction(), DATE_ECHEANCE_ACTION);
         checkSize(message.getDescriptionAction(), 1, MAX_SIZE_DESCRIPTION_ACTION, DESCRIPTION_ACTION);

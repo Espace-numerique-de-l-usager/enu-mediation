@@ -49,7 +49,7 @@ public class NewDocumentValidator {
         checkSizeIdDemarcheSiMetier(message.getIdDemarcheSiMetier());
         checkSize(message.getLibelleDocument(), 1, MAX_SIZE_LIBELLE, "libelleDocument");
         checkSize(message.getIdDocumentSiMetier(), 1, MAX_SIZE_ID_DOCUMENT_SI_METIER, "idDocumentSiMetier");
-        checkSize(message.getMime(), 1, MAX_SIZE_LIBELLE, "mime");
+        checkSize(message.getMime(), 1, MAX_SIZE_MIME, "mime");
         checkSize(message.getContenu(), 1, MAX_SIZE_CONTENU, "contenu");
 
         checkEnum(message.getTypeDocument(), DocumentType.class, "typeDocument");
