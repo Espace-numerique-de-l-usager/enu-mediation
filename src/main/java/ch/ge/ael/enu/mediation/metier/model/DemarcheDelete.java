@@ -6,11 +6,11 @@ import org.apache.camel.Header;
 @Data
 public class DemarcheDelete {
 
-    private String idPrestation;
+    private String idPrestation = null;
 
-    private String idUsager;
+    private String idUsager = null;
 
-    private String idDemarcheSiMetier;
+    private String idDemarcheSiMetier = null;
 
     public DemarcheDelete newDemarcheDelete(
                           @Header("idDemarcheSiMetier") String idDemarcheSiMetier,

@@ -11,20 +11,20 @@ import lombok.Data;
  */
 public class NewDocument {
 
-    private String idPrestation;
+    private String idPrestation = null;
 
-    private String idUsager;
+    private String idUsager = null;
 
-    private String idDemarcheSiMetier;
+    private String idDemarcheSiMetier = null;
 
-    private String typeDocument;
+    private String typeDocument = null;
 
-    private String libelleDocument;
+    private String libelleDocument = null;
 
-    private String idDocumentSiMetier;
+    private String idDocumentSiMetier = null;
 
-    private String mime;
+    private String mime = null;
 
-    private String contenu;
+    private String contenu = null;
 
 }

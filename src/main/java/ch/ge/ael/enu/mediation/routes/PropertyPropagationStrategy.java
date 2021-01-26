@@ -2,8 +2,6 @@ package ch.ge.ael.enu.mediation.routes;
 
 import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,8 +23,6 @@ public class PropertyPropagationStrategy implements AggregationStrategy {
     public PropertyPropagationStrategy(String... property) {
         properties = Arrays.asList(property);
     }
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyPropagationStrategy.class);
 
     @Override
     public Exchange aggregate(Exchange oldExchange, Exchange newExchange) {

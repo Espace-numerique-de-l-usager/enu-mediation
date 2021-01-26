@@ -125,15 +125,18 @@ public class ValidationUtils {
     }
 
     public static void checkSizeIdPrestation(String value) {
-        checkSize(value, 1, 50, "idPrestation");
+        final int MAX_SIZE = 50;
+        checkSize(value, 1, MAX_SIZE, "idPrestation");
     }
 
     public static void checkSizeIdUsager(String value) {
-        checkSize(value, 1, 50, "idUsager");
+        final int MAX_SIZE = 50;
+        checkSize(value, 1, MAX_SIZE, "idUsager");
     }
 
     public static void checkSizeIdDemarcheSiMetier(String value) {
-        checkSize(value, 1, 50, "idDemarcheSiMetier");
+        final int MAX_SIZE = 50;
+        checkSize(value, 1, MAX_SIZE, "idDemarcheSiMetier");
     }
 
     public static void checkSizeUrl(String value, String fieldName) {
@@ -143,7 +146,9 @@ public class ValidationUtils {
     }
 
     public static void checkSizeDate(String value, String fieldName) {
-        checkSize(value, 4, 30, fieldName);
+        final int MIN_SIZE = 2;
+        final int MAX_SIZE = 50;
+        checkSize(value, MIN_SIZE, MAX_SIZE, fieldName);
     }
 
 }

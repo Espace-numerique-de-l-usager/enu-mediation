@@ -29,7 +29,7 @@ public class BodyReducer {
         int indexFieldNameContenu = sBody.indexOf("\"contenu\"");
         if (indexFieldNameContenu != -1) {
             int indexStartContenu = indexFieldNameContenu + "\"contenu\": \"".length();  // debut de la valeur du champ "contenu"
-            int lengthContenu = sBody.substring(indexStartContenu).indexOf("\"");        // longueur du champ "contenu"
+            int lengthContenu = sBody.substring(indexStartContenu).indexOf('\"');        // longueur du champ "contenu"
             if (lengthContenu > getEffectiveMaxFileSize()) {
                 toLog = sBody.substring(0, indexStartContenu + SHOW_BEFORE)
                         + TRUNCATION

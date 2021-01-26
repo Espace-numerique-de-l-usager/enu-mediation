@@ -40,6 +40,8 @@ public class NewDemarcheValidator {
     public NewDemarche validate(NewDemarche message) {
         LOGGER.info("Dans NewDemarcheValidator");
 
+        final int MAX_SIZE_ETAT = 20;
+
         checkExistence(message.getIdPrestation(), ID_PRESTATION);
         checkExistence(message.getIdUsager(), ID_USAGER);
         checkExistence(message.getIdDemarcheSiMetier(), ID_DEMARCHE_SI_METIER);
@@ -48,7 +50,7 @@ public class NewDemarcheValidator {
         checkSizeIdPrestation(message.getIdPrestation());
         checkSizeIdUsager(message.getIdUsager());
         checkSizeIdDemarcheSiMetier(message.getIdDemarcheSiMetier());
-        checkSize(message.getEtat(), 1, 20, ETAT);
+        checkSize(message.getEtat(), 1, MAX_SIZE_ETAT, ETAT);
 
         checkEnum(message.getEtat(), DemarcheStatus.class, ETAT);
 

@@ -15,8 +15,9 @@ public class IllegalStringSizeException extends ValidationException {
      * message d'erreur de cette taille.
      */
     private static String truncateIfTooLong(String s) {
-        if (s.length() > 1000) {
-            return s.substring(0, 1000) + " (...)";
+        final int MAX_LENGTH = 1000;
+        if (s.length() > MAX_LENGTH) {
+            return s.substring(0, MAX_LENGTH) + " (...)";
         } else {
             return s;
         }

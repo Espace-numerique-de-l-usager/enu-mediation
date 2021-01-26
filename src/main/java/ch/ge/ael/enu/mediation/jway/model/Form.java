@@ -12,8 +12,13 @@ import java.util.List;
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Form {
+
     private String name;
+
     private Text nameLabel;
+
     private Text descriptionLabel;
+
     private List<FormUrl> urls;
+
 }

@@ -17,6 +17,11 @@
         <tag>HEAD</tag>
     </scm>
 
+    <issueManagement>
+        <system>jira</system>
+        <url>***REMOVED***/projects/ENU</url>
+    </issueManagement>
+
     <distributionManagement>
         <repository>
             <id>internal.project.release</id>
@@ -27,11 +32,6 @@
             <url>${maven2Repository_projet}/project_snapshot</url>
         </snapshotRepository>
     </distributionManagement>
-
-    <issueManagement>
-        <system>jira</system>
-        <url>***REMOVED***/projects/ENU</url>
-    </issueManagement>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

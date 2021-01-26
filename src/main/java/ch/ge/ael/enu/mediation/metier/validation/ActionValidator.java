@@ -1,8 +1,6 @@
 package ch.ge.ael.enu.mediation.metier.validation;
 
 import ch.ge.ael.enu.mediation.metier.model.ActionType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkAbsentIfOtherAbsent;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkDate;
@@ -15,8 +13,6 @@ import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSiz
  * Factorise la validation d'une "action", presente dans plusieurs messages JSON (NewDemarche, StatusChange).
  */
 public class ActionValidator {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ActionValidator.class);
 
     static final String TYPE_ACTION = "typeAction";
 
@@ -36,7 +32,9 @@ public class ActionValidator {
             checkAbsentIfOtherAbsent(urlAction, URL_ACTION, libelleAction, LIBELLE_ACTION);
             checkAbsentIfOtherAbsent(dateEcheanceAction, DATE_ECHEANCE_ACTION, libelleAction, LIBELLE_ACTION);
         } else {
-            checkSize(libelleAction, 2, 50, LIBELLE_ACTION);
+            final int MIN_SIZE = 2;
+            final int MAX_SIZE = 50;
+            checkSize(libelleAction, MIN_SIZE, MAX_SIZE, LIBELLE_ACTION);
             checkEnum(typeAction, ActionType.class, TYPE_ACTION);
             if (urlAction == null) {
                 checkAbsentIfOtherAbsent(dateEcheanceAction, DATE_ECHEANCE_ACTION, urlAction, URL_ACTION);
