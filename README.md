@@ -36,7 +36,11 @@ Dans un environnement de développement comme IntelliJ, il suffit d'exécuter la
 
 L'application est un "main" Java. Elle n'est en rien une application Web.
 Cependant, pour se conformer aux usages de l'équipe de production de l'État de Genève, 
-il a été préféré de déployer l'application comme un fichier WAR sur un serveur Tomcat. 
+il a été préféré de déployer l'application comme un fichier WAR sur un serveur Tomcat.
+
+Toute propriété définie dans le fichier `src/main/resources/enu-mediation-default.properties`
+peut être redéfinie. Il suffit pour cela de la définir dans un fichier appelé (obligatoirement)
+`enu-mediation.properties`, à placer (obligatoirement) dans le sous-répertoire `conf` de Tomcat.
 
 ### Propriétés
 
