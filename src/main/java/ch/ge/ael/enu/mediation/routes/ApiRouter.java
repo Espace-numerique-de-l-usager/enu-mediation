@@ -20,12 +20,14 @@ public class ApiRouter extends RouteBuilder {
 
     @Override
     public void configure() throws Exception {
+        final int HTTP_400 = 400;
+
         restConfiguration().bindingMode(RestBindingMode.json);
 
-        // Pour de futurs payloads arrivants en JSON (depuis Jway FormSolutions)
+        // Pour de futurs payloads arrivant en JSON (depuis Jway FormSolutions)
         onException(JsonParseException.class)
                 .handled(true)
-                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(400))
+                .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(HTTP_400))
                 .setHeader(Exchange.CONTENT_TYPE, constant("text/plain"))
                 .setBody().constant("invalid json");
 
