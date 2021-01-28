@@ -56,17 +56,17 @@ class ValidationUtilsTest {
     void checkSize_with_too_small_value_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkSize("tooShort", 20, 30, "someField"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"tooShort\" du champ \"someField\" est d'une taille incorrecte. Taille attendue : entre 20 et 30 caracteres");
+                .hasMessage("La valeur \"tooShort\" du champ \"someField\" est d'une taille incorrecte. Taille autorisee : entre 20 et 30 caracteres");
         assertThatThrownBy(() -> ValidationUtils.checkSize("   abc   ", 4, 30, "someField"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"abc\" du champ \"someField\" est d'une taille incorrecte. Taille attendue : entre 4 et 30 caracteres");
+                .hasMessage("La valeur \"abc\" du champ \"someField\" est d'une taille incorrecte. Taille autorisee : entre 4 et 30 caracteres");
     }
 
     @Test
     void checkSize_with_too_large_value_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkSize("tooLong", 1, 5, "someField"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"tooLong\" du champ \"someField\" est d'une taille incorrecte. Taille attendue : entre 1 et 5 caracteres");
+                .hasMessage("La valeur \"tooLong\" du champ \"someField\" est d'une taille incorrecte. Taille autorisee : entre 1 et 5 caracteres");
     }
 
     @Test
@@ -99,7 +99,7 @@ class ValidationUtilsTest {
     void checkSizeUrl_with_wrong_url_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkSizeUrl("short", "someUrlField1"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"short\" du champ \"someUrlField1\" est d'une taille incorrecte. Taille attendue : entre 10 et 200 caracteres");
+                .hasMessage("La valeur \"short\" du champ \"someUrlField1\" est d'une taille incorrecte. Taille autorisee : entre 10 et 200 caracteres");
 
         String longUrl = "https://someSite/path?" +
                 " 123456789 123456789 123456789 123456789 123456789" +
@@ -110,7 +110,7 @@ class ValidationUtilsTest {
                 " 123456789 123456789 123456789 123456789 123456789";
         assertThatThrownBy(() -> ValidationUtils.checkSizeUrl(longUrl, "someUrlField2"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"" + longUrl + "\" du champ \"someUrlField2\" est d'une taille incorrecte. Taille attendue : entre 10 et 200 caracteres");
+                .hasMessage("La valeur \"" + longUrl + "\" du champ \"someUrlField2\" est d'une taille incorrecte. Taille autorisee : entre 10 et 200 caracteres");
     }
 
     @Test

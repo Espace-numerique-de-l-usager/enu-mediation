@@ -137,7 +137,7 @@ Champs :
 | etat | état de la démarche | oui | BROUILLON | Doit valoir soit BROUILLON, soit DEPOSEE, soit EN_TRAITEMENT |
 | dateDepot | date de soumission de la démarche | oui si `etat` = `DEPOSEE` ou `EN_TRAITEMENT`, inutile sinon | 2021-02-19T12:15:00.000Z | - | 
 | dateMiseEnTraitement | date de mise en traitement de la démarche | oui si `etat` = `EN_TRAITEMENT`, inutile sinon | 2021-02-20T12:15:00.000Z | - | 
-| libelleAction | description de l'opération proposée à l'usager sur la démarche | non. Inutile si `etat` = `BROUILLON` | Compléter votre démarche | Taille maximale : 50 caractères |
+| libelleAction | description de l'opération proposée à l'usager sur la démarche | non. Inutile si `etat` = `BROUILLON` | Compléter votre démarche | Taille maximale : 25 caractères |
 | urlAction | URL de l'opération proposée à l'usager sur la démarche | oui si `etat` = `BROUILLON` ou si `libelleAction` est fourni, inutile sinon | `https://etc...` | - |
 | typeAction | type de l'opération proposée à l'usager sur la démarche | non. Inutile si `etat` = `BROUILLON` ou si `libelleAction` n'est pas fourni  | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit ENRICHISSEMENT_DE_DEMANDE, soit REPONSE_DEMANDE_RENSEIGNEMENT |
 | dateEcheanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui si `urlAction` est fournie, inutile sinon | 2021-02-18 | La date uniquement, sans l'heure |
@@ -166,7 +166,7 @@ Champs supplémentaires si `nouvelEtat` = `DEPOSEE` ou si `nouvelEtat` = `EN_TRA
 
 | Nom | Description | Obligatoire | Exemple | Commentaire |
 | --- | ----------- | ----------- | ------- | ----------- |
-| libelleAction | description de l'opération proposée à l'usager sur la démarche | non | Compléter votre démarche | Taille maximale : 50 caractères |
+| libelleAction | description de l'opération proposée à l'usager sur la démarche | non | Compléter votre démarche | Taille maximale : 25 caractères |
 | typeAction | type de l'opération proposée à l'usager sur la démarche | non. Inutile si `libelleAction` n'est pas fourni  | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit ENRICHISSEMENT_DE_DEMANDE, soit REPONSE_DEMANDE_RENSEIGNEMENT |
 | urlAction | URL de l'opération proposée à l'usager sur la démarche | oui si `typeAction` est fourni, inutile sinon | `https://etc...` | - |
 | dateEcheanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui si `typeAction` est fourni, inutile sinon | 2021-02-18 | La date uniquement, sans les heures |
@@ -210,10 +210,10 @@ Champs :
 | --- | ----------- | ------- | ----------- | ----------- |
 | idPrestation | identifiant de la prestation | oui | FL_TER_PERMISPECHE | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| libelleAction | description courte de l'opération de création de démarche | oui | Obtenir un permis de pêche | Taille maximale : 50 caractères |
+| libelleAction | description courte de l'opération de création de démarche | oui | Obtenir un permis de pêche | Taille maximale : 25 caractères |
 | urlAction | URL de création de démarche | oui | `https://etc...` | - |
 | dateEcheanceAction | date avant laquelle l'usager est sensé créer la démarche | oui | 2021-02-18 | La date uniquement, sans l'heure |
-| descriptionAction | description complète de l'opération de création de démarche | oui | Obtenir un permis de pêche | Taille maximale : 200 caractères |
+| descriptionAction | description complète de l'opération de création de démarche | oui | Obtenir un permis de pêche | Taille maximale : 150 caractères |
 | urlPrestation | URL du livret de la démarche | oui | `https://etc...` | Ce lien pointe normalement vers une page de l'État qui fournit une explication de la démarche |
 
 Exemple : voir [newdemarche/MessageSender](https://argon.ceti.etat-ge.ch/gitlab/ACCES_RESTREINT/3417_espace_numerique_usager/enu-mediation-client/-/blob/master/src/main/java/ch/ge/ael/enu/mediationclient/newdemarche/MessageSender.java).

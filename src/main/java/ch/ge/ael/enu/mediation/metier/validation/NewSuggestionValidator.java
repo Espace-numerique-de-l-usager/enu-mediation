@@ -36,7 +36,7 @@ public class NewSuggestionValidator {
     public NewSuggestion validate(NewSuggestion message) {
         LOGGER.info("Dans NewSuggestionValidator");
 
-        final int MAX_SIZE_LIBELLE_ACTION = 50;
+        final int MAX_SIZE_LIBELLE_ACTION = 25;
         final int MAX_SIZE_DESCRIPTION_ACTION = 150;
 
         checkExistence(message.getIdPrestation(), ID_PRESTATION);
