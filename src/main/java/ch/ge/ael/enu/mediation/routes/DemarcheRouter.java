@@ -53,14 +53,8 @@ public class DemarcheRouter extends RouteBuilder {
 
     private final CamelContext camelContext;
 
-    @Value("${app.formsolution.host}")
-    private String formSolutionHost;
-
-    @Value("${app.formsolution.port}")
-    private Integer formSolutionPort;
-
-    @Value("${app.formsolution.path}")
-    private String formSolutionPath;
+    @Value("${app.formservices.url}")
+    private String formServicesUrl;
 
     /**
      * Taille (en bytes Base 64) des fichiers au-dela de laquelle le contenu des fichiers n'est plus trace dans
@@ -131,7 +125,7 @@ public class DemarcheRouter extends RouteBuilder {
     public void configure() {
         camelContext.setStreamCaching(true);
         restConfiguration()
-                .host("https://" + formSolutionHost + ":" + formSolutionPort + "/" + formSolutionPath)
+                .host(formServicesUrl)
                 .producerComponent("http");
 
         // attrape-tout
