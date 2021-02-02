@@ -4,6 +4,8 @@ public enum JwayDocumentType {
 
     ATTACHMENT,
 
-    REPORT
+    REPORT,
+
+    COURRIER
 
 }

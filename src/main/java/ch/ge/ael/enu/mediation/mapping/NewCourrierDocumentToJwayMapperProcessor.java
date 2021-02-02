@@ -1,8 +1,8 @@
 package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.mediation.jway.model.JwayDocumentType;
-import ch.ge.ael.enu.mediation.metier.model.DocumentType;
-import ch.ge.ael.enu.mediation.metier.model.NewDocument;
+import ch.ge.ael.enu.mediation.metier.model.NewCourrierDocument;
+import ch.ge.ael.enu.mediation.routes.DemarcheRouter;
 import ch.ge.ael.enu.mediation.util.file.FileNameSanitizer;
 import ch.ge.ael.enu.mediation.util.mime.MimeUtils;
 import org.apache.camel.Exchange;
@@ -22,16 +22,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Base64;
 
-import static ch.ge.ael.enu.mediation.metier.model.DocumentType.JUSTIFICATIF;
-
 /**
  * Cree le body de la requete <strong>multipart</strong> pour Jway.
- * Cas d'usage : ajout d'un document a une demarche.
+ * Cas d'usage : creation dans Jway du i-eme document constituant un courrier.
  */
 @Component
-public class NewDocumentToJwayMapperProcessor implements Processor {
+public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NewDocumentToJwayMapperProcessor.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(NewCourrierDocumentToJwayMapperProcessor.class);
 
     public static final String MULTIPART_BOUNDARY = "----FormBoundaryForEnuMediation";
 
@@ -40,17 +38,19 @@ public class NewDocumentToJwayMapperProcessor implements Processor {
 
     @Override
     public void process(Exchange exchange) throws IOException {
-        NewDocument newDocument = exchange.getIn().getBody(NewDocument.class);
+        NewCourrierDocument courrierDoc = exchange.getIn().getBody(NewCourrierDocument.class);
+        String categorie = exchange.getIn().getHeader(DemarcheRouter.CATEGORIE, String.class);   // dependance a changer
+        String demarcheId = exchange.getIn().getHeader(DemarcheRouter.UUID, String.class);       // dependance a changer
+        LOGGER.info("Dans {} - uuid demarche = [{}], categorie = [{}]", getClass().getSimpleName(), demarcheId, categorie);
 
         // preparation des donnees
-        byte[] decodedContentAsBytes = Base64.getDecoder().decode(newDocument.getContenu());
-        String mime = newDocument.getMime();
-        String name = newDocument.getLibelleDocument() + "|" + newDocument.getIdDocumentSiMetier();
-        String fileName = newDocument.getLibelleDocument() + "." + MimeUtils.getFileExtension(newDocument.getMime());
+        byte[] decodedContentAsBytes = Base64.getDecoder().decode(courrierDoc.getContenu());
+        String mime = courrierDoc.getMime();
+        String name = courrierDoc.getLibelleDocument() + "|" + courrierDoc.getIdDocumentSiMetier();
+        String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());
         fileName = "\"" + new FileNameSanitizer(fileNameSanitizationRegex).sanitize(fileName) + "\"";
         // note : l'upload va supprimer les caracteres accentues
         LOGGER.info("fileName apres assainissement = [{}]", fileName);
-        JwayDocumentType type = isJustificatif(newDocument) ? JwayDocumentType.ATTACHMENT : JwayDocumentType.REPORT;
 
         // pour le champ "name", il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
         ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
@@ -60,7 +60,12 @@ public class NewDocumentToJwayMapperProcessor implements Processor {
         builder.setBoundary(MULTIPART_BOUNDARY);
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         builder.addTextBody("name", name, textPlainUtf8);
-        builder.addTextBody("type", type.name());   // pas encore pret, dixit Julien F.
+        builder.addTextBody("type", JwayDocumentType.COURRIER.name());
+        builder.addTextBody("tag", categorie);
+        if (demarcheId != null) {
+            builder.addTextBody("folder", demarcheId);
+        }
+        builder.addTextBody("folderLabel", courrierDoc.getLibelleCourrier());
         builder.addBinaryBody("files", decodedContentAsBytes, ContentType.create(mime), fileName);
 
         // ajout de la requete multipart au body
@@ -68,10 +73,6 @@ public class NewDocumentToJwayMapperProcessor implements Processor {
         builder.build().writeTo(out);
         InputStream in = new ByteArrayInputStream(out.toByteArray());
         exchange.getIn().setBody(in);
-    }
-
-    private boolean isJustificatif(NewDocument newDocument) {
-        return DocumentType.valueOf(newDocument.getTypeDocument()) == JUSTIFICATIF;
     }
 
 }

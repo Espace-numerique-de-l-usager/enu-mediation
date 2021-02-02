@@ -120,8 +120,11 @@ médiation) est "SI1".
 | création d'une démarche | SI métier | enu-mediation | si1-to-enu / si1-to-enu-main |
 | changement d'état d'une démarche | SI métier | enu-mediation | si1-to-enu / si1-to-enu-main |
 | ajout d'un document à une démarche | SI métier | enu-mediation | si1-to-enu / si1-to-enu-main |
+| création d'un courrier, lié ou non à une démarche | SI métier | enu-mediation | si1-to-enu / si1-to-enu-main |
 | création d'une suggestion de démarche | SI métier | enu-mediation | si1-to-enu / si1-to-enu-main |
 | message d'erreur | enu-mediation | SI métier | si1-to-enu / si1-to-enu-reply |
+
+Note : dans les tableaux ci-dessous, la mention "inutile" pour un champ signifie en fait "non pertient", "interdit".
 
 #### Création d'une démarche : message JSON
 
@@ -185,7 +188,7 @@ Exemples : voir [statuschange/MessageSender](https://argon.***REMOVED***/gitlab/
 
 Il s'agit ici de compléter une démarche qui a été précédemment créée.
 
-En-tête nécessaire : `Content-Type` = `application/json-document`.
+En-tête nécessaire : `Content-Type` = `application/json-new-document`.
 
 Champs :
 
@@ -195,10 +198,36 @@ Champs :
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
 | idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné. Maximum 50 caractères |
 | typeDocument | type de document | oui | RECAPITULATIF | Doit valoir soit RECAPITULATIF, soit JUSTIFICATIF |
-| libelleDocument | titre du document, déterminant le nom du fichier | oui | Decision administration 2020-02-19 | Maximum 50 caractères |
+| libelleDocument | titre du document, déterminant le nom du fichier | oui | Décision administration 2020-02-19 | Maximum 50 caractères |
 | idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | non | DOC-123456789 | Maximum 50 caractères |
-| mime | type MIME du fichier | oui | application/pdf | - |
+| mime | type MIME du fichier | oui | application/pdf | Actuellement, seule la valeur "application/pdf" est prise en charge |
 | contenu | contenu du fichier en base64 | oui | - | Maximum 10'000'000 caractères |
+
+#### Création d'un courrier : message JSON
+
+Il s'agit ici de créer un courrier, c'est-à-dire l'équivalent numérique d'un envoi postal à l'usager.
+Le courrier est constitué d'un ou plusieurs documents, ainsi que d'un en-tête. 
+Le courrier peut soit porter sur une démarche qui a été précédemment créée, soit ne porter sur aucune démarche.
+
+En-tête nécessaire : `Content-Type` = `application/json-new-courrier`.
+
+Champs :
+
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ----------- | ------- | ----------- |
+| type | précise si le courrier est lié ou non à une demande | oui | LIE | Doit valoir soit LIE, soit NON_LIE |
+| idPrestation | identifiant de la prestation, et donc de la catégorie du courrier | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
+| idUsager | identifiant de l'usager à qui le courrier est destiné. Si `type` vaut `LIE`, l'usager doit être le propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier. Il s'agit de la démarche à laquelle le courrier est rattaché | oui si `type` vaut `LIE`, inutile sinon | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné. Maximum 50 caractères |
+| libelleCourrier | titre du courrier | oui | Notification de l'impôt | Maximum 50 caractères |
+| categorie (A SUPPRIMER CAR idPrestation SUFFIT !)| catégorie du courrier | oui si `type` vaut `NON_LIE`, inutile sinon | Fiscalité | DEMANDÉ A AUDREY Maximum XXX caractères|
+| documents[i].libelleDocument | titre du document, déterminant le nom du fichier | oui | Décision administration 2020-02-19 | Maximum 50 caractères |
+| documents[i].idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | non | DOC-123456789 | Maximum 50 caractères |
+| documents[i].mime | type MIME du fichier | oui | application/pdf | Actuellement, seule la valeur "application/pdf" est prise en charge |
+| documents[i].contenu | contenu du fichier en base64 | oui | - | Maximum 10'000'000 caractères |
+
+L'indice `i` ci-dessus commence à 0, pour le premier document du courrier.
+Le courrier doit contenir au moins 1 document et au maximum 20 documents.
 
 #### Création d'une suggestion de démarche : message JSON
 

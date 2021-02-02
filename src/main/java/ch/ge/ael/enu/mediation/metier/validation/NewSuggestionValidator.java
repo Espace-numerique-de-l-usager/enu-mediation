@@ -34,7 +34,7 @@ public class NewSuggestionValidator {
     private static final String URL_PRESTATION = "urlPrestation";
 
     public NewSuggestion validate(NewSuggestion message) {
-        LOGGER.info("Dans NewSuggestionValidator");
+        LOGGER.info("Dans {}", getClass().getSimpleName());
 
         final int MAX_SIZE_LIBELLE_ACTION = 25;
         final int MAX_SIZE_DESCRIPTION_ACTION = 150;

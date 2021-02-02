@@ -1,5 +1,6 @@
 package ch.ge.ael.enu.mediation.metier.validation;
 
+import ch.ge.ael.enu.mediation.metier.exception.EmptyListException;
 import ch.ge.ael.enu.mediation.metier.exception.IllegalEnumValueException;
 import ch.ge.ael.enu.mediation.metier.exception.IllegalStringSizeException;
 import ch.ge.ael.enu.mediation.metier.exception.MalformedDateException;
@@ -149,6 +150,13 @@ public class ValidationUtils {
         final int MIN_SIZE = 2;
         final int MAX_SIZE = 50;
         checkSize(value, MIN_SIZE, MAX_SIZE, fieldName);
+    }
+
+    public static void checkListNotEmpty(List list, String fieldName) {
+        if (list != null && list.size() == 0) {
+            LOGGER.info("Erreur metier : la liste [{}] est vide", fieldName);
+            throw new EmptyListException(fieldName);
+        }
     }
 
 }

@@ -2,16 +2,20 @@ package ch.ge.ael.enu.mediation.routes;
 
 import ch.ge.ael.enu.mediation.error.MessageFailureEnricher;
 import ch.ge.ael.enu.mediation.jway.model.File;
+import ch.ge.ael.enu.mediation.mapping.NewCourrierDocumentToJwayMapperProcessor;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
+import ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapperProcessor;
 import ch.ge.ael.enu.mediation.mapping.NewSuggestionToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
 import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
+import ch.ge.ael.enu.mediation.metier.model.NewCourrier;
 import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import ch.ge.ael.enu.mediation.metier.model.NewDocument;
 import ch.ge.ael.enu.mediation.metier.model.NewSuggestion;
 import ch.ge.ael.enu.mediation.metier.model.StatusChange;
+import ch.ge.ael.enu.mediation.metier.validation.NewCourrierValidator;
 import ch.ge.ael.enu.mediation.metier.validation.NewDemarcheValidator;
 import ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator;
 import ch.ge.ael.enu.mediation.metier.validation.NewSuggestionValidator;
@@ -22,7 +26,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Predicate;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.jackson.ListJacksonDataFormat;
 import org.apache.camel.model.DataFormatDefinition;
@@ -37,6 +40,7 @@ import java.util.List;
 import static ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapperProcessor.MULTIPART_BOUNDARY;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
+import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_COURRIER;
 import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_DEMARCHE;
 import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_DOCUMENT;
 import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_SUGGESTION;
@@ -72,7 +76,10 @@ public class DemarcheRouter extends RouteBuilder {
     private List<String> allowedMimeTypes;
 
     @Autowired
-    private Processor newDocumentToJwayMapper;
+    private NewDocumentToJwayMapperProcessor newDocumentToJwayMapper;
+
+    @Autowired
+    private NewCourrierDocumentToJwayMapperProcessor newCourrierDocumentToJwayMapper;
 
     static final String MAIN_QUEUE = "rabbitmq:" +
             "simetier1-to-enu-main?" +
@@ -104,11 +111,15 @@ public class DemarcheRouter extends RouteBuilder {
 
     private final Predicate isNewDocument = header("rabbitmq.Content-Type").isEqualTo(NEW_DOCUMENT);
 
+    private final Predicate isNewCourrier = header("rabbitmq.Content-Type").isEqualTo(NEW_COURRIER);
+
     private final Predicate isNewDemarcheDeposee = jsonpath("$[?(@.etat=='" + DEPOSEE + "')]");
 
     private final Predicate isNewDemarcheEnTraitement = jsonpath("$[?(@.etat=='" + EN_TRAITEMENT + "')]");
 
-    private static final String UUID = "uuid";
+    public static final String UUID = "uuid";             // a mettre dans une classe HeaderName ?
+
+    public static final String CATEGORIE = "categorie";   // a mettre dans une classe HeaderName ?
 
     private static final String CSRF_TOKEN = "csrf-token";
 
@@ -138,7 +149,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("headers dans onException (avant MessageFailureEnricher) : ${headers}")
                 .process(new MessageFailureEnricher())
                 .log("exchangeId dans onException : ${exchangeId}")
-                .log("body dans onException : ${body}")
+                .log("body dans onException : ${body}")    // TODO: tronquer
                 .log("headers dans onException : ${headers}")
                 .log("Envoi a RabbitMQ du message d'erreur")
                 .to(REPLY_QUEUE)
@@ -154,11 +165,13 @@ public class DemarcheRouter extends RouteBuilder {
                     .when(isNewDemarche)
                         .to("direct:nouvelle-demarche")
                     .when(isNewSuggestion)
-                        .to("direct:nouvelleSuggestion")
+                        .to("direct:nouvelle-suggestion")
                     .when(isStatusChange)
                         .to("direct:changement-etat-demarche")
                     .when(isNewDocument)
                         .to("direct:nouveau-document")
+                    .when(isNewCourrier)
+                        .to("direct:nouveau-courrier")
                     .otherwise()
                         .to("stream:err");
 
@@ -214,8 +227,8 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("Demarche creee, uuid = ${body.uuid}");
 
         // nouvelle suggestion de demarche
-        from("direct:nouvelleSuggestion").id("nouvelle-suggestion")
-                .log("* ROUTE nouvelleSuggestion")
+        from("direct:nouvelle-suggestion").id("nouvelle-suggestion")
+                .log("* ROUTE nouvelle-suggestion")
                 .unmarshal(jsonToPojo(NewSuggestion.class))
                 .bean(NewSuggestionValidator.class)
                 .to("log:input")
@@ -290,7 +303,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .enrich("direct:nouveau-document-phase-2", new PropertyPropagationStrategy(UUID, CSRF_TOKEN))
                 .to("direct:nouveau-document-phase-3");
 
-        // ajout d'un document a une demarche, phase 1 : recuperation de son uuid
+        // ajout d'un document a une demarche, phase 1 : recuperation de l'uuid de la demarche
         from("direct:nouveau-document-phase-1").id("nouveau-document-phase-1")
                 .log("* ROUTE nouveau-document-phase-1")
                 .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
@@ -329,6 +342,60 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("Headers envoyes a Jway = ${headers}")
                 .enrich("direct:log-multipart-message", new OldExchangeStrategy())
                 .to("rest:post:document/ds/{uuid}/attachment")
+                .log(CODE_REPONSE);
+
+        // creation d'un courrier : scission du courrier en "n" documents
+        // note 1 : dans Jway il n'a pas d'entite de courrier, il n'y a que "n" entites de documents ; chaque document
+        //          possede les donnees du courrier, ce qui permet d'identifier les documents constituant un courrier.
+        // note 2 : a partir du split() ci-dessous, on a "n" traitements, cad qu'il y une iteration invisible
+        from("direct:nouveau-courrier").id("nouveau-courrier")
+                .log("* ROUTE nouveau-courrier")
+                .unmarshal(jsonToPojo(NewCourrier.class))
+//                .log("Body de courrier = ${body}")
+                .bean(new NewCourrierValidator(allowedMimeTypes))
+                .split().method(NewCourrierSplitter.class, "splitCourrier")
+                .log("Split OK")
+                .setProperty("remoteUser", simple("${body.idUsager}", String.class))
+                .choice()
+                    .when(simple("${body.idDemarcheSiMetier} == null"))
+                        .log("Document [${body.libelleDocument}] : courrier pas lie a une demarche, on passe directement a la phase XXX")
+                    .otherwise()
+                        .log("Document [${body.libelleDocument}] : courrier lie a la demarche [${body.idDemarcheSiMetier}]")
+                        .enrich("direct:nouveau-document-phase-1", new PropertyPropagationStrategy(UUID))
+                .end()
+                .enrich("direct:nouveau-document-phase-2", new PropertyPropagationStrategy(UUID, CSRF_TOKEN))
+                .to("direct:nouveau-courrier-document-phase-XXX")
+                .log("OK nouveau-courrier")
+        ;
+
+        /*
+        // creation du i-eme document d'un courrier, phase 1 : recuperation de l'uuid de la demarche
+        // PAS NECESSAIRE
+        from("direct:nouveau-courrier-document-phase-1").id("nouveau-courrier-document-phase-1")
+                .log("* ROUTE nouveau-courrier-document-phase-1")
+                .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
+                .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
+                .setHeader(CONTENT_TYPE, simple("application/json"))
+                .setHeader(REMOTE_USER, exchangeProperty("remoteUser"))
+                .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
+                .log(CODE_REPONSE)
+                .log("JSON obtenu de Jway = ${body}")
+                .unmarshal(jsonToList(File.class))   // en faire une propriété
+                .setProperty(UUID, simple("${body[0].uuid}", String.class))
+                .log("uuid = ${body[0].uuid}");
+         */
+
+        // creation du i-eme document d'un courrier, phase X : envoi du document à Jway
+        from("direct:nouveau-courrier-document-phase-XXX").id("nouveau-courrier-document-phase-XXX")
+                .log("* ROUTE nouveau-courrier-document-phase-XXX")
+                .setHeader("X-CSRF-Token", exchangeProperty(CSRF_TOKEN))
+                .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
+                .setHeader(UUID, exchangeProperty(UUID))
+                .setHeader(Exchange.CONTENT_TYPE, simple("multipart/form-data;boundary=" + MULTIPART_BOUNDARY))
+                .process(newCourrierDocumentToJwayMapper)
+                .log("Headers envoyes a Jway = ${headers}")
+                .enrich("direct:log-multipart-message", new OldExchangeStrategy())
+                .to("rest:post:alpha/document")
                 .log(CODE_REPONSE);
 
         // trace du message de creation de document envoye a Jway
