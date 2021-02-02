@@ -22,14 +22,14 @@ public class NewDocumentValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewDocumentValidator.class);
 
-    private List<String> allowedMimeTypes;
+    final private List<String> allowedMimeTypes;
 
     public NewDocumentValidator(List<String> allowedMimeTypes) {
         this.allowedMimeTypes = allowedMimeTypes;
     }
 
     public NewDocument validate(NewDocument message) {
-        LOGGER.info("Dans NewDocumentValidator");
+        LOGGER.info("Dans {}", getClass().getSimpleName());
 
         final int MAX_SIZE_LIBELLE = 50;
         final int MAX_SIZE_ID_DOCUMENT_SI_METIER = 50;

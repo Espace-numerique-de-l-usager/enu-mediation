@@ -34,7 +34,7 @@ public class StatusChangeValidator {
     private static final String URL_RENOUVELLEMENT_DEMARCHE = "urlRenouvellementDemarche";
 
     public StatusChange validate(StatusChange message) {
-        LOGGER.info("Dans StatusChangeValidator");
+        LOGGER.info("Dans {}", getClass().getSimpleName());
 
         int MAX_SIZE_NOUVEL_ETAT = 20;
 

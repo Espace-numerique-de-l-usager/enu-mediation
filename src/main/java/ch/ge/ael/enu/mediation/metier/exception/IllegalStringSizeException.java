@@ -6,7 +6,8 @@ package ch.ge.ael.enu.mediation.metier.exception;
 public class IllegalStringSizeException extends ValidationException {
 
     public IllegalStringSizeException(String value, int minSize, int maxSize, String fieldName) {
-        super("La valeur \"" + truncateIfTooLong(value) + "\" du champ \"" + fieldName + "\" est d'une taille incorrecte."
+        super("La valeur \"" + truncateIfTooLong(value) + "\" du champ \"" + fieldName + "\" est d'une taille"
+                + " incorrecte (" + value.length() + " caracteres)."
                 + " Taille autorisee : entre " + minSize + " et " + maxSize + " caracteres");
     }
 

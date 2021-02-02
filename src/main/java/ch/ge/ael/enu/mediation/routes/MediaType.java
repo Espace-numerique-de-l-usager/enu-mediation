@@ -10,4 +10,6 @@ public class MediaType {
 
     static final String NEW_DOCUMENT = "application/json-new-document";
 
+    static final String NEW_COURRIER = "application/json-new-courrier";
+
 }
