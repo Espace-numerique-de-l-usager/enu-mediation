@@ -18,7 +18,7 @@ class BodyReducerTest {
         String body = "{\"mime\": \"text/plain\", \"contenu\": \"77+977+977+977+9ABBKRklGAAEBAQBgAGAAAO+/ve+/vQAsRXhpZgAATU0AKgAAAAgAAQExAAIAAAAKAAAAGgAAAABHcmVlbnN\"}";
         byte[] bytesReducedBody = new BodyReducer(30).reduceBody(body.getBytes());
 
-        assertThat(new String(bytesReducedBody)).isEqualTo("{\"mime\": \"text/plain\", \"contenu\": \"77+977+977... (champ tronque, car trop long) ...ABHcmVlbnN\"}");
+        assertThat(new String(bytesReducedBody)).isEqualTo("{\"mime\": \"text/plain\", \"contenu\": \"77+977+977+977+ ... (champ tronque, car trop long) ... GgAAAABHcmVlbnN\"}");
     }
 
 }
