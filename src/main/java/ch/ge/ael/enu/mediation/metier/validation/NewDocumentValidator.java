@@ -22,7 +22,7 @@ public class NewDocumentValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewDocumentValidator.class);
 
-    final private List<String> allowedMimeTypes;
+    private final List<String> allowedMimeTypes;
 
     public NewDocumentValidator(List<String> allowedMimeTypes) {
         this.allowedMimeTypes = allowedMimeTypes;

@@ -36,7 +36,7 @@ public class StatusChangeValidator {
     public StatusChange validate(StatusChange message) {
         LOGGER.info("Dans {}", getClass().getSimpleName());
 
-        int MAX_SIZE_NOUVEL_ETAT = 20;
+        final int MAX_SIZE_NOUVEL_ETAT = 20;
 
         checkExistence(message.getIdPrestation(), ID_PRESTATION);
         checkExistence(message.getIdUsager(), ID_USAGER);

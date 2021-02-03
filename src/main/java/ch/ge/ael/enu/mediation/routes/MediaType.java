@@ -2,6 +2,9 @@ package ch.ge.ael.enu.mediation.routes;
 
 public class MediaType {
 
+    private MediaType() {
+    }
+
     static final String NEW_DEMARCHE = "application/json-new-demarche";
 
     static final String NEW_SUGGESTION = "application/json-new-suggestion";

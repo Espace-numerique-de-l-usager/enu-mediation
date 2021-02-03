@@ -27,7 +27,7 @@ public class NewCourrierValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewCourrierValidator.class);
 
-    final private List<String> allowedMimeTypes;
+    private final List<String> allowedMimeTypes;
 
     public NewCourrierValidator(List<String> allowedMimeTypes) {
         this.allowedMimeTypes = allowedMimeTypes;
