@@ -1,5 +1,6 @@
 package ch.ge.ael.enu.mediation.metier.validation;
 
+import ch.ge.ael.enu.mediation.metier.exception.EmptyListException;
 import ch.ge.ael.enu.mediation.metier.exception.IllegalEnumValueException;
 import ch.ge.ael.enu.mediation.metier.exception.IllegalStringSizeException;
 import ch.ge.ael.enu.mediation.metier.exception.MalformedDateException;
@@ -8,6 +9,9 @@ import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
 import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
 import ch.ge.ael.enu.mediation.routes.MediaType;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -56,17 +60,17 @@ class ValidationUtilsTest {
     void checkSize_with_too_small_value_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkSize("tooShort", 20, 30, "someField"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"tooShort\" du champ \"someField\" est d'une taille incorrecte. Taille autorisee : entre 20 et 30 caracteres");
+                .hasMessage("La valeur \"tooShort\" du champ \"someField\" est d'une taille incorrecte (8 caracteres). Taille autorisee : entre 20 et 30 caracteres");
         assertThatThrownBy(() -> ValidationUtils.checkSize("   abc   ", 4, 30, "someField"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"abc\" du champ \"someField\" est d'une taille incorrecte. Taille autorisee : entre 4 et 30 caracteres");
+                .hasMessage("La valeur \"abc\" du champ \"someField\" est d'une taille incorrecte (3 caracteres). Taille autorisee : entre 4 et 30 caracteres");
     }
 
     @Test
     void checkSize_with_too_large_value_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkSize("tooLong", 1, 5, "someField"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"tooLong\" du champ \"someField\" est d'une taille incorrecte. Taille autorisee : entre 1 et 5 caracteres");
+                .hasMessage("La valeur \"tooLong\" du champ \"someField\" est d'une taille incorrecte (7 caracteres). Taille autorisee : entre 1 et 5 caracteres");
     }
 
     @Test
@@ -99,7 +103,7 @@ class ValidationUtilsTest {
     void checkSizeUrl_with_wrong_url_should_fail() {
         assertThatThrownBy(() -> ValidationUtils.checkSizeUrl("short", "someUrlField1"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"short\" du champ \"someUrlField1\" est d'une taille incorrecte. Taille autorisee : entre 10 et 200 caracteres");
+                .hasMessage("La valeur \"short\" du champ \"someUrlField1\" est d'une taille incorrecte (5 caracteres). Taille autorisee : entre 10 et 200 caracteres");
 
         String longUrl = "https://someSite/path?" +
                 " 123456789 123456789 123456789 123456789 123456789" +
@@ -110,7 +114,7 @@ class ValidationUtilsTest {
                 " 123456789 123456789 123456789 123456789 123456789";
         assertThatThrownBy(() -> ValidationUtils.checkSizeUrl(longUrl, "someUrlField2"))
                 .isInstanceOf(IllegalStringSizeException.class)
-                .hasMessage("La valeur \"" + longUrl + "\" du champ \"someUrlField2\" est d'une taille incorrecte. Taille autorisee : entre 10 et 200 caracteres");
+                .hasMessage("La valeur \"" + longUrl + "\" du champ \"someUrlField2\" est d'une taille incorrecte (322 caracteres). Taille autorisee : entre 10 et 200 caracteres");
     }
 
     @Test
@@ -155,6 +159,19 @@ class ValidationUtilsTest {
         assertThatThrownBy(() -> ValidationUtils.checkPresentIfOtherPresent(null, "someField", "someOtherValue", "someOtherField"))
                 .isInstanceOf(ValidationException.class)
                 .hasMessage("Le champ \"someField\" doit être fourni quand le champ \"someOtherField\" est fourni");
+    }
+
+    @Test
+    void checkListNotEmpty_with_empty_list_should_fail() {
+        assertThatThrownBy(() -> ValidationUtils.checkListNotEmpty(new ArrayList<String>(), "someList"))
+                .isInstanceOf(EmptyListException.class)
+                .hasMessage("La liste \"someList\" ne peut pas etre vide");
+    }
+
+    @Test
+    void checkListNotEmpty_with_null_list_or_non_empty_list_should_succeed() {
+        ValidationUtils.checkListNotEmpty(null, "someList");
+        ValidationUtils.checkListNotEmpty(Arrays.asList("pipo 1", "pipo 2"), "someList");
     }
 
 }
