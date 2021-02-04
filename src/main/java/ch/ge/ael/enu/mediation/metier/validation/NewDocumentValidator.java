@@ -41,6 +41,7 @@ public class NewDocumentValidator {
         checkExistence(message.getIdDemarcheSiMetier(), "idDemarcheSiMetier");
         checkExistence(message.getTypeDocument(), "typeDocument");
         checkExistence(message.getLibelleDocument(), "libelleDocument");
+        checkExistence(message.getIdDocumentSiMetier(), "idDocumentSiMetier");
         checkExistence(message.getMime(), "mime");
         checkExistence(message.getContenu(), "contenu");
 
