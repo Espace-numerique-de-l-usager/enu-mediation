@@ -6,6 +6,9 @@ public enum JwayDocumentType {
 
     REPORT,
 
-    COURRIER
+    /**
+     * Pour l'ENU : un courrier.
+     */
+    OTHER,
 
 }
