@@ -5,6 +5,7 @@ import ch.ge.ael.enu.mediation.metier.exception.IllegalEnumValueException;
 import ch.ge.ael.enu.mediation.metier.exception.IllegalStringSizeException;
 import ch.ge.ael.enu.mediation.metier.exception.MalformedDateException;
 import ch.ge.ael.enu.mediation.metier.exception.MissingFieldException;
+import ch.ge.ael.enu.mediation.metier.exception.TooLargeListException;
 import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
 import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
 import ch.ge.ael.enu.mediation.routes.MediaType;
@@ -172,6 +173,20 @@ class ValidationUtilsTest {
     void checkListNotEmpty_with_null_list_or_non_empty_list_should_succeed() {
         ValidationUtils.checkListNotEmpty(null, "someList");
         ValidationUtils.checkListNotEmpty(Arrays.asList("pipo 1", "pipo 2"), "someList");
+    }
+
+    @Test
+    void checkListMaxSize_with_too_large_list_should_fail() {
+        assertThatThrownBy(() -> ValidationUtils.checkListMaxSize(Arrays.asList("A", "B", "C"), "someLongList", 2))
+                .isInstanceOf(TooLargeListException.class)
+                .hasMessage("La taille (3) de la liste \"someLongList\" excede la taille maximale autorisee (2)");
+    }
+
+    @Test
+    void checkListMaxSize_with_null_list_or_small_list_should_succeed() {
+        ValidationUtils.checkListMaxSize(null, "someList", 10);
+        ValidationUtils.checkListMaxSize(Arrays.asList("A1", "B1", "C1"), "someList1", 3);
+        ValidationUtils.checkListMaxSize(Arrays.asList("A2", "B2", "C2"), "someList2", 30);
     }
 
 }

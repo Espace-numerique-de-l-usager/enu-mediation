@@ -24,7 +24,9 @@ import java.util.Base64;
 
 /**
  * Cree le body de la requete <strong>multipart</strong> pour Jway.
- * Cas d'usage : creation dans Jway du i-eme document constituant un courrier.
+ * <p/>
+ * Cas d'usage : creation dans Jway du i-eme document constituant un courrier. Rappel : un courrier dans Jway
+ * n'existe que par ses documents
  */
 @Component
 public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
@@ -60,12 +62,15 @@ public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
         builder.setBoundary(MULTIPART_BOUNDARY);
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
         builder.addTextBody("name", name, textPlainUtf8);
-        builder.addTextBody("type", JwayDocumentType.COURRIER.name());
-        builder.addTextBody("tag", categorie);
+        builder.addTextBody("type", JwayDocumentType.OTHER.name());
+LOGGER.warn("ON FOUT EN FORCE LA CATEGORIE !");
+//        builder.addTextBody("tag", categorie);
+        builder.addTextBody("tag", "categorie_A");
         if (demarcheId != null) {
             builder.addTextBody("folder", demarcheId);
         }
-        builder.addTextBody("folderLabel", courrierDoc.getLibelleCourrier());
+//        builder.addTextBody("folderLabel", courrierDoc.getLibelleCourrier());
+        builder.addTextBody("subtype", courrierDoc.getLibelleCourrier());
         builder.addBinaryBody("files", decodedContentAsBytes, ContentType.create(mime), fileName);
 
         // ajout de la requete multipart au body

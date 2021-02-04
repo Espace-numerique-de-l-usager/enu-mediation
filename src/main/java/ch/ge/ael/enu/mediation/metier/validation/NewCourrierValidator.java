@@ -14,6 +14,7 @@ import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkAbs
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkListNotEmpty;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkListMaxSize;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkPresentIfOtherHasValue;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdDemarcheSiMetier;
@@ -40,6 +41,7 @@ public class NewCourrierValidator {
         final int MAX_SIZE_ID_DOCUMENT_SI_METIER = 50;
         final int MAX_SIZE_MIME = 50;
         final int MAX_SIZE_CONTENU = 10 * 1000 * 1000;
+        final int MAX_NB_DOCUMENTS = 20;
 
         checkExistence(message.getType(), "type");
         checkExistence(message.getIdPrestation(), "idPrestation");
@@ -55,6 +57,7 @@ public class NewCourrierValidator {
 
         checkEnum(message.getType(), CourrierType.class, "type");
         checkListNotEmpty(message.getDocuments(), "documents");
+        checkListMaxSize(message.getDocuments(), "documents", MAX_NB_DOCUMENTS);
 
         IntStream.range(0, message.getDocuments().size()).forEach(i -> {
             NewDocument doc = message.getDocuments().get(i);

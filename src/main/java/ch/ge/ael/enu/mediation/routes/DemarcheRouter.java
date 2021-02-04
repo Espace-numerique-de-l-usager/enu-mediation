@@ -358,36 +358,19 @@ public class DemarcheRouter extends RouteBuilder {
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
                 .choice()
                     .when(simple("${body.idDemarcheSiMetier} == null"))
-                        .log("Document [${body.libelleDocument}] : courrier pas lie a une demarche, on passe directement a la phase XXX")
+                        .log("Document [${body.libelleDocument}] : courrier pas lie a une demarche, on passe directement a la phase d'envoi")
                     .otherwise()
                         .log("Document [${body.libelleDocument}] : courrier lie a la demarche [${body.idDemarcheSiMetier}]")
                         .enrich("direct:nouveau-document-phase-1", new PropertyPropagationStrategy(UUID))
                 .end()
                 .enrich("direct:nouveau-document-phase-2", new PropertyPropagationStrategy(UUID, CSRF_TOKEN))
-                .to("direct:nouveau-courrier-document-phase-XXX")
+                .to("direct:nouveau-courrier-document-phase-envoi")
                 .log("OK nouveau-courrier")
         ;
 
-        /*
-        // creation du i-eme document d'un courrier, phase 1 : recuperation de l'uuid de la demarche
-        // PAS NECESSAIRE
-        from("direct:nouveau-courrier-document-phase-1").id("nouveau-courrier-document-phase-1")
-                .log("* ROUTE nouveau-courrier-document-phase-1")
-                .setProperty("idDemarcheSiMetier", simple("${body.idDemarcheSiMetier}", String.class))
-                .setHeader("name", exchangeProperty("idDemarcheSiMetier"))
-                .setHeader(CONTENT_TYPE, simple("application/json"))
-                .setHeader(REMOTE_USER, exchangeProperty("remoteUser"))
-                .to("rest:get:file/mine?name={name}&max=1&order=id&reverse=true")  // ajouter &application.id={idPrestation}
-                .log(CODE_REPONSE)
-                .log("JSON obtenu de Jway = ${body}")
-                .unmarshal(jsonToList(File.class))   // en faire une propriété
-                .setProperty(UUID, simple("${body[0].uuid}", String.class))
-                .log("uuid = ${body[0].uuid}");
-         */
-
-        // creation du i-eme document d'un courrier, phase X : envoi du document à Jway
-        from("direct:nouveau-courrier-document-phase-XXX").id("nouveau-courrier-document-phase-XXX")
-                .log("* ROUTE nouveau-courrier-document-phase-XXX")
+        // creation du i-eme document d'un courrier, phase d'envoi : envoi du document à Jway
+        from("direct:nouveau-courrier-document-phase-envoi").id("nouveau-courrier-document-phase-envoi")
+                .log("* ROUTE nouveau-courrier-document-phase-envoi")
                 .setHeader("X-CSRF-Token", exchangeProperty(CSRF_TOKEN))
                 .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .setHeader(UUID, exchangeProperty(UUID))

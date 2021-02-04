@@ -5,6 +5,7 @@ import ch.ge.ael.enu.mediation.metier.exception.IllegalEnumValueException;
 import ch.ge.ael.enu.mediation.metier.exception.IllegalStringSizeException;
 import ch.ge.ael.enu.mediation.metier.exception.MalformedDateException;
 import ch.ge.ael.enu.mediation.metier.exception.MissingFieldException;
+import ch.ge.ael.enu.mediation.metier.exception.TooLargeListException;
 import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -156,6 +157,13 @@ public class ValidationUtils {
         if (list != null && list.size() == 0) {
             LOGGER.info("Erreur metier : la liste [{}] est vide", fieldName);
             throw new EmptyListException(fieldName);
+        }
+    }
+
+    public static void checkListMaxSize(List list, String fieldName, int maxSize) {
+        if (list != null && list.size() > maxSize) {
+            LOGGER.info("Erreur metier : taille de liste [{}] = {}, taille max = {}", fieldName, list.size(), maxSize);
+            throw new TooLargeListException(fieldName, list.size(), maxSize);
         }
     }
 
