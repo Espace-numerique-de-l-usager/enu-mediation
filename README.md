@@ -161,7 +161,7 @@ Champs :
 | --- | ----------- | ----------- | ------- | ----------- |
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné. Maximum 50 caractères |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour la prestation donnée et pour l'usager donné. Maximum 50 caractères |
 | nouvelEtat | nouvel état de la démarche | oui | DEPOSEE | Doit valoir soit DEPOSEE, soit EN_TRAITEMENT, soit TERMINEE |
 | dateNouvelEtat | date à laquelle la démarche a changé d'état| oui | 2020-02-19 | - |
 
@@ -196,10 +196,10 @@ Champs :
 | --- | ----------- | ----------- | ------- | ----------- |
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné. Maximum 50 caractères |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Maximum 50 caractères |
 | typeDocument | type de document | oui | RECAPITULATIF | Doit valoir soit RECAPITULATIF, soit JUSTIFICATIF |
 | libelleDocument | titre du document, déterminant le nom du fichier | oui | Décision administration 2020-02-19 | Maximum 50 caractères |
-| idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | non | DOC-123456789 | Maximum 50 caractères |
+| idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | oui | DOC-123456789 | Doit doit être unique, pour la prestation donnée et pour l'usager donné. Maximum 50 caractères |
 | mime | type MIME du fichier | oui | application/pdf | Actuellement, seule la valeur "application/pdf" est prise en charge |
 | contenu | contenu du fichier en base64 | oui | - | Maximum 10'000'000 caractères |
 
@@ -218,11 +218,11 @@ Champs :
 | type | précise si le courrier est lié ou non à une demande | oui | LIE | Doit valoir soit LIE, soit NON_LIE |
 | idPrestation | identifiant de la prestation, et donc de la catégorie du courrier | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager à qui le courrier est destiné. Si `type` vaut `LIE`, l'usager doit être le propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idDemarcheSiMetier | identifiant de la démarche dans le SI métier. Il s'agit de la démarche à laquelle le courrier est rattaché | oui si `type` vaut `LIE`, inutile sinon | AEL-100000 | Doit doit être unique, pour une prestation donnée et pour un usager donné. Maximum 50 caractères |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier. Il s'agit de la démarche à laquelle le courrier est rattaché | oui si `type` vaut `LIE`, inutile sinon | AEL-100000 | Maximum 50 caractères |
 | libelleCourrier | titre du courrier | oui | Notification de l'impôt | Maximum 50 caractères |
 | categorie (A SUPPRIMER CAR idPrestation SUFFIT !)| catégorie du courrier | oui si `type` vaut `NON_LIE`, inutile sinon | Fiscalité | DEMANDÉ A AUDREY Maximum XXX caractères|
 | documents[i].libelleDocument | titre du document, déterminant le nom du fichier | oui | Décision administration 2020-02-19 | Maximum 50 caractères |
-| documents[i].idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | non | DOC-123456789 | Maximum 50 caractères |
+| documents[i].idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | oui | DOC-123456789 | Doit doit être unique, pour la prestation donnée et pour l'usager donné. Maximum 50 caractères |
 | documents[i].mime | type MIME du fichier | oui | application/pdf | Actuellement, seule la valeur "application/pdf" est prise en charge |
 | documents[i].contenu | contenu du fichier en base64 | oui | - | Maximum 10'000'000 caractères |
 

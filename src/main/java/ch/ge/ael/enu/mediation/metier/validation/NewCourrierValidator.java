@@ -64,6 +64,7 @@ public class NewCourrierValidator {
             String prefix = "documents[" + i + "].";
 
             checkExistence(doc.getLibelleDocument(), prefix + "libelleDocument");
+            checkExistence(doc.getIdDocumentSiMetier(), prefix + "idDocumentSiMetier");
             checkExistence(doc.getMime(), prefix + "mime");
             checkExistence(doc.getContenu(), prefix + "contenu");
 

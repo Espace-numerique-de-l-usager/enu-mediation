@@ -23,6 +23,9 @@ public class ValidationUtils {
     private ValidationUtils() {
     }
 
+    /**
+     * Verifie qu'un champ est present.
+     */
     public static void checkExistence(Object value, String fieldName) {
         if (value instanceof String) {
             value = StringUtils.isBlank((String) value) ? null : value;
@@ -33,6 +36,9 @@ public class ValidationUtils {
         }
     }
 
+    /**
+     * Verifie que la valeur d'un champ est bien dans une certaine Enum.
+     */
     public static <T> void checkEnum(String value, Class<T> clazz, String fieldName) {
         if (value != null) {
             if (!clazz.isEnum()) {
@@ -51,6 +57,9 @@ public class ValidationUtils {
         }
     }
 
+    /**
+     * Verifie que la valeur (String) d'un champ n'est ni trop courte, ni trop longue.
+     */
     public static void checkSize(String value, int minSize, int maxSize, String fieldName) {
         if (value != null) {
             value = value.trim();
@@ -63,6 +72,9 @@ public class ValidationUtils {
         }
     }
 
+    /**
+     * Verifie que la valeur (String) d'un champ contient bien une date (sans heures).
+     */
     public static void checkDate(String value, String fieldName) {
         if (value != null) {
             try {
@@ -153,6 +165,9 @@ public class ValidationUtils {
         checkSize(value, MIN_SIZE, MAX_SIZE, fieldName);
     }
 
+    /**
+     * Verifie qu'une liste n'est pas vide.
+     */
     public static void checkListNotEmpty(List list, String fieldName) {
         if (list != null && list.size() == 0) {
             LOGGER.info("Erreur metier : la liste [{}] est vide", fieldName);
@@ -160,6 +175,9 @@ public class ValidationUtils {
         }
     }
 
+    /**
+     * Verifie qu'une liste ne contient pas trop d'elements.
+     */
     public static void checkListMaxSize(List list, String fieldName, int maxSize) {
         if (list != null && list.size() > maxSize) {
             LOGGER.info("Erreur metier : taille de liste [{}] = {}, taille max = {}", fieldName, list.size(), maxSize);
