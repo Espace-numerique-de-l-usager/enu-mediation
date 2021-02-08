@@ -15,10 +15,10 @@ class BodyReducerTest {
 
     @Test
     void long_body_should_be_truncated() {
-        String body = "{\"mime\": \"text/plain\", \"contenu\": \"77+977+977+977+9ABBKRklGAAEBAQBgAGAAAO+/ve+/vQAsRXhpZgAATU0AKgAAAAgAAQExAAIAAAAKAAAAGgAAAABHcmVlbnN\"}";
+        String body = "{\"mime\": \"text/plain\", \"contenu\": \"77+977+977+977+9ABBKRklGAAEBAQBgAGAAAO+/ve+/vAGAAAOAGAAAOQAsRXhpZgAATU0AKgAAAAgAAQExAAIAAAAKAAAAGgAAAABHcmVlbnN\"}";
         byte[] bytesReducedBody = new BodyReducer(30).reduceBody(body.getBytes());
 
-        assertThat(new String(bytesReducedBody)).isEqualTo("{\"mime\": \"text/plain\", \"contenu\": \"77+977+977+977+ ... (champ tronque, car trop long) ... GgAAAABHcmVlbnN\"}");
+        assertThat(new String(bytesReducedBody)).isEqualTo("{\"mime\": \"text/plain\", \"contenu\": \"77+977+977+977+9ABBKRklGAAEBAQBgAGAAAO+/ ... (champ tronque, car trop long) ... KAAAAGgAAAABHcmVlbnN\"}");
     }
 
 }

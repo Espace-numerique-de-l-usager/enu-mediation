@@ -61,7 +61,7 @@ class MultipartJwayBodyReducerTest {
                 "------FormBoundaryForEnuMediation--";
         byte[] bytesReducedBody = new MultipartJwayBodyReducer(100).reduceBody(body.getBytes());
 
-        assertThat(new String(bytesReducedBody)).contains("AAAAAAAAAABBBB... (champ tronque, car trop long) ...NNNNNNNOOOOOOOOOO");
+        assertThat(new String(bytesReducedBody)).contains("AAAAAAAAAABBBBBBBBBBCCCC... (champ tronque, car trop long) ...MMNNNNNNNNNNOOOOOOOOOO");
         }
 
 
