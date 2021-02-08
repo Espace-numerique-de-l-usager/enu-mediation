@@ -26,7 +26,7 @@ import java.util.Base64;
  * Cree le body de la requete <strong>multipart</strong> pour Jway.
  * <p/>
  * Cas d'usage : creation dans Jway du i-eme document constituant un courrier. Rappel : un courrier dans Jway
- * n'existe que par ses documents
+ * n'est materialise que par ses documents ; chaque document contient donc toute l'information du courrier.
  */
 @Component
 public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
@@ -41,8 +41,8 @@ public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws IOException {
         NewCourrierDocument courrierDoc = exchange.getIn().getBody(NewCourrierDocument.class);
-        String categorie = exchange.getIn().getHeader(DemarcheRouter.CATEGORIE, String.class);   // dependance a changer
-        String demarcheId = exchange.getIn().getHeader(DemarcheRouter.UUID, String.class);       // dependance a changer
+        String categorie = exchange.getIn().getHeader(DemarcheRouter.CATEGORIE, String.class);   // dependance sur la classe DemarcheRouter : a changer
+        String demarcheId = exchange.getIn().getHeader(DemarcheRouter.UUID, String.class);       // dependance sur la classe DemarcheRouter : a changer
         LOGGER.info("Dans {} - uuid demarche = [{}], categorie = [{}]", getClass().getSimpleName(), demarcheId, categorie);
 
         // preparation des donnees
@@ -64,11 +64,14 @@ public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
         builder.addTextBody("source", courrierDoc.getClefCourrier());
         builder.addTextBody("name", name, textPlainUtf8);
         builder.addTextBody("type", JwayDocumentType.OTHER.name());
+        if (demarcheId == null) {
+            // courrier non lie a une demarche
 LOGGER.warn("ON FOUT EN FORCE LA CATEGORIE !");
-//        builder.addTextBody("tag", categorie);
-        builder.addTextBody("tag", "categorie_A");
-        if (demarcheId != null) {
-            builder.addTextBody("folder", demarcheId);
+//          builder.addTextBody("tag", categorie);
+          builder.addTextBody("tag", "categorie_A");
+        } else {
+            // courrier lie a une demarche
+            builder.addTextBody("fileUuid", demarcheId);
         }
 //        builder.addTextBody("folderLabel", courrierDoc.getLibelleCourrier());
         builder.addTextBody("subtype", courrierDoc.getLibelleCourrier());

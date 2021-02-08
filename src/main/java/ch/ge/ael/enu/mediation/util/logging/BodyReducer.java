@@ -6,9 +6,9 @@ package ch.ge.ael.enu.mediation.util.logging;
  */
 public class BodyReducer {
 
-    private static final int SHOW_BEFORE = 15;
+    private static final int SHOW_BEFORE = 40;
 
-    private static final int SHOW_AFTER = 15;
+    private static final int SHOW_AFTER = 20;
 
     private static final String TRUNCATION = " ... (champ tronque, car trop long) ... ";
 

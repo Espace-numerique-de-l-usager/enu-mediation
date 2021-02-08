@@ -123,6 +123,8 @@ public class DemarcheRouter extends RouteBuilder {
 
     private static final String CSRF_TOKEN = "csrf-token";
 
+    private static final String X_CSRF_TOKEN = "X-CSRF-Token";
+
     private static final String CODE_REPONSE = "Reponse : HTTP ${header.CamelHttpResponseCode}";
 
     private static final String CONTENT_TYPE = "Content-Type";
@@ -321,7 +323,7 @@ public class DemarcheRouter extends RouteBuilder {
         // Sans cette phase, on obtient une erreur 403 dans la phase suivante
         from("direct:nouveau-document-phase-2").id("nouveau-document-phase-2")
                 .log("* ROUTE nouveau-document-phase-2")
-                .setHeader("X-CSRF-Token", simple("fetch"))
+                .setHeader(X_CSRF_TOKEN, simple("fetch"))
                 .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .setHeader(UUID, exchangeProperty(UUID))
                 .marshal(pojoToJson())
@@ -334,7 +336,7 @@ public class DemarcheRouter extends RouteBuilder {
         // ajout d'un document a une demarche, phase 3 : requete proprement dite d'envoi à Jway
         from("direct:nouveau-document-phase-3").id("nouveau-document-phase-3")
                 .log("* ROUTE nouveau-document-phase-3")
-                .setHeader("X-CSRF-Token", exchangeProperty(CSRF_TOKEN))
+                .setHeader(X_CSRF_TOKEN, exchangeProperty(CSRF_TOKEN))
                 .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .setHeader(UUID, exchangeProperty(UUID))
                 .setHeader(Exchange.CONTENT_TYPE, simple("multipart/form-data;boundary=" + MULTIPART_BOUNDARY))
@@ -372,7 +374,7 @@ public class DemarcheRouter extends RouteBuilder {
         // creation du i-eme document d'un courrier, phase d'envoi : envoi du document à Jway
         from("direct:nouveau-courrier-document-phase-envoi").id("nouveau-courrier-document-phase-envoi")
                 .log("* ROUTE nouveau-courrier-document-phase-envoi")
-                .setHeader("X-CSRF-Token", exchangeProperty(CSRF_TOKEN))
+//                .setHeader(X_CSRF_TOKEN, exchangeProperty(CSRF_TOKEN))            // Pas necessaire pour l'instant (mode alpha)
                 .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .setHeader(UUID, exchangeProperty(UUID))
                 .setHeader(Exchange.CONTENT_TYPE, simple("multipart/form-data;boundary=" + MULTIPART_BOUNDARY))
