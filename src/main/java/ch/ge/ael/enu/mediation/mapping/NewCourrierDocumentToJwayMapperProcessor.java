@@ -54,7 +54,7 @@ public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
         // note : l'upload va supprimer les caracteres accentues
         LOGGER.info("fileName apres assainissement = [{}]", fileName);
 
-        // pour le champ "name", il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
+        // pour le champs contenant du texte, il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
         ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
 
         // construction de la requete multipart
@@ -74,7 +74,7 @@ LOGGER.warn("ON FOUT EN FORCE LA CATEGORIE !");
             builder.addTextBody("fileUuid", demarcheId);
         }
 //        builder.addTextBody("folderLabel", courrierDoc.getLibelleCourrier());
-        builder.addTextBody("subtype", courrierDoc.getLibelleCourrier());
+        builder.addTextBody("subtype", courrierDoc.getLibelleCourrier(), textPlainUtf8);
         builder.addBinaryBody("files", decodedContentAsBytes, ContentType.create(mime), fileName);
 
         // ajout de la requete multipart au body
