@@ -9,9 +9,9 @@ import static ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapperProcessor.M
  */
 public class MultipartJwayBodyReducer {
 
-    private static final int SHOW_BEFORE = 40;
+    private static final int SHOW_BEFORE = 50;
 
-    private static final int SHOW_AFTER = 20;
+    private static final int SHOW_AFTER = 25;
 
     private static final String TRUNCATION = "... (champ tronque, car trop long) ...";
 
