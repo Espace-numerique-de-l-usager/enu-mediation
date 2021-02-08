@@ -61,6 +61,7 @@ public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
         MultipartEntityBuilder builder = MultipartEntityBuilder.create();
         builder.setBoundary(MULTIPART_BOUNDARY);
         builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+        builder.addTextBody("source", courrierDoc.getClefCourrier());
         builder.addTextBody("name", name, textPlainUtf8);
         builder.addTextBody("type", JwayDocumentType.OTHER.name());
 LOGGER.warn("ON FOUT EN FORCE LA CATEGORIE !");

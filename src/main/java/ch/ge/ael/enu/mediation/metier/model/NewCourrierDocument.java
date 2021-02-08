@@ -22,6 +22,8 @@ public class NewCourrierDocument {
 
     private String libelleCourrier = null;
 
+    private String clefCourrier = null;
+
     private String idDocumentSiMetier = null;
 
     private String libelleDocument = null;

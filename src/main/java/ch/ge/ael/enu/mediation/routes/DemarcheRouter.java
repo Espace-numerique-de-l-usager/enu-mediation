@@ -353,6 +353,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .unmarshal(jsonToPojo(NewCourrier.class))
 //                .log("Body de courrier = ${body}")
                 .bean(new NewCourrierValidator(allowedMimeTypes))
+                .bean(new NewCourrierKeySetter())
                 .split().method(NewCourrierSplitter.class, "splitCourrier")
                 .log("Split OK")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
@@ -363,7 +364,7 @@ public class DemarcheRouter extends RouteBuilder {
                         .log("Document [${body.libelleDocument}] : courrier lie a la demarche [${body.idDemarcheSiMetier}]")
                         .enrich("direct:nouveau-document-phase-1", new PropertyPropagationStrategy(UUID))
                 .end()
-                .enrich("direct:nouveau-document-phase-2", new PropertyPropagationStrategy(UUID, CSRF_TOKEN))
+//                .enrich("direct:nouveau-document-phase-2", new PropertyPropagationStrategy(UUID, CSRF_TOKEN))   // Pas necessaire pour l'instant (mode alpha)
                 .to("direct:nouveau-courrier-document-phase-envoi")
                 .log("OK nouveau-courrier")
         ;
