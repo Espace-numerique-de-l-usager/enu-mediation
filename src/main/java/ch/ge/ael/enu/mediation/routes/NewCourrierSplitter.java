@@ -28,6 +28,7 @@ public class NewCourrierSplitter {
                     courrierDoc.setIdUsager(newCourrier.getIdUsager());
                     courrierDoc.setIdDemarcheSiMetier(newCourrier.getIdDemarcheSiMetier());
                     courrierDoc.setLibelleCourrier(newCourrier.getLibelleCourrier());
+                    courrierDoc.setClefCourrier(newCourrier.getClef());
                     courrierDoc.setLibelleDocument(doc.getLibelleDocument());
                     courrierDoc.setIdDocumentSiMetier(doc.getIdDocumentSiMetier());
                     courrierDoc.setMime(doc.getMime());
