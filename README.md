@@ -128,7 +128,7 @@ Note : dans les tableaux ci-dessous, la mention "inutile" pour un champ signifie
 
 #### Création d'une démarche : message JSON
 
-En-tête nécessaire : `ContentType` = `application/json-new-demarche`.
+En-tête nécessaire : `ContentType` = `application/new-demarche-v1.0+json`.
 
 Champs :
 
@@ -153,7 +153,7 @@ Exemple : voir [newdemarche/MessageSender](https://argon.***REMOVED***/gitlab/AC
 Il s'agit ici de changer l'état d'une démarche qui a été précédemment créée via un
 message comme ci-dessus.
 
-En-tête nécessaire : `Content-Type` = `application/json-status-change`.
+En-tête nécessaire : `Content-Type` = `application/status-change-v1.0+json`.
 
 Champs :
 
@@ -188,7 +188,7 @@ Exemples : voir [statuschange/MessageSender](https://argon.***REMOVED***/gitlab/
 
 Il s'agit ici de compléter une démarche qui a été précédemment créée.
 
-En-tête nécessaire : `Content-Type` = `application/json-new-document`.
+En-tête nécessaire : `Content-Type` = `application/new-document-v1.0+json`.
 
 Champs :
 
@@ -209,7 +209,7 @@ Il s'agit ici de créer un courrier, c'est-à-dire l'équivalent numérique d'un
 Le courrier est constitué d'un ou plusieurs documents, ainsi que d'un en-tête. 
 Le courrier peut soit porter sur une démarche qui a été précédemment créée, soit ne porter sur aucune démarche.
 
-En-tête nécessaire : `Content-Type` = `application/json-new-courrier`.
+En-tête nécessaire : `Content-Type` = `application/new-courrier-v1.0+json`.
 
 Champs :
 
@@ -229,7 +229,7 @@ Le courrier doit contenir au moins 1 document et au maximum 20 documents.
 
 #### Création d'une suggestion de démarche : message JSON
 
-En-tête nécessaire : `ContentType` = `application/json-new-suggestion`.
+En-tête nécessaire : `ContentType` = `application/new-suggestion-v1.0+json`.
 
 Champs :
 
