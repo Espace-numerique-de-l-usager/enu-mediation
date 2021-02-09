@@ -1,7 +1,6 @@
 package ch.ge.ael.enu.mediation.metier.validation;
 
 import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
-import ch.ge.ael.enu.mediation.metier.model.CourrierType;
 import ch.ge.ael.enu.mediation.metier.model.NewCourrier;
 import ch.ge.ael.enu.mediation.metier.model.NewDocument;
 import org.slf4j.Logger;
@@ -10,12 +9,9 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkAbsentIfOtherHasValue;
-import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
-import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkListNotEmpty;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkListMaxSize;
-import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkPresentIfOtherHasValue;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkListNotEmpty;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdDemarcheSiMetier;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdPrestation;
@@ -43,11 +39,8 @@ public class NewCourrierValidator {
         final int MAX_SIZE_CONTENU = 10 * 1000 * 1000;
         final int MAX_NB_DOCUMENTS = 20;
 
-        checkExistence(message.getType(), "type");
         checkExistence(message.getIdPrestation(), "idPrestation");
         checkExistence(message.getIdUsager(), "idUsager");
-        checkPresentIfOtherHasValue(message.getIdDemarcheSiMetier(), "idDemarcheSiMetier", message.getType(), "type", CourrierType.LIE.name());
-        checkAbsentIfOtherHasValue(message.getIdDemarcheSiMetier(), "idDemarcheSiMetier", message.getType(), "type", CourrierType.NON_LIE.name());
         checkExistence(message.getLibelleCourrier(), "libelleCourrier");
         checkExistence(message.getDocuments(), "documents");
         checkSizeIdPrestation(message.getIdPrestation());
@@ -55,7 +48,6 @@ public class NewCourrierValidator {
         checkSizeIdDemarcheSiMetier(message.getIdDemarcheSiMetier());
         checkSize(message.getLibelleCourrier(), 1, MAX_SIZE_LIBELLE, "libelleCourrier");
 
-        checkEnum(message.getType(), CourrierType.class, "type");
         checkListNotEmpty(message.getDocuments(), "documents");
         checkListMaxSize(message.getDocuments(), "documents", MAX_NB_DOCUMENTS);
 

@@ -13,8 +13,6 @@ import java.util.List;
  */
 public class NewCourrier {
 
-    private String type = null;
-
     private String idPrestation = null;
 
     private String idUsager = null;
