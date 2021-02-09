@@ -215,12 +215,10 @@ Champs :
 
 | Nom | Description | Obligatoire | Exemple | Commentaire |
 | --- | ----------- | ----------- | ------- | ----------- |
-| type | précise si le courrier est lié ou non à une demande | oui | LIE | Doit valoir soit LIE, soit NON_LIE |
 | idPrestation | identifiant de la prestation, et donc de la catégorie du courrier | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager à qui le courrier est destiné. Si `type` vaut `LIE`, l'usager doit être le propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| idDemarcheSiMetier | identifiant de la démarche dans le SI métier. Il s'agit de la démarche à laquelle le courrier est rattaché | oui si `type` vaut `LIE`, inutile sinon | AEL-100000 | Maximum 50 caractères |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier. Il s'agit de la démarche à laquelle le courrier est rattaché. Si ce champ n'est pas fourni, le courrier est un courrier hors démarche | non | AEL-100000 | Maximum 50 caractères |
 | libelleCourrier | titre du courrier | oui | Notification de l'impôt | Maximum 50 caractères |
-| categorie (A SUPPRIMER CAR idPrestation SUFFIT !)| catégorie du courrier | oui si `type` vaut `NON_LIE`, inutile sinon | Fiscalité | DEMANDÉ A AUDREY Maximum XXX caractères|
 | documents[i].libelleDocument | titre du document, déterminant le nom du fichier | oui | Décision administration 2020-02-19 | Maximum 50 caractères |
 | documents[i].idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | oui | DOC-123456789 | Doit doit être unique, pour la prestation donnée et pour l'usager donné. Maximum 50 caractères |
 | documents[i].mime | type MIME du fichier | oui | application/pdf | Actuellement, seule la valeur "application/pdf" est prise en charge |
