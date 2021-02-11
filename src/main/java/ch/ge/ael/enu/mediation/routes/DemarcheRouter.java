@@ -222,7 +222,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .bean(NewDemarcheToJwayMapper.class)
                 .marshal(pojoToJson())
-                .log("JSON envoye a Jway = ${body}")
+                .log(traceJsonToJway())
                 .to("rest:post:alpha/file")
                 .log(CODE_REPONSE)
                 .unmarshal(jsonToPojo(File.class))
@@ -238,7 +238,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .bean(NewSuggestionToJwayMapper.class)
                 .marshal(pojoToJson())
-                .log("JSON envoye a Jway = ${body}")
+                .log(traceJsonToJway())
                 .to("rest:post:alpha/file")
                 .log(CODE_REPONSE)
                 .unmarshal(jsonToPojo(File.class))
@@ -278,7 +278,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader("uuid", exchangeProperty(UUID))
                 .bean(StatusChangeToJwayStep1Mapper.class)
                 .marshal(pojoToJson())
-                .log("JSON envoye a Jway = ${body}")
+                .log(traceJsonToJway())
                 .to("rest:post:alpha/file/{uuid}/step")
                 .log(CODE_REPONSE);
                 // valider ici 204
@@ -291,7 +291,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .setHeader(UUID, exchangeProperty(UUID))
                 .bean(StatusChangeToJwayStep2Mapper.class)
                 .marshal(pojoToJson())
-                .log("JSON envoye a Jway = ${body}")
+                .log(traceJsonToJway())
                 .to("rest:put:alpha/file/{uuid}")
                 .log("Changement d'etat OK")
                 .log(CODE_REPONSE);
@@ -389,7 +389,7 @@ public class DemarcheRouter extends RouteBuilder {
         // trace du message de creation de document envoye a Jway
         from("direct:log-multipart-message").id("log-multipart-message")
                 .bean(new MultipartJwayBodyReducer(maxFileContentSize))
-                .log("JSON envoye a Jway = ${body}")
+                .log(traceJsonToJway())
                 .to("log:INFO?showHeaders=true");
     }
 
@@ -425,6 +425,10 @@ public class DemarcheRouter extends RouteBuilder {
         JsonDataFormat json = new JsonDataFormat(JsonLibrary.Jackson);
         json.setAutoDiscoverObjectMapper("true");
         return json;
+    }
+
+    private String traceJsonToJway() {
+        return "JSON envoye a Jway (" + formServicesUrl + ") = ${body}";
     }
 
 }
