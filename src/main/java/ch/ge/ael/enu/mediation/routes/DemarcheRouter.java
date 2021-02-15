@@ -69,7 +69,7 @@ public class DemarcheRouter extends RouteBuilder {
 
     /**
      * Types MIME (par ex. 'applicatiopn/pdf') de documents acceptes par la mediation.
-     * Noter que s un type est ajoute a cette liste, le document n'est pas pour autant forcement accepte par
+     * Noter que si un type est ajoute a cette liste, le document n'est pas pour autant forcement accepte par
      * FormServices, qui a sa propre liste de types acceptes.
      */
     @Value("${app.document.mime-types}")
@@ -154,7 +154,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("body dans onException : ${body}")    // TODO: tronquer
                 .log("headers dans onException : ${headers}")
                 .log("Envoi a RabbitMQ du message d'erreur")
-                .to(REPLY_QUEUE)
+      //          .to(REPLY_QUEUE)
                 .continued(false);
 
         // routage principal
