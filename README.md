@@ -140,7 +140,7 @@ Champs :
 | etat | état de la démarche | oui | BROUILLON | Doit valoir soit BROUILLON, soit DEPOSEE, soit EN_TRAITEMENT |
 | dateDepot | date de soumission de la démarche | oui si `etat` = `DEPOSEE` ou `EN_TRAITEMENT`, inutile sinon | 2021-02-19T12:15:00.000Z | - | 
 | dateMiseEnTraitement | date de mise en traitement de la démarche | oui si `etat` = `EN_TRAITEMENT`, inutile sinon | 2021-02-20T12:15:00.000Z | - | 
-| libelleAction | description de l'opération proposée à l'usager sur la démarche | non. Inutile si `etat` = `BROUILLON` | Compléter votre démarche | Taille maximale : 25 caractères |
+| libelleAction | description de l'opération proposée à l'usager sur la démarche | non. Inutile si `etat` = `BROUILLON` | Compléter votre démarche | Taille maximale : 250 caractères |
 | urlAction | URL de l'opération proposée à l'usager sur la démarche | oui si `etat` = `BROUILLON` ou si `libelleAction` est fourni, inutile sinon | `https://etc...` | - |
 | typeAction | type de l'opération proposée à l'usager sur la démarche | non. Inutile si `etat` = `BROUILLON` ou si `libelleAction` n'est pas fourni  | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit ENRICHISSEMENT_DE_DEMANDE, soit REPONSE_DEMANDE_RENSEIGNEMENT |
 | dateEcheanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui si `urlAction` est fournie, inutile sinon | 2021-02-18 | La date uniquement, sans l'heure |
@@ -169,7 +169,7 @@ Champs supplémentaires si `nouvelEtat` = `DEPOSEE` ou si `nouvelEtat` = `EN_TRA
 
 | Nom | Description | Obligatoire | Exemple | Commentaire |
 | --- | ----------- | ----------- | ------- | ----------- |
-| libelleAction | description de l'opération proposée à l'usager sur la démarche | non | Compléter votre démarche | Taille maximale : 25 caractères |
+| libelleAction | description de l'opération proposée à l'usager sur la démarche | non | Compléter votre démarche | Taille maximale : 250 caractères |
 | typeAction | type de l'opération proposée à l'usager sur la démarche | non. Inutile si `libelleAction` n'est pas fourni  | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit ENRICHISSEMENT_DE_DEMANDE, soit REPONSE_DEMANDE_RENSEIGNEMENT |
 | urlAction | URL de l'opération proposée à l'usager sur la démarche | oui si `typeAction` est fourni, inutile sinon | `https://etc...` | - |
 | dateEcheanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui si `typeAction` est fourni, inutile sinon | 2021-02-18 | La date uniquement, sans les heures |
