@@ -32,4 +32,14 @@ public class NewCourrierDocument {
 
     private String contenu = null;
 
+    /**
+     * Position du document parmi tous les documents du courrier.
+     */
+    private int index;
+
+    /**
+     * Nombre de documents dans le courrier.
+     */
+    private int nbDocuments;
+
 }

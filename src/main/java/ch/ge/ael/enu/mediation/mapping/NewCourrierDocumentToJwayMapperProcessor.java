@@ -25,8 +25,9 @@ import java.util.Base64;
 /**
  * Cree le body de la requete <strong>multipart</strong> pour Jway.
  * <p/>
- * Cas d'usage : creation dans Jway du i-eme document constituant un courrier. Rappel : un courrier dans Jway
- * n'est materialise que par ses documents ; chaque document contient donc toute l'information du courrier.
+ * Cas d'usage : creation dans Jway du i-eme document constituant un courrier.
+ * Dans Jway, un courrier n'est materialise que par ses documents ; il n'existe pas de courrier en tant que tel. Chaque
+ * document doit donc contenir toute l'information du courrier.
  */
 @Component
 public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
@@ -48,13 +49,16 @@ public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
         // preparation des donnees
         byte[] decodedContentAsBytes = Base64.getDecoder().decode(courrierDoc.getContenu());
         String mime = courrierDoc.getMime();
-        String name = courrierDoc.getLibelleDocument() + "|" + courrierDoc.getIdDocumentSiMetier();
+        String name = courrierDoc.getLibelleDocument()
+                + "|" + courrierDoc.getIdDocumentSiMetier()
+                + "|" + courrierDoc.getIndex()
+                + "|" + courrierDoc.getNbDocuments();
         String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());
         fileName = "\"" + new FileNameSanitizer(fileNameSanitizationRegex).sanitize(fileName) + "\"";
         // note : l'upload va supprimer les caracteres accentues
         LOGGER.info("fileName apres assainissement = [{}]", fileName);
 
-        // pour le champs contenant du texte, il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
+        // pour les champs contenant du texte, il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
         ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
 
         // construction de la requete multipart
@@ -73,7 +77,6 @@ LOGGER.warn("ON FOUT EN FORCE LA CATEGORIE !");
             // courrier lie a une demarche
             builder.addTextBody("fileUuid", demarcheId);
         }
-//        builder.addTextBody("folderLabel", courrierDoc.getLibelleCourrier());
         builder.addTextBody("subtype", courrierDoc.getLibelleCourrier(), textPlainUtf8);
         builder.addBinaryBody("files", decodedContentAsBytes, ContentType.create(mime), fileName);
 

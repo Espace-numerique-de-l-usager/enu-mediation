@@ -322,7 +322,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("uuid = ${body[0].uuid}");
 
         // ajout d'un document a une demarche, phase 2 : requete HEAD pour recuperer un jeton CSRF.
-        // Sans cette phase, on obtient une erreur 403 dans la phase suivante
+        // Sans cette phase, on obtient une erreur 403 dans la phase suivante 3
         from("direct:nouveau-document-phase-2").id("nouveau-document-phase-2")
                 .log("* ROUTE nouveau-document-phase-2")
                 .setHeader(X_CSRF_TOKEN, simple("fetch"))
