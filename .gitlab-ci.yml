@@ -29,15 +29,8 @@ stages:
 build_on_and_analyse_sonarqube_preview:
   stage: build
   script:
-    - mvn $MAVEN_CLI_OPTS clean verify $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1 -Dsonar.gitlab.unique_issue_per_inline=true -Dsonar.branch.name=$CI_COMMIT_REF_NAME
+    - mvn $MAVEN_CLI_OPTS clean verify -DskipTests $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1 -Dsonar.gitlab.unique_issue_per_inline=true -Dsonar.branch.name=$CI_COMMIT_REF_NAME
   except:
-    - master
-
-build_and_analyse_sonarqube_master:
-  stage: build
-  script:
-    - mvn $MAVEN_CLI_OPTS clean verify $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1
-  only:
     - master
 
 analyse_clm_master:
