@@ -1,5 +1,3 @@
-% Espace numérique de l'usager : médiation
-
 # Espace numérique de l'usager : médiation
 
 Ce projet définit les médiations pour le système Espace numérique de l'usager :
@@ -29,8 +27,8 @@ Elle ne s'arrête que lorsqu'on l'arrête explicitement (par exemple, par un "co
 
 #### Exécution en développement
 
-Dans un environnement de développement comme IntelliJ, il suffit d'exécuter la classe
-`MediationApplication`.
+Dans un environnement de développement comme IntelliJ, il suffit d'exécuter la classe `MediationApplication`,
+avec cependant l'option JVM `-Dspring.profiles.active=dev`.
 
 #### Exécution sur un serveur JEE
 
