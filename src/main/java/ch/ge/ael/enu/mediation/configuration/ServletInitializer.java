@@ -12,6 +12,7 @@ public class ServletInitializer extends SpringBootServletInitializer {
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+        log.info("ServletInitializer -> startup");
         return builder.sources(MediationApplication.class)
                 .properties("spring.config.name: application,enu-mediation")
                 .properties("spring.config.location: " + tomcatHome + "/conf/,classpath:/");
