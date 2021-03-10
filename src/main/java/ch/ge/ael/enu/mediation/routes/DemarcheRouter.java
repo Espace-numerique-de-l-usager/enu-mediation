@@ -81,27 +81,22 @@ public class DemarcheRouter extends RouteBuilder {
     @Autowired
     private NewCourrierDocumentToJwayMapperProcessor newCourrierDocumentToJwayMapper;
 
-    static final String MAIN_QUEUE = "rabbitmq:" +
-            "simetier1-to-enu-main?" +
-            "queue=simetier1-to-enu-main-q" +
-//            "&exchangePattern=InOnly" +
-            "&deadLetterExchange=enu-to-simetier1-reply" +
-            "&deadLetterQueue=enu-to-simetier1-reply-q" +
-            "&deadLetterRoutingKey=enu-to-simetier1-reply-q" +
-            "&autoDelete=false" +
-            "&autoAck=false";
+    static final String MAIN_QUEUE = "rabbitmq:"
+            + "simetier1-to-enu-main?"
+            + "queue=simetier1-to-enu-main-q"
+//          + "&exchangePattern=InOnly"
+            + "&deadLetterExchange=enu-to-simetier1-reply"
+            + "&deadLetterQueue=enu-to-simetier1-reply-q"
+            + "&deadLetterRoutingKey=enu-to-simetier1-reply-q"
+            + "&autoDelete=false"
+//          +   "&autoAck=false"
+            ;
 
-    static final String REPLY_QUEUE = "rabbitmq:" +
-            "enu-to-simetier1-reply?" +
-            "queue=enu-to-simetier1-reply-q" +
-//            "&deadLetterExchange=enu-internal-error" +
-//            "&deadLetterQueue=enu-internal-error-q" +
-//            "&deadLetterRoutingKey=enu-internal-error-q" +
-            "&autoDelete=false";
-//    static final String REPLY_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-reply&autoDelete=false&requestTimeout=5000";
-//    static final String REPLY_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-reply&autoDelete=false&autoAck=false";
+    static final String DEAD_LETTER_QUEUE = "rabbitmq:"
+            + "enu-to-simetier1-reply?"
+            + "queue=enu-to-simetier1-reply-q";
 
-    static final String INTERNAL_ERROR_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-internal-error";
+//    static final String INTERNAL_ERROR_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-internal-error";
 
     private final Predicate isNewDemarche = header("rabbitmq.Content-Type").isEqualTo(NEW_DEMARCHE);
 
@@ -143,7 +138,24 @@ public class DemarcheRouter extends RouteBuilder {
 
         // attrape-tout
 //        errorHandler(deadLetterChannel("rabbitmq:" + INTERNAL_ERROR_QUEUE).useOriginalMessage());
+        /*
+        errorHandler(deadLetterChannel(
+                 "rabbitmq:" +
+                    "enu-to-simetier1-reply?" +
+                    "queue=enu-to-simetier1-reply-q" +
+                    "&autoDelete=false")
+                .onRedelivery(new MessageFailureEnricher())
 
+                );
+         */
+
+        /*
+           handled(true) = the exception is handled and removed from the exchange
+                            + break out routing
+           handled(false) = the exception is not handled, so it will be stored as
+                            an exception on the exchange + break out routing
+           continue(true) = handled(true) + continue routing
+         */
         onException(ValidationException.class)
 //                .handled(true)
                 .useOriginalMessage()
@@ -154,8 +166,10 @@ public class DemarcheRouter extends RouteBuilder {
                 .log("body dans onException : ${body}")    // TODO: tronquer
                 .log("headers dans onException : ${headers}")
                 .log("Envoi a RabbitMQ du message d'erreur")
-      //          .to(REPLY_QUEUE)
-                .continued(false);
+                .to(DEAD_LETTER_QUEUE)
+//                .to("rabbitmq:enu-to-simetier1-reply?queue=enu-to-simetier1-reply-q")
+  //              .continued(false)
+                ;
 
         // routage principal
         from(MAIN_QUEUE).id("route-principale")
