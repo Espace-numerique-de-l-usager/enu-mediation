@@ -70,7 +70,7 @@ public class DemarcheRouter extends RouteBuilder {
     /**
      * Types MIME (par ex. 'applicatiopn/pdf') de documents acceptes par la mediation.
      * Noter que si un type est ajoute a cette liste, le document n'est pas pour autant forcement accepte par
-     * FormServices, qui a sa propre liste de types acceptes.
+     * FormServices qui a sa propre liste de types acceptes.
      */
     @Value("${app.document.mime-types}")
     private List<String> allowedMimeTypes;
@@ -84,13 +84,10 @@ public class DemarcheRouter extends RouteBuilder {
     static final String MAIN_QUEUE = "rabbitmq:"
             + "simetier1-to-enu-main?"
             + "queue=simetier1-to-enu-main-q"
-//          + "&exchangePattern=InOnly"
             + "&deadLetterExchange=enu-to-simetier1-reply"
             + "&deadLetterQueue=enu-to-simetier1-reply-q"
             + "&deadLetterRoutingKey=enu-to-simetier1-reply-q"
-            + "&autoDelete=false"
-//          +   "&autoAck=false"
-            ;
+            + "&autoDelete=false";
 
     static final String DEAD_LETTER_QUEUE = "rabbitmq:"
             + "enu-to-simetier1-reply?"
@@ -138,38 +135,14 @@ public class DemarcheRouter extends RouteBuilder {
 
         // attrape-tout
 //        errorHandler(deadLetterChannel("rabbitmq:" + INTERNAL_ERROR_QUEUE).useOriginalMessage());
-        /*
-        errorHandler(deadLetterChannel(
-                 "rabbitmq:" +
-                    "enu-to-simetier1-reply?" +
-                    "queue=enu-to-simetier1-reply-q" +
-                    "&autoDelete=false")
-                .onRedelivery(new MessageFailureEnricher())
 
-                );
-         */
-
-        /*
-           handled(true) = the exception is handled and removed from the exchange
-                            + break out routing
-           handled(false) = the exception is not handled, so it will be stored as
-                            an exception on the exchange + break out routing
-           continue(true) = handled(true) + continue routing
-         */
         onException(ValidationException.class)
-//                .handled(true)
                 .useOriginalMessage()
-//                .useOriginalBody()
-                .log("headers dans onException (avant MessageFailureEnricher) : ${headers}")
                 .process(new MessageFailureEnricher())
-                .log("exchangeId dans onException : ${exchangeId}")
                 .log("body dans onException : ${body}")    // TODO: tronquer
                 .log("headers dans onException : ${headers}")
                 .log("Envoi a RabbitMQ du message d'erreur")
-                .to(DEAD_LETTER_QUEUE)
-//                .to("rabbitmq:enu-to-simetier1-reply?queue=enu-to-simetier1-reply-q")
-  //              .continued(false)
-                ;
+                .to(DEAD_LETTER_QUEUE);
 
         // routage principal
         from(MAIN_QUEUE).id("route-principale")
