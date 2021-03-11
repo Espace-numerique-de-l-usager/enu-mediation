@@ -11,16 +11,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Application {
+public class AuthMe {
 
-    private Integer id;
-
-    private String name;
-
-    private Text nameLabel;
-
-    private Text descriptionLabel;
-
-    private List<Tag> tags;
+    private List<Application> applications;
 
 }

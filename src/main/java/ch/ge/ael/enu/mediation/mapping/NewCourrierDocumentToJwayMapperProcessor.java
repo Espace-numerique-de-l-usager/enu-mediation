@@ -42,7 +42,7 @@ public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws IOException {
         NewCourrierDocument courrierDoc = exchange.getIn().getBody(NewCourrierDocument.class);
-        String categorie = exchange.getIn().getHeader(DemarcheRouter.CATEGORIE, String.class);   // dependance sur la classe DemarcheRouter : a changer
+        String categorie = exchange.getProperty(DemarcheRouter.CATEGORIE, String.class);         // dependance sur la classe DemarcheRouter : a changer
         String demarcheId = exchange.getIn().getHeader(DemarcheRouter.UUID, String.class);       // dependance sur la classe DemarcheRouter : a changer
         LOGGER.info("Dans {} - uuid demarche = [{}], categorie = [{}]", getClass().getSimpleName(), demarcheId, categorie);
 
@@ -70,9 +70,7 @@ public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
         builder.addTextBody("type", JwayDocumentType.OTHER.name());
         if (demarcheId == null) {
             // courrier non lie a une demarche
-LOGGER.warn("ON FOUT EN FORCE LA CATEGORIE !");
-//          builder.addTextBody("tag", categorie);
-          builder.addTextBody("tag", "categorie_A");
+            builder.addTextBody("tag", categorie);
         } else {
             // courrier lie a une demarche
             builder.addTextBody("fileUuid", demarcheId);
