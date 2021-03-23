@@ -34,7 +34,7 @@ public class NewDocumentValidator {
         final int MAX_SIZE_LIBELLE = 50;
         final int MAX_SIZE_ID_DOCUMENT_SI_METIER = 50;
         final int MAX_SIZE_MIME = 50;
-        final int MAX_SIZE_CONTENU = 10 * 1000 * 1000;
+        final int MAX_SIZE_CONTENU = 1000 * 1000 * 1000;   // bytes en base 64
 
         checkExistence(message.getIdPrestation(), "idPrestation");
         checkExistence(message.getIdUsager(), "idUsager");
