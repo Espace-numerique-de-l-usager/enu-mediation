@@ -42,7 +42,7 @@ public class NewCourrierDocumentToJwayMapperProcessor implements Processor {
     @Override
     public void process(Exchange exchange) throws IOException {
         NewCourrierDocument courrierDoc = exchange.getIn().getBody(NewCourrierDocument.class);
-        String categorie = exchange.getProperty(DemarcheRouter.CATEGORIE, String.class);         // dependance sur la classe DemarcheRouter : a changer
+        String categorie = courrierDoc.getIdPrestation();
         String demarcheId = exchange.getIn().getHeader(DemarcheRouter.UUID, String.class);       // dependance sur la classe DemarcheRouter : a changer
         LOGGER.info("Dans {} - uuid demarche = [{}], categorie = [{}]", getClass().getSimpleName(), demarcheId, categorie);
 

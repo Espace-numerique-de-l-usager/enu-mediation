@@ -1,9 +1,7 @@
 package ch.ge.ael.enu.mediation.routes;
 
 import ch.ge.ael.enu.mediation.error.MessageFailureEnricher;
-import ch.ge.ael.enu.mediation.jway.model.AuthMe;
 import ch.ge.ael.enu.mediation.jway.model.File;
-import ch.ge.ael.enu.mediation.mapping.AuthMeToCategoryProcessor;
 import ch.ge.ael.enu.mediation.mapping.NewCourrierDocumentToJwayMapperProcessor;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
@@ -112,8 +110,6 @@ public class DemarcheRouter extends RouteBuilder {
     private final Predicate isNewDemarcheEnTraitement = jsonpath("$[?(@.etat=='" + EN_TRAITEMENT + "')]");
 
     public static final String UUID = "uuid";                    // a mettre dans une classe HeaderName ?
-
-    public static final String CATEGORIE = "categorie";          // a mettre dans une classe HeaderName ?
 
     public static final String ID_PRESTATION = "idPrestation";   // a mettre dans une classe HeaderName ?
 
@@ -348,7 +344,6 @@ public class DemarcheRouter extends RouteBuilder {
                 .unmarshal(jsonToPojo(NewCourrier.class))
                 .bean(new NewCourrierValidator(allowedMimeTypes))
                 .bean(new NewCourrierKeySetter())
-                .enrich("direct:recuperer-categorie", new PropertyPropagationStrategy(CATEGORIE))
                 .split().method(NewCourrierSplitter.class, "splitCourrier")
                 .log("Split OK")
                 .setProperty("remoteUser", simple("${body.idUsager}", String.class))
@@ -376,21 +371,6 @@ public class DemarcheRouter extends RouteBuilder {
                 .enrich("direct:log-multipart-message", new OldExchangeStrategy())
                 .to("rest:post:alpha/document")
                 .log(CODE_REPONSE);
-
-        // recuperation de la categorie de la prestation
-        from("direct:recuperer-categorie").id("recuperer-categorie")
-                .log("* ROUTE recuperer-categorie")
-                .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
-                .setHeader(ID_PRESTATION, simple("${body.idPrestation}", String.class))
-                .log("Headers prestationId = ${headers}")
-                .log("Header prestationId = ${headers.idPrestation}")
-                .log("Appel à Jway")
-                .to("rest:get:auth/me")
-                .log(CODE_REPONSE)
-                .unmarshal(jsonToPojo(AuthMe.class))
-                .log("PIPO 1")
-                .log("AuthMe = ${body}")
-                .process(new AuthMeToCategoryProcessor());
 
         // trace du message de creation de document envoye a Jway
         from("direct:log-multipart-message").id("log-multipart-message")
