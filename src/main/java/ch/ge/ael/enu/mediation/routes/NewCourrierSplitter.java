@@ -23,7 +23,7 @@ public class NewCourrierSplitter {
 
         int index = 0;
 
-        // une boucle for pre-Java 8, car on a besoin de l'indice du document
+        // une boucle "for" pre-Java 8, car on a besoin de l'indice du document
         for (NewDocument doc : newCourrier.getDocuments()) {
             NewCourrierDocument courrierDoc = new NewCourrierDocument();
             courrierDoc.setIdPrestation(newCourrier.getIdPrestation());
