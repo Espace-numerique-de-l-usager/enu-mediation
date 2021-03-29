@@ -17,7 +17,16 @@ public class NewDemarcheToJwayMapper {
     public File newDemarcheToFile(NewDemarche newDemarche) {
         File file = new File();
 
-        file.setName(newDemarche.getIdDemarcheSiMetier());
+        // hack : si la demarche est un brouillon, on ajoute "DRAFT" au nom de la demarche.
+        // Sans cette distinction, lors de la creation d'une demarche a l'etat "Deposee", l'application enu-backend
+        // enverra coup sur coup 2 courriels a l'usager :
+        // - un courriel (inutile) indiquant qu'un brouillon a ete cree
+        // - un courriel (approprie) indiquant qu'une demarche a ete deposee
+        if (newDemarche.getEtat().equals(BROUILLON.name())) {
+            file.setName("(DRAFT)" + newDemarche.getIdDemarcheSiMetier());
+        } else {
+            file.setName(newDemarche.getIdDemarcheSiMetier());
+        }
 
         User owner = new User();
         owner.setName(newDemarche.getIdUsager());
