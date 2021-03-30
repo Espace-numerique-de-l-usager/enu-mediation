@@ -29,7 +29,6 @@ public class ActionValidator {
             String dateEcheanceAction) {
 
         if (libelleAction == null) {
-            checkAbsentIfOtherAbsent(urlAction, URL_ACTION, libelleAction, LIBELLE_ACTION);
             checkAbsentIfOtherAbsent(dateEcheanceAction, DATE_ECHEANCE_ACTION, libelleAction, LIBELLE_ACTION);
         } else {
             final int MAX_SIZE_LIBELLE_ACTION = 250;
