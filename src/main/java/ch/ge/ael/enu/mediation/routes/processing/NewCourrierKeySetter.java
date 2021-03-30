@@ -1,4 +1,4 @@
-package ch.ge.ael.enu.mediation.routes;
+package ch.ge.ael.enu.mediation.routes.processing;
 
 import ch.ge.ael.enu.mediation.metier.model.NewCourrier;
 import org.slf4j.Logger;
