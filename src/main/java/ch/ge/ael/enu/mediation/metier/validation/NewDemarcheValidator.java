@@ -77,6 +77,9 @@ public class NewDemarcheValidator {
                     status.name(), ETAT, BROUILLON.name());
             ValidationUtils.checkAbsentIfOtherHasValue(message.getTypeAction(), ActionValidator.TYPE_ACTION,
                     status.name(), ETAT, BROUILLON.name());
+        } else if (status == DEPOSEE) {
+            ValidationUtils.checkAbsentIfOtherHasValue(message.getLibelleAction(), ActionValidator.LIBELLE_ACTION,
+                    status.name(), ETAT, DEPOSEE.name());
         } else {
             new ActionValidator().validate(
                     message.getLibelleAction(),
