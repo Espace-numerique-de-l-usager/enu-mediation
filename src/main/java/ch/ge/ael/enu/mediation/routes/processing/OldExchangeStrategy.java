@@ -1,4 +1,4 @@
-package ch.ge.ael.enu.mediation.routes;
+package ch.ge.ael.enu.mediation.routes.processing;
 
 import org.apache.camel.AggregationStrategy;
 import org.apache.camel.Exchange;
