@@ -20,6 +20,7 @@ import ch.ge.ael.enu.mediation.metier.validation.NewDemarcheValidator;
 import ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator;
 import ch.ge.ael.enu.mediation.metier.validation.NewSuggestionValidator;
 import ch.ge.ael.enu.mediation.metier.validation.StatusChangeValidator;
+import ch.ge.ael.enu.mediation.routes.processing.NewDemarcheToBrouillonReducer;
 import ch.ge.ael.enu.mediation.util.logging.BodyReducer;
 import ch.ge.ael.enu.mediation.util.logging.MultipartJwayBodyReducer;
 import lombok.RequiredArgsConstructor;
@@ -169,7 +170,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .bean(new BodyReducer(maxFileContentSize))
                 .to("log:INFO?showHeaders=true");
 
-        // nouvelle demarche (en "brouillon", ou directement a "deposee" ou a "en traitement")
+        // nouvelle demarche (en "brouillon" ou "deposee" ou "en traitement")
         from("direct:nouvelle-demarche").id("nouvelle-demarche")
                 // prevoir un ExceptionHandler pour com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException
                 .log("* ROUTE nouvelle-demarche")
@@ -178,19 +179,21 @@ public class DemarcheRouter extends RouteBuilder {
                 .choice()
                     .when(isNewDemarcheDeposee).id("nouvelle-demarche-deposee")
                         .log("Passage a l'etat DEPOSEE")
-                        .log("Body : ${body}")
+                        .to("log:input")
                         .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(DEPOSEE))
                         .marshal(pojoToJson())
                         .to("direct:changement-etat-demarche")
                     .when(isNewDemarcheEnTraitement).id("nouvelle-demarche-en-traitement")
                         .log("Passage a l'etat DEPOSEE (avant le passage a l'etat EN_TRAITEMENT)")
+                        .to("log:input")
                         .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(DEPOSEE))
                         .marshal(pojoToJson())
                         .to("direct:changement-etat-demarche")
                         .log("Passage a l'etat EN_TRAITEMENT")
                         .setBody(exchangeProperty("newDemarche"))
+                        .to("log:input")
                         .unmarshal(jsonToPojo(NewDemarche.class))
                         .bean(new NewDemarcheToStatusChangeMapper(EN_TRAITEMENT))
                         .marshal(pojoToJson())
@@ -204,7 +207,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .unmarshal(jsonToPojo(NewDemarche.class))
                 .bean(NewDemarcheValidator.class)
                 .to("log:input")
-                .setProperty("demarcheStatus", simple("${body.etat}", String.class))
+                .bean(NewDemarcheToBrouillonReducer.class)
                 .setHeader(CONTENT_TYPE, simple("application/json"))
                 .setHeader(REMOTE_USER, simple("${body.idUsager}", String.class))
                 .bean(NewDemarcheToJwayMapper.class)
