@@ -13,8 +13,6 @@ import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.TERMINEE;
 public class StatusChangeToJwayStep1Mapper {
 
     public FileForStep map(StatusChange statusChange) {
-        // TODO verifier la presence des champs
-
         FileForStep file = new FileForStep();
 
         file.setStep(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
@@ -30,6 +28,15 @@ public class StatusChangeToJwayStep1Mapper {
             form.getUrls().add(formUrl);
             formUrl.setBaseUrl(baseUrl);
         }
+
+        if (statusChange.getTypeAction() != null) {
+            StringBuilder sb = new StringBuilder()
+                    .append(statusChange.getLibelleAction())
+                    .append("|")
+                    .append(statusChange.getTypeAction());
+            file.setStepDescription(sb.toString());
+        }
+
         return file;
     }
 

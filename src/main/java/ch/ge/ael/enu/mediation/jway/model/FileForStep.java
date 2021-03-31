@@ -11,4 +11,6 @@ public class FileForStep {
 
     private String lastUpdate = null;
 
+    private String stepDescription;
+
 }
