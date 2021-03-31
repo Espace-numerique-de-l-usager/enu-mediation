@@ -8,11 +8,12 @@ import org.springframework.context.annotation.Configuration;
 public class StatusChangeToJwayStep2Mapper {
 
     public FileForWorkflow map(StatusChange statusChange) {
-        // TODO verifier la presence des champs
-
         FileForWorkflow file = new FileForWorkflow();
+
         file.setName(statusChange.getIdDemarcheSiMetier());
+
         file.setWorkflowStatus(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
+
         if (statusChange.getTypeAction() != null) {
             StringBuilder sb = new StringBuilder()
                     .append(statusChange.getLibelleAction())
@@ -21,6 +22,16 @@ public class StatusChangeToJwayStep2Mapper {
             file.setStepDescription(sb.toString());
             file.setToDate(statusChange.getDateEcheanceAction());
         }
+
+        if (statusChange.getTypeAction() != null) {
+            StringBuilder sb = new StringBuilder()
+                    .append(statusChange.getLibelleAction())
+                    .append("|")
+                    .append(statusChange.getTypeAction());
+            file.setStepDescription(sb.toString());
+        }
+
+        file.setToDate(statusChange.getDateEcheanceAction());
 
         return file;
     }
