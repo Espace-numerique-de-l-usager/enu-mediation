@@ -144,16 +144,6 @@
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
         </dependency>
-
-        <!--
-        <dependency>
-            <groupId>org.apache.tika</groupId>
-            <artifactId>tika-core</artifactId>
-            <version>1.25</version>
-        </dependency>
-        -->
-
-
         <!-- on ne peut pas ajouter hawtio, sinon on a ceci au demarrage :
                org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'requestMappingHandlerAdapter'
                defined in class path resource [org/springframework/boot/autoconfigure/web/servlet/WebMvcAutoConfiguration$EnableWebMvcConfiguration.class]:
@@ -209,7 +199,9 @@
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                     <containerConfigXML />
+                    <packagingExcludes>WEB-INF/classes/logback-test.xml</packagingExcludes>
                 </configuration>
+
             </plugin>
             <!-- Java 8 est devenu trop sourcilleux avec la javadoc.
                  De plus, une probable erreur du JDK 11 empeche de prendre la version 3.2.0 du plugin, sinon
