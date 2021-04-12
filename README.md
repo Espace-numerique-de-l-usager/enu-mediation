@@ -250,10 +250,45 @@ cependant certains messages vont dans l'autre sens.
 | Message | Producteur | Consommateur | Exchange RabbitMQ / queue RabbitMQ |
 | ------- | ---------- | ------------ | ---------------------------------- |
 | destruction d'une démarche brouillon | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
+| consultation d'un document par l'usager | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
+| changement de mode de réception des documents par l'usager | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
 
 #### Destruction d'une démarche brouillon : message JSON
 
-TODO
+Cas d'usage : l'usager avait une ou plusieurs suggestions de démarches.
+Il a décidé d'en détruire une plutôt que de la compléter.
+
+Champs :
+
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ------- | ----------- | ----------- |
+| idPrestation | identifiant de la prestation | oui | FL_TER_PERMISPECHE | Fourni par l'équipe médiation |
+| idUsager | identifiant de l'usager | oui | CGE-1000000 | Cet usager doit être connu de Gina |
+| idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Taille maximale : 50 caractères |
+
+#### Consultation d'un document par l'usager : message JSON
+
+Cas d'usage : l'usager a consulté un document, ou bien le délai qui lui était imparti pour consulter
+ce document est écoulé.
+
+Champs :
+
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ------- | ----------- | ----------- |
+| idPrestation | identifiant de la prestation | oui | FL_TER_PERMISPECHE | Fourni par l'équipe médiation |
+| idUsager | identifiant de l'usager | oui | CGE-1000000 | Cet usager doit être connu de Gina |
+| idDocumentSiMetier | identifiant du document dans le SI métier | oui | DOC-123456789 | Taille maximale : 50 caractères |
+
+#### Changement de mode de réception des documents par l'usager : message JSON
+
+Cas d'usage : l'usager a modifié son choix du mode de réception de ses documents.
+
+Champs :
+
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ------- | ----------- | ----------- |
+| idUsager | identifiant de l'usager | oui | CGE-1000000 | Cet usager doit être connu de Gina |
+| choixReception | mode de réception des documents adressés à l'usager par l'administration | oui | ENU | Doit valoir soit ENU (= en version numérique uniquement), soit ENU_POSTAL (= en version numérique et par voie postale) |
 
 ## Test
 
