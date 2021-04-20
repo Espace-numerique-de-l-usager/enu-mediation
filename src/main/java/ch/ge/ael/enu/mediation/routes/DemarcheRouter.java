@@ -101,7 +101,9 @@ public class DemarcheRouter extends RouteBuilder {
             + "enu-to-simetier1-reply?"
             + "queue=enu-to-simetier1-reply-q";
 
-//    static final String INTERNAL_ERROR_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-internal-error";
+    static final String INTERNAL_ERROR_QUEUE = "rabbitmq:"
+            + "enu-internal-error?"
+            + "queue=enu-internal-error-q";
 
     private final Predicate isNewDemarche = header(RABBITMQ_CONTENT_TYPE).isEqualTo(NEW_DEMARCHE);
 
@@ -145,12 +147,22 @@ public class DemarcheRouter extends RouteBuilder {
 //        errorHandler(deadLetterChannel("rabbitmq:" + INTERNAL_ERROR_QUEUE).useOriginalMessage());
 
         onException(ValidationException.class)
+                .log("Erreur de validation")
                 .useOriginalMessage()
                 .process(new MessageFailureEnricher())
                 .log("body dans onException : ${body}")    // TODO: tronquer
                 .log("headers dans onException : ${headers}")
                 .log("Envoi a RabbitMQ du message d'erreur")
                 .to(DEAD_LETTER_QUEUE);
+
+        onException(Exception.class)
+                .log("Erreur de traitement")
+//                .useOriginalMessage()
+                .process(new MessageFailureEnricher())
+                .log("body dans onException : ${body}")    // TODO: tronquer
+                .log("headers dans onException : ${headers}")
+                .log("Envoi a RabbitMQ du message d'erreur")
+                .to(INTERNAL_ERROR_QUEUE);
 
         // routage principal
         from(MAIN_QUEUE).id("route-principale")
@@ -367,8 +379,7 @@ public class DemarcheRouter extends RouteBuilder {
                 .end()
 //                .enrich("direct:nouveau-document-phase-2", new PropertyPropagationStrategy(UUID, CSRF_TOKEN))   // Pas necessaire pour l'instant (mode alpha)
                 .to("direct:nouveau-courrier-document-phase-envoi")
-                .log("OK nouveau-courrier")
-        ;
+                .log("OK nouveau-courrier");
 
         // creation du i-eme document d'un courrier, phase d'envoi : envoi du document à Jway
         from("direct:nouveau-courrier-document-phase-envoi").id("nouveau-courrier-document-phase-envoi")
