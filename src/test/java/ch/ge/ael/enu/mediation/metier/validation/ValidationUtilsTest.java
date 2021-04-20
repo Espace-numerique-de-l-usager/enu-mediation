@@ -8,7 +8,7 @@ import ch.ge.ael.enu.mediation.metier.exception.MissingFieldException;
 import ch.ge.ael.enu.mediation.metier.exception.TooLargeListException;
 import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
 import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
-import ch.ge.ael.enu.mediation.routes.MediaType;
+import ch.ge.ael.enu.mediation.routes.http.MediaType;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
