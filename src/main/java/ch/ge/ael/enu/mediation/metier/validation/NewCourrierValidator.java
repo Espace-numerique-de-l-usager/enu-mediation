@@ -9,6 +9,10 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.stream.IntStream;
 
+import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_CONTENU;
+import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_ID_DOCUMENT_SI_METIER;
+import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_LIBELLE;
+import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_MIME;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkListMaxSize;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkListNotEmpty;
@@ -24,6 +28,8 @@ public class NewCourrierValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewCourrierValidator.class);
 
+    private final static int MAX_NB_DOCUMENTS = 20;
+
     private final List<String> allowedMimeTypes;
 
     public NewCourrierValidator(List<String> allowedMimeTypes) {
@@ -32,12 +38,6 @@ public class NewCourrierValidator {
 
     public NewCourrier validate(NewCourrier message) {
         LOGGER.info("Dans {}", getClass().getSimpleName());
-
-        final int MAX_SIZE_LIBELLE = 50;
-        final int MAX_SIZE_ID_DOCUMENT_SI_METIER = 50;
-        final int MAX_SIZE_MIME = 50;
-        final int MAX_SIZE_CONTENU = 10 * 1000 * 1000;
-        final int MAX_NB_DOCUMENTS = 20;
 
         checkExistence(message.getIdPrestation(), "idPrestation");
         checkExistence(message.getIdUsager(), "idUsager");
