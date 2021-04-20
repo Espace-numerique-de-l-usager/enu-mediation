@@ -288,7 +288,7 @@ Champs :
 | Nom | Description | Obligatoire | Exemple | Commentaire |
 | --- | ----------- | ------- | ----------- | ----------- |
 | idUsager | identifiant de l'usager | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| choixReception | mode de réception des documents adressés à l'usager par l'administration | oui | ENU | Doit valoir soit ENU (= en version numérique uniquement), soit ENU_POSTAL (= en version numérique et par voie postale) |
+| choixReception | mode de réception des documents adressés à l'usager par l'administration | oui | ELECTRONIQUE | Doit valoir soit ELECTRONIQUE (= en version numérique uniquement, c'est-à-dire dans l'ENU seulement), soit TOUT (= en version numérique et par voie postale) |
 
 ## Test
 

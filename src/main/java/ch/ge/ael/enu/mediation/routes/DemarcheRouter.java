@@ -1,6 +1,7 @@
 package ch.ge.ael.enu.mediation.routes;
 
 import ch.ge.ael.enu.mediation.error.MessageFailureEnricher;
+import ch.ge.ael.enu.mediation.error.UnroutableMessageProcessor;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewCourrierDocumentToJwayMapperProcessor;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
@@ -20,6 +21,7 @@ import ch.ge.ael.enu.mediation.metier.validation.NewDemarcheValidator;
 import ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator;
 import ch.ge.ael.enu.mediation.metier.validation.NewSuggestionValidator;
 import ch.ge.ael.enu.mediation.metier.validation.StatusChangeValidator;
+import ch.ge.ael.enu.mediation.routes.http.Header;
 import ch.ge.ael.enu.mediation.routes.processing.NewCourrierKeySetter;
 import ch.ge.ael.enu.mediation.routes.processing.NewCourrierSplitter;
 import ch.ge.ael.enu.mediation.routes.processing.NewDemarcheToBrouillonReducer;
@@ -45,11 +47,12 @@ import java.util.List;
 import static ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapperProcessor.MULTIPART_BOUNDARY;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
-import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_COURRIER;
-import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_DEMARCHE;
-import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_DOCUMENT;
-import static ch.ge.ael.enu.mediation.routes.MediaType.NEW_SUGGESTION;
-import static ch.ge.ael.enu.mediation.routes.MediaType.STATUS_CHANGE;
+import static ch.ge.ael.enu.mediation.routes.http.Header.RABBITMQ_CONTENT_TYPE;
+import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_COURRIER;
+import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_DEMARCHE;
+import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_DOCUMENT;
+import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_SUGGESTION;
+import static ch.ge.ael.enu.mediation.routes.http.MediaType.STATUS_CHANGE;
 
 /**
  * Ceci est la classe principale de toute l'application.
@@ -100,15 +103,15 @@ public class DemarcheRouter extends RouteBuilder {
 
 //    static final String INTERNAL_ERROR_QUEUE = "siclient2-to-enu?queue=siclient2-to-enu-internal-error";
 
-    private final Predicate isNewDemarche = header("rabbitmq.Content-Type").isEqualTo(NEW_DEMARCHE);
+    private final Predicate isNewDemarche = header(RABBITMQ_CONTENT_TYPE).isEqualTo(NEW_DEMARCHE);
 
-    private final Predicate isNewSuggestion = header("rabbitmq.Content-Type").isEqualTo(NEW_SUGGESTION);
+    private final Predicate isNewSuggestion = header(RABBITMQ_CONTENT_TYPE).isEqualTo(NEW_SUGGESTION);
 
-    private final Predicate isStatusChange = header("rabbitmq.Content-Type").isEqualTo(STATUS_CHANGE);
+    private final Predicate isStatusChange = header(RABBITMQ_CONTENT_TYPE).isEqualTo(STATUS_CHANGE);
 
-    private final Predicate isNewDocument = header("rabbitmq.Content-Type").isEqualTo(NEW_DOCUMENT);
+    private final Predicate isNewDocument = header(RABBITMQ_CONTENT_TYPE).isEqualTo(NEW_DOCUMENT);
 
-    private final Predicate isNewCourrier = header("rabbitmq.Content-Type").isEqualTo(NEW_COURRIER);
+    private final Predicate isNewCourrier = header(RABBITMQ_CONTENT_TYPE).isEqualTo(NEW_COURRIER);
 
     private final Predicate isNewDemarcheDeposee = jsonpath("$[?(@.etat=='" + DEPOSEE + "')]");
 
@@ -167,7 +170,8 @@ public class DemarcheRouter extends RouteBuilder {
                     .when(isNewCourrier)
                         .to("direct:nouveau-courrier")
                     .otherwise()
-                        .to("stream:err");
+                        .log("Message au contenu non reconnu")
+                        .process(new UnroutableMessageProcessor());
 
         // trace du message entrant
         from("direct:log-message").id("log-message")
