@@ -22,6 +22,14 @@ public class NewDocumentValidator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NewDocumentValidator.class);
 
+    static final int MAX_SIZE_LIBELLE = 50;
+
+    static final int MAX_SIZE_ID_DOCUMENT_SI_METIER = 50;
+
+    static final int MAX_SIZE_MIME = 50;
+
+    static final int MAX_SIZE_CONTENU = 200 * 1024 * 1024;   // bytes en base 64
+
     private final List<String> allowedMimeTypes;
 
     public NewDocumentValidator(List<String> allowedMimeTypes) {
@@ -30,11 +38,6 @@ public class NewDocumentValidator {
 
     public NewDocument validate(NewDocument message) {
         LOGGER.info("Dans {}", getClass().getSimpleName());
-
-        final int MAX_SIZE_LIBELLE = 50;
-        final int MAX_SIZE_ID_DOCUMENT_SI_METIER = 50;
-        final int MAX_SIZE_MIME = 50;
-        final int MAX_SIZE_CONTENU = 1000 * 1000 * 1000;   // bytes en base 64
 
         checkExistence(message.getIdPrestation(), "idPrestation");
         checkExistence(message.getIdUsager(), "idUsager");
