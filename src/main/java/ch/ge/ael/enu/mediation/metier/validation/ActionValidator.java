@@ -33,6 +33,7 @@ public class ActionValidator {
         } else {
             final int MAX_SIZE_LIBELLE_ACTION = 250;
             checkSize(libelleAction, 1, MAX_SIZE_LIBELLE_ACTION, LIBELLE_ACTION);
+            checkPresentIfOtherPresent(urlAction, URL_ACTION, libelleAction, LIBELLE_ACTION);
             checkEnum(typeAction, ActionType.class, TYPE_ACTION);
             if (urlAction == null) {
                 checkAbsentIfOtherAbsent(dateEcheanceAction, DATE_ECHEANCE_ACTION, urlAction, URL_ACTION);
