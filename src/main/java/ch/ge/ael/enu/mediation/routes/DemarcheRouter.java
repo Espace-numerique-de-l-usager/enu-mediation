@@ -305,7 +305,6 @@ public class DemarcheRouter extends RouteBuilder {
                 .to("rest:put:alpha/file/{uuid}")
                 .log("Changement d'etat OK")
                 .log(CODE_REPONSE);
-                // valider ici 204
 
         // ajout d'un document a une demarche
         from("direct:nouveau-document").id("nouveau-document")
