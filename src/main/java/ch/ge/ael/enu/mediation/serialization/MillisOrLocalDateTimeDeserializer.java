@@ -1,4 +1,4 @@
-package ch.ge.ael.enu.mediation.configuration;
+package ch.ge.ael.enu.mediation.serialization;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -14,7 +14,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Deserialisation automatique des timestamps "raw" vers java.time.LocalDateTime
  */
-class MillisOrLocalDateTimeDeserializer extends LocalDateTimeDeserializer {
+public class MillisOrLocalDateTimeDeserializer extends LocalDateTimeDeserializer {
 
     public MillisOrLocalDateTimeDeserializer() {
         super(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
