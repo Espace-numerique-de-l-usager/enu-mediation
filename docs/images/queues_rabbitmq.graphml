@@ -193,7 +193,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="28.0" width="217.0" x="35.5" y="-30.0"/>
+          <y:Geometry height="28.0" width="217.0" x="-1.158109684947533" y="-38.0"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="182.78125" x="17.109375" y="4.6494140625">Chaque SI métier a son échange.</y:NodeLabel>
@@ -205,10 +205,10 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="36.0" width="235.0" x="183.5" y="62.0"/>
+          <y:Geometry height="36.0" width="432.7870478413069" x="106.4690781796966" y="62.0"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="223.462890625" x="5.7685546875" y="8.6494140625">RabbitMQ ajoute un en-tête au message.</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="403.85546875" x="14.46578954565345" y="8.6494140625">RabbitMQ contrôle que le message contient l'en-tête, avec la bonne valeur.</y:NodeLabel>
         </y:UMLNoteNode>
       </data>
     </node>
@@ -220,7 +220,7 @@
           <y:Geometry height="36.0" width="396.0" x="80.5" y="308.0"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="359.5234375" x="18.23828125" y="13.298828125">Les messages de tous les SI métier tombent dans la même queue.</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="372.900390625" x="11.5498046875" y="13.298828125">Les messages de tous les SI métier tombent dans une queue unique.</y:NodeLabel>
         </y:UMLNoteNode>
       </data>
     </node>
@@ -417,7 +417,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="28.0" width="211.0" x="127.5" y="4.0"/>
+          <y:Geometry height="28.0" width="211.0" x="81.13827304550762" y="4.0"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="179.599609375" x="15.7001953125" y="4.6494140625">L'échange est de type "headers".</y:NodeLabel>
