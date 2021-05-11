@@ -1,0 +1,4 @@
+Les fichiers .graphml ont été créés avec l'outil yEd.
+
+Dans yEd, ils ont été sauvés en fichiers .jpg. Ces fichiers
+.jpg sont référencé dans les fichiers .md.
