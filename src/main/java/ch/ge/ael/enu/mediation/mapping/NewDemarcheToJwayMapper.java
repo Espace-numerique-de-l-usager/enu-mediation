@@ -14,7 +14,7 @@ import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.BROUILLON;
 
 public class NewDemarcheToJwayMapper {
 
-    public File newDemarcheToFile(NewDemarche newDemarche) {
+    public File mapNewDemarcheToFile(NewDemarche newDemarche) {
         File file = new File();
 
         file.setName(newDemarche.getIdDemarcheSiMetier());
