@@ -7,17 +7,18 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 import java.text.DateFormat;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
 
-/**
- * Config générale du marshaller Jackson pour le contexte Spring
- */
 @Configuration
-public class JacksonConfiguration {
+public class ApplicationConfiguration {
 
+    /**
+     * Config générale du marshaller Jackson pour le contexte Spring
+     */
     @Bean(name = "json-jackson")
     public ObjectMapper jackson() {
         ObjectMapper jackson = new ObjectMapper();
@@ -30,6 +31,12 @@ public class JacksonConfiguration {
         jackson.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         jackson.setTimeZone(TimeZone.getDefault());
         return jackson;
+    }
+
+    @Bean
+    public RestTemplate restTemplate() {
+//        https://stackoverflow.com/questions/7913942/how-to-configure-spring-resttemplate-with-ssl-in-spring-mvc
+        return new RestTemplate();
     }
 
 }
