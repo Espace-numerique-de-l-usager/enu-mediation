@@ -1,4 +1,4 @@
-package ch.ge.ael.enu.mediation.service;
+package ch.ge.ael.enu.mediation.service.technical;
 
 import ch.ge.ael.enu.mediation.util.logging.BodyReducer;
 import lombok.extern.slf4j.Slf4j;
@@ -20,6 +20,9 @@ public class MessageLogger {
     @Value("${app.logging.max-file-content-size}")
     private int maxFileContentSize;
 
+    @Value("${app.formservices.url}")
+    private String formServicesUrl;
+
     public void logMessage(Message message) {
         log.info("********************************");
         log.info("*** Message recu de RabbitMQ ***");
@@ -28,6 +31,10 @@ public class MessageLogger {
         // TODO changer la signature en String plutot que byte[]
         byte[] reducedBody = new BodyReducer(maxFileContentSize).reduceBody(message.getBody());
         log.info(new String(reducedBody));
+    }
+
+    public void logJsonSentToJway(String content) {
+        log.info("JSON envoye a Jway ({}) = [{}]", formServicesUrl, content);
     }
 
 }
