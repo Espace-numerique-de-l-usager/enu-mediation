@@ -15,8 +15,6 @@ public class NewDemarcheToBrouillonReducer {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewDemarcheToBrouillonReducer.class);
 
     public NewDemarche reduce(NewDemarche newDemarche) {
-        LOGGER.info("Dans {}", getClass().getSimpleName());
-
         if (newDemarche.getEtat().equals(BROUILLON.name())) {
             // hack : si la demarche est un brouillon, on ajoute "DRAFT" au nom de la demarche.
             // Sans cette distinction, lors de la creation d'une demarche a l'etat "Deposee", l'application enu-backend
@@ -33,6 +31,7 @@ public class NewDemarcheToBrouillonReducer {
             newDemarche.setTypeAction(null);
         }
 
+        LOGGER.info("Reduction a l'etat de brouillon OK");
         return newDemarche;
     }
 

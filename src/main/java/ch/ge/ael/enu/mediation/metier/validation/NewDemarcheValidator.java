@@ -38,8 +38,6 @@ public class NewDemarcheValidator {
     private static final String DATE_MISE_EN_TRAITEMENT = "dateMiseEnTraitement";
 
     public NewDemarche validate(NewDemarche message) {
-        LOGGER.info("Dans {}", getClass().getSimpleName());
-
         final int MAX_SIZE_ETAT = 20;
 
         checkExistence(message.getIdPrestation(), ID_PRESTATION);
