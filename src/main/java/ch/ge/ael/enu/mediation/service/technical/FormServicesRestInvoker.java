@@ -1,9 +1,12 @@
-package ch.ge.ael.enu.mediation.service;
+package ch.ge.ael.enu.mediation.service.technical;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -35,6 +38,14 @@ public class FormServicesRestInvoker {
         HttpEntity entity = new HttpEntity(contents, headers);
 
         return restTemplate.postForObject(formServicesUrl + "/" + path, entity, clazz);
+    }
+
+    public <T> ResponseEntity<T> exchange(String path, HttpEntity<T> entity, String idUsager) {
+        checkNotBlank(idUsager, "idUsager");
+
+        ParameterizedTypeReference<T> typeReference = new ParameterizedTypeReference<T>() {};
+
+        return restTemplate.exchange(formServicesUrl + "/" + path, HttpMethod.POST, entity, typeReference);
     }
 
 }

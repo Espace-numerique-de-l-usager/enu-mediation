@@ -6,6 +6,8 @@ import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
 import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
 import ch.ge.ael.enu.mediation.metier.validation.NewDemarcheValidator;
 import ch.ge.ael.enu.mediation.routes.processing.NewDemarcheToBrouillonReducer;
+import ch.ge.ael.enu.mediation.service.technical.DeserializationService;
+import ch.ge.ael.enu.mediation.service.technical.FormServicesRestInvoker;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.stereotype.Service;

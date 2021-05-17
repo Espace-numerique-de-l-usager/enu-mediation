@@ -1,11 +1,10 @@
 package ch.ge.ael.enu.mediation;
 
 import ch.ge.ael.enu.mediation.exception.IllegalMessageException;
-import ch.ge.ael.enu.mediation.exception.MediationException;
-import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
+import ch.ge.ael.enu.mediation.service.CourrierService;
 import ch.ge.ael.enu.mediation.service.DemarcheService;
-import ch.ge.ael.enu.mediation.service.ErrorHandler;
-import ch.ge.ael.enu.mediation.service.MessageLogger;
+import ch.ge.ael.enu.mediation.service.technical.ErrorHandler;
+import ch.ge.ael.enu.mediation.service.technical.MessageLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.Message;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 
 import static ch.ge.ael.enu.mediation.routes.http.Header.CONTENT_TYPE;
+import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_COURRIER;
 import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_DEMARCHE;
 
 @Component
@@ -29,6 +29,9 @@ public class Router {
 
     @Resource
     private DemarcheService demarcheService;
+
+    @Resource
+    private CourrierService courrierService;
 
     @Resource
     private ErrorHandler errorHandler;
@@ -51,6 +54,8 @@ public class Router {
             throw new IllegalMessageException("L'en-tete " + CONTENT_TYPE + " manque dans le message");
         } else if (contentType.equals(NEW_DEMARCHE)) {
             demarcheService.handle(message);
+        } else if (contentType.equals(NEW_COURRIER)) {
+            courrierService.handle(message);
         } else {
             throw new IllegalMessageException(
                     "La valeur \"" + contentType + "\" de 'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");

@@ -9,4 +9,8 @@ public class MediationException extends RuntimeException {
         super(message);
     }
 
+    public MediationException(String message, Exception cause) {
+        super(message, cause);
+    }
+
 }

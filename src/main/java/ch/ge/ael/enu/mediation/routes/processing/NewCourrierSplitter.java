@@ -17,8 +17,6 @@ public class NewCourrierSplitter {
     private static final Logger LOGGER = LoggerFactory.getLogger(NewCourrierSplitter.class);
 
     public List<NewCourrierDocument> splitCourrier(NewCourrier newCourrier) {
-        LOGGER.info("Dans {}", getClass().getSimpleName());
-
         List<NewCourrierDocument> courriersDocs = new ArrayList<>();
 
         int index = 0;
@@ -40,6 +38,7 @@ public class NewCourrierSplitter {
             courriersDocs.add(courrierDoc);
         }
 
+        LOGGER.info("Courrier scinde. Nombre de documents = ", courriersDocs.size());
         return courriersDocs;
     }
 

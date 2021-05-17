@@ -1,4 +1,4 @@
-package ch.ge.ael.enu.mediation.service;
+package ch.ge.ael.enu.mediation.service.technical;
 
 import ch.ge.ael.enu.mediation.exception.IllegalMessageException;
 import com.fasterxml.jackson.databind.ObjectMapper;

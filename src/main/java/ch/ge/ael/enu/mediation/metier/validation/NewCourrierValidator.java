@@ -37,8 +37,6 @@ public class NewCourrierValidator {
     }
 
     public NewCourrier validate(NewCourrier message) {
-        LOGGER.info("Dans {}", getClass().getSimpleName());
-
         checkExistence(message.getIdPrestation(), "idPrestation");
         checkExistence(message.getIdUsager(), "idUsager");
         checkExistence(message.getLibelleCourrier(), "libelleCourrier");
