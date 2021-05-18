@@ -115,10 +115,15 @@ Champs :
 | documents[i].libelleDocument | titre du document, déterminant le nom du fichier | oui | Décision administration 2020-02-19 | Maximum 50 caractères |
 | documents[i].idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | oui | DOC-123456789 | Doit doit être unique, pour la prestation donnée et pour l'usager donné. Maximum 50 caractères |
 | documents[i].mime | type MIME du fichier | oui | application/pdf | Actuellement, seule la valeur "application/pdf" est prise en charge |
-| documents[i].contenu | contenu du fichier en base64 | oui | - | Maximum 10'000'000 caractères |
+| documents[i].contenu | contenu du fichier en base64 | oui si gedProvider est absent, pas applicable sinon | - | Maximum 10'000'000 caractères |
+| documents[i].gedProvider | identifiant d'une GED | non | DATA_CONTENT | Actuellement la seule valeur possible est DATA_CONTENT |
+| documents[i].gedVersion | version de l'interfaçage à la GED | oui, si gedProvider est fourni, pas applicable sinon | 1 | Actuellement la seule valeur possible est 1 |
+| documents[i].gedId | identifiant du document dans la GED | oui, si gedProvider est fourni, pas applicable sinon | 123456 | Cette valeur est été fournie par la GED lorsque le document a été stocké dans la GED |
+| documents[i].gedHash | empreinte du document dans la GED | oui, si gedProvider est fourni, pas applicable sinon | - | |
 
 L'indice `i` ci-dessus commence à 0, pour le premier document du courrier.
-Le courrier doit contenir au moins 1 document et au maximum 20 documents.
+
+Le courrier doit contenir au minimum 1 document et au maximum 20 documents.
 
 ### Création d'une suggestion de démarche : message JSON
 

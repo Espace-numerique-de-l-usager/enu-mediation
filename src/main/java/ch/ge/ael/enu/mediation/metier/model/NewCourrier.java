@@ -24,7 +24,7 @@ public class NewCourrier {
     private List<NewDocument> documents = null;
 
     /**
-     * Champ cree par la mediation, ajoute' ici par simplcite.
+     * Champ cree par la mediation, ajoute' ici par simplicite.
      */
     private String clef = null;
 

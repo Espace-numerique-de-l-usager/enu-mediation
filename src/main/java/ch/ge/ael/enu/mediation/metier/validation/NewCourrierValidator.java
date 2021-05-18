@@ -1,6 +1,7 @@
 package ch.ge.ael.enu.mediation.metier.validation;
 
 import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
+import ch.ge.ael.enu.mediation.metier.model.GedProvider;
 import ch.ge.ael.enu.mediation.metier.model.NewCourrier;
 import ch.ge.ael.enu.mediation.metier.model.NewDocument;
 import org.slf4j.Logger;
@@ -10,12 +11,16 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_CONTENU;
+import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_GED_HASH;
+import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_GED_ID;
 import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_ID_DOCUMENT_SI_METIER;
 import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_LIBELLE;
 import static ch.ge.ael.enu.mediation.metier.validation.NewDocumentValidator.MAX_SIZE_MIME;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkEnum;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkExistence;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkListMaxSize;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkListNotEmpty;
+import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkMutualExclusion;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSize;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdDemarcheSiMetier;
 import static ch.ge.ael.enu.mediation.metier.validation.ValidationUtils.checkSizeIdPrestation;
@@ -57,11 +62,21 @@ public class NewCourrierValidator {
             checkExistence(doc.getIdDocumentSiMetier(), prefix + "idDocumentSiMetier");
             checkExistence(doc.getMime(), prefix + "mime");
             checkExistence(doc.getContenu(), prefix + "contenu");
+            checkMutualExclusion(doc.getContenu(), prefix + "contenu", doc.getGedProvider(), prefix + "gedProvider");
+            checkMutualExclusion(doc.getContenu(), prefix + "contenu", doc.getGedVersion(), prefix + "gedVersion");
+            checkMutualExclusion(doc.getContenu(), prefix + "contenu", doc.getGedId(), prefix + "gedId");
+            checkMutualExclusion(doc.getContenu(), prefix + "contenu", doc.getGedHash(), prefix + "gedHash");
+
+            checkEnum(doc.getGedProvider(), GedProvider.class, prefix + "gedProvider");
+            LOGGER.info("A FAIRE : validation du champ gedVersion");
+//            checkEnum(doc.getGedVersion(), GedVersion.class, prefix + "gedVersion");
 
             checkSize(doc.getLibelleDocument(), 1, MAX_SIZE_LIBELLE, prefix + "libelleDocument");
             checkSize(doc.getIdDocumentSiMetier(), 1, MAX_SIZE_ID_DOCUMENT_SI_METIER, prefix + "idDocumentSiMetier");
             checkSize(doc.getMime(), 1, MAX_SIZE_MIME, prefix + "mime");
             checkSize(doc.getContenu(), 1, MAX_SIZE_CONTENU, prefix + "contenu");
+            checkSize(doc.getGedId(), 1, MAX_SIZE_GED_ID, prefix + "gedId");
+            checkSize(doc.getGedHash(), 1, MAX_SIZE_GED_HASH, prefix + "gedHash");
 
             if (! allowedMimeTypes.contains(doc.getMime())) {
                 LOGGER.info("Erreur metier : type MIME [{}] pas pris en charge", doc.getMime());
