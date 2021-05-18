@@ -87,12 +87,12 @@ public class ValidationUtils {
     }
 
     /**
-     * Leve une erreur si value est non null alors que otherValue est null.
+     * Leve une erreur si value est non nul alors que otherValue est nul.
      */
     public static void checkAbsentIfOtherAbsent(String value, String fieldName,
                                                 String otherValue, String otherFieldName) {
         if (value != null && otherValue == null) {
-            LOGGER.info("Erreur metier : le champ [{}] valant [{}] doit etre null quand le champ [{}] est null",
+            LOGGER.info("Erreur metier : le champ [{}] valant [{}] doit etre nul quand le champ [{}] est nul",
                     fieldName, value, otherFieldName);
             throw new ValidationException("Le champ \"" + fieldName + "\" ne peut pas être fourni quand le champ \""
                     + otherFieldName + "\" n'est pas fourni");
@@ -100,7 +100,20 @@ public class ValidationUtils {
     }
 
     /**
-     * Leve une erreur si value est non null alors que otherValue vaut someOtherValue.
+     * Leve une erreur si value est non nul alors que otherValue est non nul.
+     */
+    public static void checkAbsentIfOtherPresent(String value, String fieldName,
+                                                 String otherValue, String otherFieldName) {
+        if (value != null && otherValue != null) {
+            LOGGER.info("Erreur metier : le champ [{}] valant [{}] doit etre nul quand le champ [{}] valant [{}] est non nul",
+                    fieldName, value, otherFieldName, otherValue);
+            throw new ValidationException("Le champ \"" + fieldName + "\" ne peut pas être fourni quand le champ \""
+                    + otherFieldName + "\" est fourni");
+        }
+    }
+
+    /**
+     * Leve une erreur si value est non nul alors que otherValue vaut someOtherValue.
      */
     public static void checkAbsentIfOtherHasValue(String value, String fieldName,
                                                   String otherValue, String otherFieldName, String someOtherValue) {
@@ -113,7 +126,7 @@ public class ValidationUtils {
     }
 
     /**
-     * Leve une erreur si value est null alors que otherValue est non null.
+     * Leve une erreur si value est nul alors que otherValue est non nul.
      */
     public static void checkPresentIfOtherPresent(String value, String fieldName,
                                                   String otherValue, String otherFieldName) {
@@ -126,7 +139,7 @@ public class ValidationUtils {
     }
 
     /**
-     * Leve une erreur si value est null alors que otherValue vaut someOtherValue.
+     * Leve une erreur si value est nul alors que otherValue vaut someOtherValue.
      */
     public static void checkPresentIfOtherHasValue(String value, String fieldName,
                                                    String otherValue, String otherFieldName, String someOtherValue) {
@@ -135,6 +148,21 @@ public class ValidationUtils {
                     fieldName, otherFieldName, someOtherValue);
             throw new ValidationException("Le champ \"" + fieldName + "\" doit etre fourni quand le champ \""
                     + otherFieldName + "\" vaut \"" + someOtherValue + "\"");
+        }
+    }
+
+    /**
+     * Leve une erreur si la condition suivante n'est pas remplie : de value et de otherValue, un seul des deux
+     * est nul, l'autre etant non nul.
+     */
+    public static void checkMutualExclusion(String value, String fieldName,
+                                            String otherValue, String otherFieldName) {
+        if (value == null && otherValue == null ||
+            value != null && otherValue != null) {
+            LOGGER.info("Erreur metier : des champs [{}] (=[{}]) et [{}] (=[{}]), exactement un des deux doit etre non nul",
+                    fieldName, value, otherFieldName, otherValue);
+            throw new ValidationException("Il faut fournir exactement un des deux champs suivants : \""
+                    + fieldName + "\" et \"" + otherFieldName  + "\"");
         }
     }
 

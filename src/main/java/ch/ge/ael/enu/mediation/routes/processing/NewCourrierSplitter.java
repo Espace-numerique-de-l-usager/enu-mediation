@@ -33,12 +33,16 @@ public class NewCourrierSplitter {
             courrierDoc.setIdDocumentSiMetier(doc.getIdDocumentSiMetier());
             courrierDoc.setMime(doc.getMime());
             courrierDoc.setContenu(doc.getContenu());
+            courrierDoc.setGedProvider(doc.getGedProvider());
+            courrierDoc.setGedVersion(doc.getGedVersion());
+            courrierDoc.setGedId(doc.getGedId());
+            courrierDoc.setGedHash(doc.getGedHash());
             courrierDoc.setIndex(index++);
             courrierDoc.setNbDocuments(newCourrier.getDocuments().size());
             courriersDocs.add(courrierDoc);
         }
 
-        LOGGER.info("Courrier scinde. Nombre de documents = ", courriersDocs.size());
+        LOGGER.info("Scission du courrier OK. Nombre de documents = {}", courriersDocs.size());
         return courriersDocs;
     }
 

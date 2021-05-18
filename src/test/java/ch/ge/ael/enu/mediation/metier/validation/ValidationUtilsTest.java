@@ -141,6 +141,18 @@ class ValidationUtilsTest {
     }
 
     @Test
+    void checkAbsentIfOtherPresent_with_absent_absent_should_succeed() {
+        ValidationUtils.checkAbsentIfOtherPresent(null, "someField", null, "someOtherField");
+    }
+
+    @Test
+    void checkAbsentIfOtherPresent_with_present_present_should_fail() {
+        assertThatThrownBy(() -> ValidationUtils.checkAbsentIfOtherPresent("someValue", "someField", "someOtherField", "someOtherField"))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Le champ \"someField\" ne peut pas être fourni quand le champ \"someOtherField\" est fourni");
+    }
+
+    @Test
     void checkPresentIfOtherPresent_with_present_present_should_succeed() {
         ValidationUtils.checkPresentIfOtherPresent("someValue", "someField", "someOtherValue", "someOtherField");
     }
@@ -160,6 +172,30 @@ class ValidationUtilsTest {
         assertThatThrownBy(() -> ValidationUtils.checkPresentIfOtherPresent(null, "someField", "someOtherValue", "someOtherField"))
                 .isInstanceOf(ValidationException.class)
                 .hasMessage("Le champ \"someField\" doit être fourni quand le champ \"someOtherField\" est fourni");
+    }
+
+    @Test
+    void checkMutualExclusion_with_absent_present_should_succeed() {
+        ValidationUtils.checkMutualExclusion(null, "someField", "someValue", "someOtherField");
+    }
+
+    @Test
+    void checkMutualExclusion_with_present_absent_should_succeed() {
+        ValidationUtils.checkMutualExclusion("someField", "someField", null, "someOtherField");
+    }
+
+    @Test
+    void checkMutualExclusion_with_present_present_should_fail() {
+        assertThatThrownBy(() -> ValidationUtils.checkMutualExclusion("someField", "someField", "someValue", "someOtherField"))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Il faut fournir exactement un des deux champs suivants : \"someField\" et \"someOtherField\"");
+    }
+
+    @Test
+    void checkMutualExclusion_with_absent_absent_should_fail() {
+        assertThatThrownBy(() -> ValidationUtils.checkMutualExclusion(null, "someField", null, "someOtherField"))
+                .isInstanceOf(ValidationException.class)
+                .hasMessage("Il faut fournir exactement un des deux champs suivants : \"someField\" et \"someOtherField\"");
     }
 
     @Test
