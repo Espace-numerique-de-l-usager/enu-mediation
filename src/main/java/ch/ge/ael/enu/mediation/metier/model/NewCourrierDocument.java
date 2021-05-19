@@ -32,13 +32,7 @@ public class NewCourrierDocument {
 
     private String contenu = null;
 
-    private String gedProvider = null;
-
-    private String gedVersion = null;
-
-    private String gedId = null;
-
-    private String gedHash = null;
+    private GedData ged;
 
     /**
      * Position du document parmi tous les documents du courrier.

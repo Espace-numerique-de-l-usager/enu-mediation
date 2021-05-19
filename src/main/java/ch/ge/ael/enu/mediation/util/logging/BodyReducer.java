@@ -1,16 +1,14 @@
 package ch.ge.ael.enu.mediation.util.logging;
 
+import static ch.ge.ael.enu.mediation.util.logging.StringTruncationUtils.SHOW_AFTER;
+import static ch.ge.ael.enu.mediation.util.logging.StringTruncationUtils.SHOW_BEFORE;
+import static ch.ge.ael.enu.mediation.util.logging.StringTruncationUtils.TRUNCATION;
+
 /**
  * Evite de mettre dans le fichier de trace un Body trop long, en tronquant les champs dont on sait qu'ils peuvent
  * etre tres longs.
  */
 public class BodyReducer {
-
-    private static final int SHOW_BEFORE = 40;
-
-    private static final int SHOW_AFTER = 20;
-
-    private static final String TRUNCATION = " ... (champ tronque, car trop long) ... ";
 
     private final int maxFileSize;
 

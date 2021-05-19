@@ -30,10 +30,6 @@ public class NewDocumentValidator {
 
     static final int MAX_SIZE_CONTENU = 200 * 1024 * 1024;   // bytes en base 64
 
-    static final int MAX_SIZE_GED_ID = 200;
-
-    static final int MAX_SIZE_GED_HASH = 500;
-
     private final List<String> allowedMimeTypes;
 
     public NewDocumentValidator(List<String> allowedMimeTypes) {

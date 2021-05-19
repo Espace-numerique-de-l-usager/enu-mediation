@@ -27,12 +27,6 @@ public class NewDocument {
 
     private String contenu = null;
 
-    private String gedProvider = null;
-
-    private String gedVersion = null;
-
-    private String gedId = null;
-
-    private String gedHash = null;
+    private GedData ged = null;
 
 }
