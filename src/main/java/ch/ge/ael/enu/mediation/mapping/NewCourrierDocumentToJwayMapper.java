@@ -45,13 +45,14 @@ public class NewCourrierDocumentToJwayMapper {
                 + "|" + courrierDoc.getIdDocumentSiMetier()
                 + "|" + courrierDoc.getIndex()
                 + "|" + courrierDoc.getNbDocuments();
-        if (courrierDoc.getContenu() == null) {
+        if (courrierDoc.getGed() != null) {
             // cas d'un document deja en GED
             name = name
-                    + "|" + courrierDoc.getGedProvider()
-                    + "|" + courrierDoc.getGedVersion()
-                    + "|" + courrierDoc.getGedId()
-                    + "|" + courrierDoc.getGedHash();
+                    + "|" + courrierDoc.getGed().getFournisseur()
+                    + "|" + courrierDoc.getGed().getVersion()
+                    + "|" + courrierDoc.getGed().getIdDocument()
+                    + "|" + courrierDoc.getGed().getAlgorithmeHash()
+                    + "|" + courrierDoc.getGed().getHash();
         }
 
         // preparation des donnees : fileName

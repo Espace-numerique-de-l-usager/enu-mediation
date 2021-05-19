@@ -1,5 +1,6 @@
 package ch.ge.ael.enu.mediation.routes.processing;
 
+import ch.ge.ael.enu.mediation.metier.model.GedData;
 import ch.ge.ael.enu.mediation.metier.model.NewCourrier;
 import ch.ge.ael.enu.mediation.metier.model.NewCourrierDocument;
 import ch.ge.ael.enu.mediation.metier.model.NewDocument;
@@ -33,10 +34,17 @@ public class NewCourrierSplitter {
             courrierDoc.setIdDocumentSiMetier(doc.getIdDocumentSiMetier());
             courrierDoc.setMime(doc.getMime());
             courrierDoc.setContenu(doc.getContenu());
-            courrierDoc.setGedProvider(doc.getGedProvider());
-            courrierDoc.setGedVersion(doc.getGedVersion());
-            courrierDoc.setGedId(doc.getGedId());
-            courrierDoc.setGedHash(doc.getGedHash());
+
+            if (doc.getGed() != null) {
+                GedData ged = new GedData();
+                ged.setFournisseur(doc.getGed().getFournisseur());
+                ged.setVersion(doc.getGed().getVersion());
+                ged.setIdDocument(doc.getGed().getIdDocument());
+                ged.setAlgorithmeHash(doc.getGed().getAlgorithmeHash());
+                ged.setHash(doc.getGed().getHash());
+                courrierDoc.setGed(ged);
+            }
+
             courrierDoc.setIndex(index++);
             courrierDoc.setNbDocuments(newCourrier.getDocuments().size());
             courriersDocs.add(courrierDoc);

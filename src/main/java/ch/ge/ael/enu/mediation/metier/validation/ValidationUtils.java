@@ -7,6 +7,7 @@ import ch.ge.ael.enu.mediation.metier.exception.MalformedDateException;
 import ch.ge.ael.enu.mediation.metier.exception.MissingFieldException;
 import ch.ge.ael.enu.mediation.metier.exception.TooLargeListException;
 import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
+import ch.ge.ael.enu.mediation.util.logging.StringTruncationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +16,8 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import static ch.ge.ael.enu.mediation.util.logging.StringTruncationUtils.truncate;
 
 public class ValidationUtils {
 
@@ -159,8 +162,8 @@ public class ValidationUtils {
                                             String otherValue, String otherFieldName) {
         if (value == null && otherValue == null ||
             value != null && otherValue != null) {
-            LOGGER.info("Erreur metier : des champs [{}] (=[{}]) et [{}] (=[{}]), exactement un des deux doit etre non nul",
-                    fieldName, value, otherFieldName, otherValue);
+            LOGGER.info("Erreur metier : des deux champs [{}] (=[{}]) et [{}] (=[{}]), exactement un d'eux doit etre non nul",
+                    fieldName, truncate(value), otherFieldName, truncate(otherValue));
             throw new ValidationException("Il faut fournir exactement un des deux champs suivants : \""
                     + fieldName + "\" et \"" + otherFieldName  + "\"");
         }
