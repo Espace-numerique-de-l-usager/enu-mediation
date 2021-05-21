@@ -1,7 +1,7 @@
 package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.mediation.jway.model.Status;
-import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
+import ch.ge.ael.enu.mediation.business.domain.DemarcheStatus;
 
 /**
  * Correspondance metier <-> Jway des statuts des demarches.

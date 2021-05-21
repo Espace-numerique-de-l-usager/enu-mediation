@@ -1,7 +1,7 @@
 package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.mediation.jway.model.JwayDocumentType;
-import ch.ge.ael.enu.mediation.metier.model.NewCourrierDocument;
+import ch.ge.ael.enu.mediation.business.domain.NewCourrierDocument;
 import ch.ge.ael.enu.mediation.service.technical.FormServicesRestInvoker;
 import ch.ge.ael.enu.mediation.util.file.FileNameSanitizer;
 import ch.ge.ael.enu.mediation.util.mime.MimeUtils;

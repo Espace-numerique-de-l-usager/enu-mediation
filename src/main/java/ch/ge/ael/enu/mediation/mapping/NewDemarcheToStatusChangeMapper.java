@@ -1,13 +1,13 @@
 package ch.ge.ael.enu.mediation.mapping;
 
-import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
-import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
-import ch.ge.ael.enu.mediation.metier.model.StatusChange;
+import ch.ge.ael.enu.mediation.business.domain.DemarcheStatus;
+import ch.ge.ael.enu.mediation.business.domain.NewDemarche;
+import ch.ge.ael.enu.mediation.business.domain.StatusChange;
 
 import java.time.format.DateTimeFormatter;
 
-import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.DEPOSEE;
-import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.EN_TRAITEMENT;
+import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.DEPOSEE;
+import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.EN_TRAITEMENT;
 
 /**
  * Transforme une requete de creation de demarche (NewDemarche) en une requete de changement d'etat (StatusChange).

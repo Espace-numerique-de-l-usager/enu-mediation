@@ -5,12 +5,12 @@ import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.jway.model.Form;
 import ch.ge.ael.enu.mediation.jway.model.FormUrl;
 import ch.ge.ael.enu.mediation.jway.model.User;
-import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
-import ch.ge.ael.enu.mediation.metier.model.NewDemarche;
+import ch.ge.ael.enu.mediation.business.domain.DemarcheStatus;
+import ch.ge.ael.enu.mediation.business.domain.NewDemarche;
 
 import java.util.ArrayList;
 
-import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.BROUILLON;
+import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.BROUILLON;
 
 public class NewDemarcheToJwayMapper {
 

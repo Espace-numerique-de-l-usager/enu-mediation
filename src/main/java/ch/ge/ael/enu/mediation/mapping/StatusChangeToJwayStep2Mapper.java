@@ -1,7 +1,7 @@
 package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.mediation.jway.model.FileForWorkflow;
-import ch.ge.ael.enu.mediation.metier.model.StatusChange;
+import ch.ge.ael.enu.mediation.business.domain.StatusChange;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration

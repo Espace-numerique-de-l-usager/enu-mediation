@@ -5,7 +5,7 @@ import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.jway.model.Form;
 import ch.ge.ael.enu.mediation.jway.model.FormUrl;
 import ch.ge.ael.enu.mediation.jway.model.User;
-import ch.ge.ael.enu.mediation.metier.model.NewSuggestion;
+import ch.ge.ael.enu.mediation.business.domain.NewSuggestion;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.ZonedDateTime;

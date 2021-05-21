@@ -3,12 +3,12 @@ package ch.ge.ael.enu.mediation.mapping;
 import ch.ge.ael.enu.mediation.jway.model.FileForStep;
 import ch.ge.ael.enu.mediation.jway.model.Form;
 import ch.ge.ael.enu.mediation.jway.model.FormUrl;
-import ch.ge.ael.enu.mediation.metier.model.DemarcheStatus;
-import ch.ge.ael.enu.mediation.metier.model.StatusChange;
+import ch.ge.ael.enu.mediation.business.domain.DemarcheStatus;
+import ch.ge.ael.enu.mediation.business.domain.StatusChange;
 
 import java.util.ArrayList;
 
-import static ch.ge.ael.enu.mediation.metier.model.DemarcheStatus.TERMINEE;
+import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.TERMINEE;
 
 public class StatusChangeToJwayStep1Mapper {
 
