@@ -1,7 +1,7 @@
 package ch.ge.ael.enu.mediation.service.technical;
 
 import ch.ge.ael.enu.mediation.exception.MediationException;
-import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
+import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;

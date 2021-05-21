@@ -1,6 +1,6 @@
 package ch.ge.ael.enu.mediation.exception;
 
-import ch.ge.ael.enu.mediation.metier.exception.ValidationException;
+import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 
 public class IllegalMessageException extends ValidationException {
 

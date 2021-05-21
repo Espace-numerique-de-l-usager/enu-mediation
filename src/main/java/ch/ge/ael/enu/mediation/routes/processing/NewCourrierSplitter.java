@@ -1,9 +1,9 @@
 package ch.ge.ael.enu.mediation.routes.processing;
 
-import ch.ge.ael.enu.mediation.metier.model.GedData;
-import ch.ge.ael.enu.mediation.metier.model.NewCourrier;
-import ch.ge.ael.enu.mediation.metier.model.NewCourrierDocument;
-import ch.ge.ael.enu.mediation.metier.model.NewDocument;
+import ch.ge.ael.enu.mediation.business.domain.GedData;
+import ch.ge.ael.enu.mediation.business.domain.NewCourrier;
+import ch.ge.ael.enu.mediation.business.domain.NewCourrierDocument;
+import ch.ge.ael.enu.mediation.business.domain.NewDocument;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

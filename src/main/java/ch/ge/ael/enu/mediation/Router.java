@@ -16,6 +16,7 @@ import javax.annotation.Resource;
 import static ch.ge.ael.enu.mediation.routes.http.Header.CONTENT_TYPE;
 import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_COURRIER;
 import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_DEMARCHE;
+import static ch.ge.ael.enu.mediation.routes.http.MediaType.STATUS_CHANGE;
 
 @Component
 @Slf4j
@@ -36,13 +37,16 @@ public class Router {
     @Resource
     private ErrorHandler errorHandler;
 
+    /**
+     * Le point d'entree de l'application : consommation d'un message RabbitMQ.
+     */
     @RabbitListener(queues = QUEUE_NAME)
     public void consume(Message message) {
         messageLogger.logMessage(message);
 
         try {
-            // traitement du message
             route(message);
+            log.info("Traitement OK");
         } catch (Exception e) {
             errorHandler.handle(e, message);
         }
@@ -53,7 +57,9 @@ public class Router {
         if (StringUtils.isBlank(contentType)) {
             throw new IllegalMessageException("L'en-tete " + CONTENT_TYPE + " manque dans le message");
         } else if (contentType.equals(NEW_DEMARCHE)) {
-            demarcheService.handle(message);
+            demarcheService.handleNewDemarche(message);
+        } else if (contentType.equals(STATUS_CHANGE)) {
+            demarcheService.handleStatusChange(message);
         } else if (contentType.equals(NEW_COURRIER)) {
             courrierService.handle(message);
         } else {

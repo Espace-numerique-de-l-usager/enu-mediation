@@ -1,9 +1,11 @@
 package ch.ge.ael.enu.mediation.service;
 
+import ch.ge.ael.enu.mediation.jway.model.Document;
+import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewCourrierDocumentToJwayMapper;
-import ch.ge.ael.enu.mediation.metier.model.NewCourrier;
-import ch.ge.ael.enu.mediation.metier.model.NewCourrierDocument;
-import ch.ge.ael.enu.mediation.metier.validation.NewCourrierValidator;
+import ch.ge.ael.enu.mediation.business.domain.NewCourrier;
+import ch.ge.ael.enu.mediation.business.domain.NewCourrierDocument;
+import ch.ge.ael.enu.mediation.business.validation.NewCourrierValidator;
 import ch.ge.ael.enu.mediation.routes.processing.NewCourrierSplitter;
 import ch.ge.ael.enu.mediation.service.technical.DeserializationService;
 import ch.ge.ael.enu.mediation.service.technical.FormServicesRestInvoker;
@@ -11,6 +13,7 @@ import ch.ge.ael.enu.mediation.service.technical.MessageLogger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -80,7 +83,9 @@ public class CourrierService {
                 .map(courrierDoc -> mapper.mapNewCourrierDocumentToBuilder(courrierDoc, newCourrier.getIdDemarcheSiMetier()))
                 .forEach(entity -> {
                     messageLogger.logJsonSentToJway(entity.toString());
-                    formServices.exchange("alpha/document", entity, newCourrier.getIdUsager());
+//                    formServices.exchange("alpha/document", entity, newCourrier.getIdUsager());
+                    ParameterizedTypeReference<Document> typeReference = new ParameterizedTypeReference<Document>() {};
+                    formServices.postEntity("alpha/document", entity, newCourrier.getIdUsager(), typeReference);
                     log.info("Document cree");
                 });
     }
