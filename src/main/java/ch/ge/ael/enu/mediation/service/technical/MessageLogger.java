@@ -33,8 +33,8 @@ public class MessageLogger {
         log.info(new String(reducedBody));
     }
 
-    public void logJsonSentToJway(String content) {
-        log.info("JSON envoye a Jway ({}) = [{}]", formServicesUrl, content);
+    public void logJsonSent(String content) {
+        log.info("JSON envoye a FormServices ({}) = [{}]", formServicesUrl, content);
     }
 
 }
