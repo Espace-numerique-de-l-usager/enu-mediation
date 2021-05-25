@@ -55,7 +55,7 @@ Champs :
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
 | idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Doit doit être unique, pour la prestation donnée et pour l'usager donné. Maximum 50 caractères |
-| nouvelEtat | nouvel état de la démarche | oui | DEPOSEE | Doit valoir soit DEPOSEE, soit EN_TRAITEMENT, soit TERMINEE |
+| nouvelEtat | nouvel état de la démarche | oui | DEPOSEE | Doit valoir soit `DEPOSEE`, soit `EN_TRAITEMENT`, soit `TERMINEE` |
 | dateNouvelEtat | date à laquelle la démarche a changé d'état| oui | 2020-02-19 | - |
 
 Champs supplémentaires si `nouvelEtat` = `DEPOSEE` ou si `nouvelEtat` = `EN_TRAITEMENT` :
@@ -63,7 +63,7 @@ Champs supplémentaires si `nouvelEtat` = `DEPOSEE` ou si `nouvelEtat` = `EN_TRA
 | Nom | Description | Obligatoire | Exemple | Commentaire |
 | --- | ----------- | ----------- | ------- | ----------- |
 | libelleAction | description de l'opération proposée à l'usager sur la démarche | non | Compléter votre démarche | Taille maximale : 250 caractères |
-| typeAction | type de l'opération proposée à l'usager sur la démarche | non. Pas applicable si `libelleAction` n'est pas fourni  | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit ENRICHISSEMENT_DE_DEMANDE, soit REPONSE_DEMANDE_RENSEIGNEMENT |
+| typeAction | type de l'opération proposée à l'usager sur la démarche | non. Pas applicable si `libelleAction` n'est pas fourni  | ENRICHISSEMENT_DE_DEMANDE | Doit valoir soit `ENRICHISSEMENT_DE_DEMANDE`, soit `REPONSE_DEMANDE_RENSEIGNEMENT` |
 | urlAction | URL de l'opération proposée à l'usager sur la démarche | oui si `typeAction` est fourni, pas applicable sinon | `https://etc...` | - |
 | dateEcheanceAction | date avant laquelle l'usager est sensé effectuer l'opération sur la démarche | oui si `typeAction` est fourni, pas applicable sinon | 2021-02-18 | La date uniquement, sans les heures |
 
@@ -90,11 +90,17 @@ Champs :
 | idPrestation | identifiant de la prestation | oui | FL_SOCIAL_INDICATEL | Fourni par l'équipe médiation |
 | idUsager | identifiant de l'usager propriétaire de la démarche | oui | CGE-1000000 | Cet usager doit être connu de Gina |
 | idDemarcheSiMetier | identifiant de la démarche dans le SI métier | oui | AEL-100000 | Maximum 50 caractères |
-| typeDocument | type de document | oui | RECAPITULATIF | Doit valoir soit RECAPITULATIF, soit JUSTIFICATIF |
+| typeDocument | type de document | oui | RECAPITULATIF | Doit valoir soit `RECAPITULATIF`, soit `JUSTIFICATIF` |
 | libelleDocument | titre du document, déterminant le nom du fichier | oui | Décision administration 2020-02-19 | Maximum 50 caractères |
 | idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | oui | DOC-123456789 | Doit doit être unique, pour la prestation donnée et pour l'usager donné. Maximum 50 caractères |
-| mime | type MIME du fichier | oui | application/pdf | Actuellement, seule la valeur "application/pdf" est prise en charge |
-| contenu | contenu du fichier en base64 | oui | - | Maximum 10'000'000 caractères |
+| mime | type MIME du fichier | oui | application/pdf | Actuellement, la seule valeur possible est `application/pdf` |
+| contenu | contenu du fichier en base64 | oui si `ged` est absent, pas applicable sinon | - | Maximum 10'000'000 caractères |
+| ged | données GED du document | oui si `contenu` est absent, pas applicable sinon | - | Voir le chapitre consacré à la GED, au bas de cette page |
+| ged.fournisseur | identifiant d'une GED | oui | DATA_CONTENT | Actuellement la seule valeur possible est `DATA_CONTENT` |
+| ged.version | version de l'interfaçage à la GED | oui | 1 | Actuellement la seule valeur possible est `1` |
+| ged.idDocument | identifiant du document dans la GED | oui | 123456 | Cette valeur est été fournie par la GED lorsque le document a été stocké dans la GED |
+| ged.algorithmeHash | algorithme utilisé par la GED pour calculer l'empreinte du document | oui | SHA-256 | |
+| ged.hash | empreinte du document dans la GED | oui | - | |
 
 ### Création d'un courrier : message JSON
 
@@ -114,11 +120,11 @@ Champs :
 | libelleCourrier | titre du courrier | oui | Notification de l'impôt | Maximum 50 caractères |
 | documents[i].libelleDocument | titre du document, déterminant le nom du fichier | oui | Décision administration 2020-02-19 | Maximum 50 caractères |
 | documents[i].idDocumentSiMetier | identifiant permettant au SI métier d'identifier son document | oui | DOC-123456789 | Doit doit être unique, pour la prestation donnée et pour l'usager donné. Maximum 50 caractères |
-| documents[i].mime | type MIME du fichier | oui | application/pdf | Actuellement, seule la valeur "application/pdf" est prise en charge |
-| documents[i].contenu | contenu du fichier en base64 | oui si ged est absent, pas applicable sinon | - | Maximum 10'000'000 caractères |
-| documents[i].ged | données GED du document | oui si contenu est absent, pas applicable sinon | - | |
-| documents[i].ged.fournisseur | identifiant d'une GED | oui | DATA_CONTENT | Actuellement la seule valeur possible est DATA_CONTENT |
-| documents[i].ged.version | version de l'interfaçage à la GED | oui | 1 | Actuellement la seule valeur possible est 1 |
+| documents[i].mime | type MIME du fichier | oui | application/pdf | Actuellement, la seule valeur possible est `application/pdf` |
+| documents[i].contenu | contenu du fichier en base64 | oui si `ged` est absent, pas applicable sinon | - | Maximum 10'000'000 caractères |
+| documents[i].ged | données GED du document | oui si `contenu` est absent, pas applicable sinon | - | Voir le chapitre consacré à la GED, au bas de cette page|
+| documents[i].ged.fournisseur | identifiant d'une GED | oui | DATA_CONTENT | Actuellement la seule valeur possible est `DATA_CONTENT` |
+| documents[i].ged.version | version de l'interfaçage à la GED | oui | 1 | Actuellement la seule valeur possible est `1` |
 | documents[i].ged.idDocument | identifiant du document dans la GED | oui | 123456 | Cette valeur est été fournie par la GED lorsque le document a été stocké dans la GED |
 | documents[i].ged.algorithmeHash | algorithme utilisé par la GED pour calculer l'empreinte du document | oui | SHA-256 | |
 | documents[i].ged.hash | empreinte du document dans la GED | oui | - | |
@@ -192,4 +198,46 @@ Champs :
 | Nom | Description | Obligatoire | Exemple | Commentaire |
 | --- | ----------- | ------- | ----------- | ----------- |
 | idUsager | identifiant de l'usager | oui | CGE-1000000 | Cet usager doit être connu de Gina |
-| choixReception | mode de réception des documents adressés à l'usager par l'administration | oui | ELECTRONIQUE | Doit valoir soit ELECTRONIQUE (= en version numérique uniquement, c'est-à-dire dans l'ENU seulement), soit TOUT (= en version numérique et par voie postale) |
+| choixReception | mode de réception des documents adressés à l'usager par l'administration | oui | ELECTRONIQUE | Doit valoir soit `ELECTRONIQUE` (= en version numérique uniquement, c'est-à-dire dans l'ENU seulement), soit `TOUT` (= en version numérique et par voie postale) |
+
+## Gestion électronique des documents (GED)
+
+Dans le flux nominal de traitement des documents (y compris les courriers), le SI métier fournit l'intégralité des données
+du document, y compris son contenu binaire dans le champ `contenu` des messages JSON.
+À l'aval, l'ENU se charge d'enregistrer le contenu du document dans la GED. 
+Toutefois, cette approche n'est pas satisfaisante pour les gros fichiers : une solution de messagerie comme RabbitMQ
+n'est pas conçue pour traiter d'énormes messages, mais plutôt pour traiter une grande quantité de petits messages.
+En pratique, on limite donc dans l'ENU la taille de `contenu` à XXX ko.
+
+Pour les documents plus gros que la limite ci-dessus, il incombe au SI métier de préalablement stocker le message
+dans la GED. Par exemple, le SI métier de l'Administration fiscale cantonale (AFC) doit préalablement stocker
+ses gros documents dans la base "02" de la GED.
+Ensuite, dans son message JSON, au lieu de fournir le champ `contenu`, le SI métier fournit le champ `ged`.
+Ce champ contient toutes les métadonnées fournies par la GED au SI métier ; elles permettront à l'ENU de retrouver
+le document dans la GED.
+Le message JSON pour un gros document est donc extrêmement petit, car il ne contient que des métadonnées, et non
+le contenu binaire.
+
+À l'aval, l'ENU pourrait se contenter de récupérer les métadonnées GED et de les stocker.
+Cependant, cette solution ne serait légalement pas satisfaisante, car une fois qu'un document est arrivé dans le
+périmètre de l'ENU, il importe qu'aucun autre système ne puisse l'altérer.
+Or à simplement stocker les métadonnées, l'ENU permettrait au SI métier de l'AFC de modifier ou de supprimer le
+document.
+Pour assurer son contrôle complet sur le document, l'ENU procède ainsi : ayant reçu un message JSON avec les
+métadonnées GED du document, il interroge la GED pour récupérer le document, puis le restocke dans une autre section,
+privée, de la GED.
+Techniquement, ce stockage à double du contenu du document n'est pas idéal, mais il permet de remplir les
+conditions légales.
+
+Le tableau suivant résume la configuration GED :
+
+| Base GED | Propos | Accès en écriture | Accès en lecture |
+| -------- | ------ | ---------------- | ----------------- |
+| 01 | base GED principale de l'ENU | ENU | ENU |
+| 02 | base GED de transfert du SI métier de l'AFC vers l'ENU | AFC | AFC, ENU |
+
+La base GED principale de l'ENU stocke en définitive tous les documents : les petits documents parvenus via le
+champ `contenu` ; les gros documents parvenus via le champ `ged` et recopiés d'une base GED à l'autre.
+
+La base GED de transfert peut être purgée par le SI métier, une fois que celui-ci sait que le document a été traité
+par l'ENU.
