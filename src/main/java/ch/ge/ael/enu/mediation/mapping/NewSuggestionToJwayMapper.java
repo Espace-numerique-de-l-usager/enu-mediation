@@ -16,7 +16,7 @@ import static ch.ge.ael.enu.mediation.jway.model.Status.BLANK;
 @Configuration
 public class NewSuggestionToJwayMapper {
 
-    public File newDemarcheToFile(NewSuggestion newSuggestion) {
+    public File map(NewSuggestion newSuggestion) {
         File file = new File();
 
         file.setName("suggestion-" + newSuggestion.getIdPrestation() + "-" + ZonedDateTime.now().toEpochSecond());

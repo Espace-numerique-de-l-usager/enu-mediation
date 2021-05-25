@@ -13,19 +13,20 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 
+import static ch.ge.ael.enu.mediation.routes.http.Header.REMOTE_USER;
 import static ch.ge.ael.enu.mediation.util.invocation.Precondition.checkNotBlank;
 import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.HEAD;
 import static org.springframework.http.HttpMethod.POST;
 import static org.springframework.http.HttpMethod.PUT;
 
 /**
  * Service d'appel REST au backend FormServices.
+ * Garantit que l'en-tete "remote_user" est incluse dans chaque requete REST.
  */
 @Component
 @Slf4j
 public class FormServicesRestInvoker {
-
-    public static final String REMOTE_USER = "remote_user";
 
     public static final String ID_USAGER = "idUsager";
 
@@ -35,44 +36,61 @@ public class FormServicesRestInvoker {
     @Resource
     private RestTemplate restTemplate;
 
+    /**
+     * Requete HEAD.
+     */
+    public <S, T> ResponseEntity<T> headEntity(String path, HttpEntity<S> requestEntity, String idUsager, ParameterizedTypeReference<T> typeReference) {
+        return invoke(path, null, requestEntity, HEAD, idUsager, typeReference);
+    }
+
+    /**
+     * Requete GET.
+     */
     public <T> T get(String path, String idUsager, ParameterizedTypeReference<T> typeReference) {
-        return invoke(path, null, null, GET, idUsager, typeReference);
+        return invoke(path, null, null, GET, idUsager, typeReference).getBody();
     }
 
-    public <T> T post(String path, Object contents, String idUsager, ParameterizedTypeReference<T> typeReference) {
-        return invoke(path, contents, null, POST, idUsager, typeReference);
+    /**
+     * Requete POST.
+     */
+    public <S, T> T post(String path, S requestContents, String idUsager, ParameterizedTypeReference<T> typeReference) {
+        return invoke(path, requestContents, null, POST, idUsager, typeReference).getBody();
     }
 
-    public <T> T postEntity(String path, HttpEntity entity, String idUsager, ParameterizedTypeReference<T> typeReference) {
-        return invoke(path, null, entity, POST, idUsager, typeReference);
+    /**
+     * Requete POST.
+     */
+    public <S, T> T postEntity(String path, HttpEntity<S> requestEntity, String idUsager, ParameterizedTypeReference<T> typeReference) {
+        return invoke(path, null, requestEntity, POST, idUsager, typeReference).getBody();
     }
 
-    public <T> T put(String path, Object contents, String idUsager, ParameterizedTypeReference<T> typeReference) {
-        return invoke(path, contents, null, PUT, idUsager, typeReference);
+    /**
+     * Requete PUT.
+     */
+    public <S, T> T put(String path, S requestContents, String idUsager, ParameterizedTypeReference<T> typeReference) {
+        return invoke(path, requestContents, null, PUT, idUsager, typeReference).getBody();
     }
 
-    private <T> T invoke(
+    // passer ou bien "requestContents" ou bien "requestEntity" (voire aucun des deux)
+    private <S, T> ResponseEntity<T> invoke(
             String path,
-            Object contents,
-            HttpEntity entity,
+            S requestContents,
+            HttpEntity<S> requestEntity,
             HttpMethod method,
             String idUsager,
             ParameterizedTypeReference<T> typeReference) {
 
         checkNotBlank(idUsager, ID_USAGER);
 
-        HttpEntity sentEntity;
-        if (entity == null) {
+        HttpEntity<S> sentEntity;
+        if (requestEntity == null) {
             HttpHeaders headers = new HttpHeaders();
             headers.add(REMOTE_USER, idUsager);
-            sentEntity = new HttpEntity(contents, headers);
+            sentEntity = new HttpEntity<>(requestContents, headers);
         } else {
-            HttpHeaders writableHeaders = new HttpHeaders();
-            // copie de headers vers un headers modifiable
-            entity.getHeaders().entrySet()
-                    .forEach(e -> writableHeaders.add(e.getKey(), e.getValue().get(0)));
+            HttpHeaders writableHeaders = createWritableHeadersFrom(requestEntity.getHeaders());
             writableHeaders.add(REMOTE_USER, idUsager);
-            sentEntity = new HttpEntity<>(entity.getBody(), writableHeaders);
+            sentEntity = new HttpEntity<>(requestEntity.getBody(), writableHeaders);
         }
 
         ResponseEntity<T> response = restTemplate.exchange(
@@ -83,12 +101,21 @@ public class FormServicesRestInvoker {
 
         HttpStatus status = response.getStatusCode();
         if (status.is2xxSuccessful()) {
-            log.info("Appel REST a Jway rend HTTP " + status);
+            log.info("Appel REST a FormServices rend HTTP " + status);
         } else {
-            log.warn("Appel REST a Jway rend HTTP " + status);
+            log.warn("Appel REST a FormServices rend HTTP " + status);
         }
 
-        return response.getBody();
+        return response;
+    }
+
+    /**
+     * Rend une copie modifiable des headers passes en argument.
+     */
+    public static HttpHeaders createWritableHeadersFrom(HttpHeaders headers) {
+        HttpHeaders writableHeaders = new HttpHeaders();
+        headers.forEach((key, values) -> writableHeaders.add(key, values.get(0)));
+        return writableHeaders;
     }
 
 }

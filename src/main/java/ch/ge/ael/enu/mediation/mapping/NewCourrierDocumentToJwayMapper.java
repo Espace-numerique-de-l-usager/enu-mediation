@@ -1,12 +1,10 @@
 package ch.ge.ael.enu.mediation.mapping;
 
-import ch.ge.ael.enu.mediation.jway.model.JwayDocumentType;
 import ch.ge.ael.enu.mediation.business.domain.NewCourrierDocument;
-import ch.ge.ael.enu.mediation.service.technical.FormServicesRestInvoker;
+import ch.ge.ael.enu.mediation.jway.model.JwayDocumentType;
 import ch.ge.ael.enu.mediation.util.file.FileNameSanitizer;
 import ch.ge.ael.enu.mediation.util.mime.MimeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,20 +12,16 @@ import org.springframework.http.MediaType;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
-import java.util.Arrays;
 import java.util.Base64;
 
-public class NewCourrierDocumentToJwayMapper {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NewCourrierDocumentToJwayMapper.class);
-
-    private final String fileNameSanitizationRegex;
+@Slf4j
+public class NewCourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
 
     public NewCourrierDocumentToJwayMapper(String fileNameSanitizationRegex) {
-        this.fileNameSanitizationRegex = fileNameSanitizationRegex;
+        super(fileNameSanitizationRegex);
     }
 
-    public HttpEntity mapNewCourrierDocumentToBuilder(NewCourrierDocument courrierDoc, String demarcheId) {
+    public HttpEntity map(NewCourrierDocument courrierDoc, String demarcheId) {
         String categorie = courrierDoc.getIdPrestation();
 
         // preparation des donnees : bytes du contenu
@@ -59,7 +53,7 @@ public class NewCourrierDocumentToJwayMapper {
         String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());
         fileName = "\"" + new FileNameSanitizer(fileNameSanitizationRegex).sanitize(fileName) + "\"";
         // note : l'upload va supprimer les caracteres accentues
-        LOGGER.info("fileName apres assainissement = [{}]", fileName);
+        log.info("fileName apres assainissement = [{}]", fileName);
 
         // pour les champs contenant du texte, il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
 //        ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
@@ -87,27 +81,9 @@ public class NewCourrierDocumentToJwayMapper {
             body.add("files", partEntity);
         }
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.MULTIPART_FORM_DATA);
-        headers.add(FormServicesRestInvoker.REMOTE_USER, courrierDoc.getIdUsager());  // pas propre
+        HttpHeaders headers = createHeaders(courrierDoc.getIdUsager());
 
         return new HttpEntity(body, headers);
-    }
-
-    public static class CustomByteArrayResource extends ByteArrayResource {
-
-        private String fileName;
-
-        public CustomByteArrayResource(byte[] fileContent, String fileName) {
-            super(fileContent);
-            this.fileName = fileName;
-        }
-
-        @Override
-        public String getFilename() {
-            return fileName;
-        }
     }
 
 }

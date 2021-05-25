@@ -29,7 +29,11 @@ import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.EN_TRAITEME
 import static java.lang.String.format;
 
 /**
- * Service de creation d'une demarche, a l'etat "brouillon", "deposee" ou "en traitement".
+ * Service de gestion des demarches :
+ * <ul>
+ *   <li>creation d'une demarche, a l'etat "brouillon", "deposee" ou "en traitement"</li>
+ *   <li>changement d'etat d'une demarche.</li>
+ * </ul>
  */
 @Service
 @Slf4j
@@ -64,7 +68,7 @@ public class DemarcheService {
 
         // creation dans FormServices de la demarche a l'etat de brouillon
         NewDemarche newDemarcheBrouillon = reducer.reduce(newDemarche);
-        File file = newDemarcheToJwayMapper.mapNewDemarcheToFile(newDemarcheBrouillon);
+        File file = newDemarcheToJwayMapper.map(newDemarcheBrouillon);
         ParameterizedTypeReference<File> typeReference = new ParameterizedTypeReference<File>() {};
         File createdFile = formServices.post("alpha/file", file, newDemarche.getIdUsager(), typeReference);
         log.info("Demarche creee, uuid = [{}]", createdFile.getUuid());
@@ -91,31 +95,34 @@ public class DemarcheService {
         changeStatus(statusChange);
     }
 
+    public File getDemarche(String demarcheId, String userId) {
+        String path = format("file/mine?name=%s&max=1&order=id&reverse=true", demarcheId);
+        List<File> demarches = formServices.get(path, userId,  new ParameterizedTypeReference<List<File>>(){});
+        if (demarches.isEmpty()) {
+            throw new ValidationException("Pas trouve la demarche \"" + demarcheId + "\"");
+        }
+        return demarches.get(0);
+    }
+
     private void changeStatus(StatusChange statusChange) {
         // validation metier du message
         statusChangeValidator.validate(statusChange);
         String idUsager = statusChange.getIdUsager();
 
         // recuperation de l'uuid de la demarche dans FormServices
-        String path = format("file/mine?name=%s&max=1&order=id&reverse=true",
-                statusChange.getIdDemarcheSiMetier());
-        List<File> demarches = formServices.get(path, idUsager,  new ParameterizedTypeReference<List<File>>(){});
-        if (demarches.isEmpty()) {
-            throw new ValidationException("Pas trouve la demarche \"" + statusChange.getIdDemarcheSiMetier() + "\"");
-        }
-        File demarche = demarches.get(0);
-        String uuidDemarche = demarche.getUuid().toString();
-        log.info("uuidDemarache = [{}]", uuidDemarche);
+        File demarche = getDemarche(statusChange.getIdDemarcheSiMetier(), statusChange.getIdDemarcheSiMetier());
+        String demarcheUuid = demarche.getUuid().toString();
+        log.info("UUID demarche = [{}]", demarcheUuid);
 
         // etape 1 : changement du step dans FormServices
         FileForStep fileForStep = statusChangeToJwayStep1Mapper.map(statusChange);
-        path = format("alpha/file/%s/step", uuidDemarche);
+        String path = format("alpha/file/%s/step", demarcheUuid);
         ParameterizedTypeReference<File> typeReference = new ParameterizedTypeReference<File>() {};
         formServices.post(path, fileForStep, idUsager, typeReference);
 
         // etape 2 : changement du workflow dans FormServices
         FileForWorkflow fileForWorkflow = statusChangeToJwayStep2Mapper.map(statusChange);
-        path = format("alpha/file/%s", uuidDemarche);
+        path = format("alpha/file/%s", demarcheUuid);
         formServices.put(path, fileForWorkflow, idUsager, typeReference);
     }
 

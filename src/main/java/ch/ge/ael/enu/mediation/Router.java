@@ -1,8 +1,8 @@
 package ch.ge.ael.enu.mediation;
 
 import ch.ge.ael.enu.mediation.exception.IllegalMessageException;
-import ch.ge.ael.enu.mediation.service.CourrierService;
 import ch.ge.ael.enu.mediation.service.DemarcheService;
+import ch.ge.ael.enu.mediation.service.DocumentService;
 import ch.ge.ael.enu.mediation.service.technical.ErrorHandler;
 import ch.ge.ael.enu.mediation.service.technical.MessageLogger;
 import lombok.extern.slf4j.Slf4j;
@@ -13,10 +13,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static ch.ge.ael.enu.mediation.routes.http.Header.CONTENT_TYPE;
 import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_COURRIER;
 import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_DEMARCHE;
+import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_DOCUMENT;
 import static ch.ge.ael.enu.mediation.routes.http.MediaType.STATUS_CHANGE;
+import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
 @Component
 @Slf4j
@@ -32,7 +33,7 @@ public class Router {
     private DemarcheService demarcheService;
 
     @Resource
-    private CourrierService courrierService;
+    private DocumentService courrierService;
 
     @Resource
     private ErrorHandler errorHandler;
@@ -60,8 +61,10 @@ public class Router {
             demarcheService.handleNewDemarche(message);
         } else if (contentType.equals(STATUS_CHANGE)) {
             demarcheService.handleStatusChange(message);
+        } else if (contentType.equals(NEW_DOCUMENT)) {
+            courrierService.handleNewDocument(message);
         } else if (contentType.equals(NEW_COURRIER)) {
-            courrierService.handle(message);
+            courrierService.handleNewCourrier(message);
         } else {
             throw new IllegalMessageException(
                     "La valeur \"" + contentType + "\" de 'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
