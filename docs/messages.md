@@ -204,40 +204,53 @@ Champs :
 
 Dans le flux nominal de traitement des documents (y compris les courriers), le SI métier fournit l'intégralité des données
 du document, y compris son contenu binaire dans le champ `contenu` des messages JSON.
-À l'aval, l'ENU se charge d'enregistrer le contenu du document dans la GED. 
+À l'aval, l'ENU se charge d'enregistrer les métadonnées du document dans sa base relationnelle
+et le contenu du document dans la GED. 
 Toutefois, cette approche n'est pas satisfaisante pour les gros fichiers : une solution de messagerie comme RabbitMQ
 n'est pas conçue pour traiter d'énormes messages, mais plutôt pour traiter une grande quantité de petits messages.
 En pratique, on limite donc dans l'ENU la taille de `contenu` à XXX ko.
 
 Pour les documents plus gros que la limite ci-dessus, il incombe au SI métier de préalablement stocker le message
-dans la GED. Par exemple, le SI métier de l'Administration fiscale cantonale (AFC) doit préalablement stocker
-ses gros documents dans la base "02" de la GED.
+dans la GED.
+Par exemple, le SI métier de l'Administration fiscale cantonale (AFC) doit préalablement stocker
+ses gros documents dans une de ses bases GED sur laquelle l'ENU aura un accès en lecture.
 Ensuite, dans son message JSON, au lieu de fournir le champ `contenu`, le SI métier fournit le champ `ged`.
-Ce champ contient toutes les métadonnées fournies par la GED au SI métier ; elles permettront à l'ENU de retrouver
-le document dans la GED.
-Le message JSON pour un gros document est donc extrêmement petit, car il ne contient que des métadonnées, et non
-le contenu binaire.
+Ce champ contient l'identifiant unique du document dans la GED du SI métier.
+Il contient également l'empreinte (hash) du fichier, dans le but d’assurer le transfert entre les 2 SI du bon
+document binaire.
 
-À l'aval, l'ENU pourrait se contenter de récupérer les métadonnées GED et de les stocker.
-Cependant, cette solution ne serait légalement pas satisfaisante, car une fois qu'un document est arrivé dans le
+Le message JSON pour un gros document est donc extrêmement petit, car il ne contient que des métadonnées et des
+identifiants, et non le contenu binaire.
+
+À l'aval, l'ENU pourrait se contenter de récupérer les identifiants GED et de les stocker.
+Cependant, cette solution ne serait fonctionnellement pas satisfaisante, car une fois qu'un document est arrivé dans le
 périmètre de l'ENU, il importe qu'aucun autre système ne puisse l'altérer.
-Or à simplement stocker les métadonnées, l'ENU permettrait au SI métier de l'AFC de modifier ou de supprimer le
+Or à simplement stocker les identifiants, l'ENU permettrait au SI métier de l'AFC de modifier ou de supprimer le
 document.
-Pour assurer son contrôle complet sur le document, l'ENU procède ainsi : ayant reçu un message JSON avec les
-métadonnées GED du document, il interroge la GED pour récupérer le document, puis le restocke dans une autre section,
+Pour assurer son contrôle complet sur le document, l'ENU procède ainsi : ayant reçu un message JSON avec 
+l'identifiant GED du document, il interroge la GED pour récupérer le document, puis le restocke dans une autre base,
 privée, de la GED.
 Techniquement, ce stockage à double du contenu du document n'est pas idéal, mais il permet de remplir les
-conditions légales.
+conditions d'isolation fonctionnelle.
 
 Le tableau suivant résume la configuration GED :
 
-| Base GED | Propos | Accès en écriture | Accès en lecture |
-| -------- | ------ | ---------------- | ----------------- |
-| 01 | base GED principale de l'ENU | ENU | ENU |
-| 02 | base GED de transfert du SI métier de l'AFC vers l'ENU | AFC | AFC, ENU |
+| Base GED | Accès en écriture | Accès en lecture |
+| -------- | ---------------- | ----------------- |
+| base GED principale de l'ENU | ENU | ENU |
+| base GED de transfert du SI métier de l'AFC vers l'ENU | AFC | AFC, ENU |
 
 La base GED principale de l'ENU stocke en définitive tous les documents : les petits documents parvenus via le
 champ `contenu` ; les gros documents parvenus via le champ `ged` et recopiés d'une base GED à l'autre.
 
 La base GED de transfert peut être purgée par le SI métier, une fois que celui-ci sait que le document a été traité
 par l'ENU.
+
+Dans un second temps, la solution de GED DataContent devrait offrir une notion de document virtuel permettant d’avoir
+plusieurs documents pointant sur un même binaire ;
+fonctionnellement, chaque SI aura bien son propre document, mais techniquement, DataContent ne stockera qu’une seule
+version binaire de ce document.
+Cette solution permettra un réel transfert du binaire du document entre 2 SI, sans pour autant faire transiter
+le binaire dans l’ensemble du réseau.
+Le document sera transmis par référence et DataContent assurera, en tant que tiers de confiance, la transmission
+du binaire entre les 2 SI métier.
