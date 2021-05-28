@@ -1,6 +1,7 @@
 package ch.ge.ael.enu.mediation.configuration;
 
 import ch.ge.ael.enu.mediation.serialization.MillisOrLocalDateTimeDeserializer;
+import ch.ge.ael.enu.mediation.service.technical.RestErrorHandler;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,6 +10,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -61,7 +63,10 @@ public class ApplicationConfiguration {
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(client);
 
-        return new RestTemplate(requestFactory);
+        return new RestTemplateBuilder()
+                .requestFactory(() -> requestFactory)
+                .errorHandler(new RestErrorHandler())
+                .build();
     }
 
 }

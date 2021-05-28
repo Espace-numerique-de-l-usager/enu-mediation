@@ -1,6 +1,8 @@
 package ch.ge.ael.enu.mediation.exception;
 
 /**
+ * A SUPPRIMER
+ *
  * Classe de base pour les exceptions survenues dans l'application.
  */
 public class MediationException extends RuntimeException {
