@@ -2,15 +2,18 @@ package ch.ge.ael.enu.mediation.service;
 
 import ch.ge.ael.enu.mediation.business.domain.DemarcheStatus;
 import ch.ge.ael.enu.mediation.business.domain.NewDemarche;
+import ch.ge.ael.enu.mediation.business.domain.NewSuggestion;
 import ch.ge.ael.enu.mediation.business.domain.StatusChange;
 import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import ch.ge.ael.enu.mediation.business.validation.NewDemarcheValidator;
+import ch.ge.ael.enu.mediation.business.validation.NewSuggestionValidator;
 import ch.ge.ael.enu.mediation.business.validation.StatusChangeValidator;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.jway.model.FileForStep;
 import ch.ge.ael.enu.mediation.jway.model.FileForWorkflow;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
+import ch.ge.ael.enu.mediation.mapping.NewSuggestionToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
 import ch.ge.ael.enu.mediation.routes.processing.NewDemarcheToBrouillonReducer;
@@ -49,6 +52,8 @@ public class DemarcheService {
 
     private final StatusChangeValidator statusChangeValidator = new StatusChangeValidator();
 
+    private final NewSuggestionValidator newSuggestionValidator = new NewSuggestionValidator();
+
     private final NewDemarcheToBrouillonReducer reducer = new NewDemarcheToBrouillonReducer();
 
     private final NewDemarcheToJwayMapper newDemarcheToJwayMapper = new NewDemarcheToJwayMapper();
@@ -56,6 +61,8 @@ public class DemarcheService {
     private final StatusChangeToJwayStep1Mapper statusChangeToJwayStep1Mapper = new StatusChangeToJwayStep1Mapper();
 
     private final StatusChangeToJwayStep2Mapper statusChangeToJwayStep2Mapper = new StatusChangeToJwayStep2Mapper();
+
+    private final NewSuggestionToJwayMapper newSuggestionToJwayMapper = new NewSuggestionToJwayMapper();
 
     public void handleNewDemarche(Message message) {
         // deserialisation du message
@@ -93,6 +100,21 @@ public class DemarcheService {
 
         // execution
         changeStatus(statusChange);
+    }
+
+    public void handleNewSuggestion(Message message) {
+        // deserialisation du message
+        NewSuggestion newSuggestion = deserializationService.deserialize(message.getBody(), NewSuggestion.class);
+        log.info("newSuggestion = {}", newSuggestion);
+
+        // validation metier du message
+        newSuggestionValidator.validate(newSuggestion);
+
+        // creation dans FormServices de la demarche a l'etat de pre-brouillon
+        File file = newSuggestionToJwayMapper.map(newSuggestion);
+        ParameterizedTypeReference<File> typeReference = new ParameterizedTypeReference<File>() {};
+        File createdFile = formServices.post("alpha/file", file, newSuggestion.getIdUsager(), typeReference);
+        log.info("Suggestion creee, uuid = [{}]", createdFile.getUuid());
     }
 
     public File getDemarche(String demarcheId, String userId) {
