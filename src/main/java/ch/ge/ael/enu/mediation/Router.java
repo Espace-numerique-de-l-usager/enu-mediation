@@ -13,10 +13,11 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_COURRIER;
-import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_DEMARCHE;
-import static ch.ge.ael.enu.mediation.routes.http.MediaType.NEW_DOCUMENT;
-import static ch.ge.ael.enu.mediation.routes.http.MediaType.STATUS_CHANGE;
+import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.NEW_COURRIER;
+import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.NEW_DEMARCHE;
+import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.NEW_DOCUMENT;
+import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.NEW_SUGGESTION;
+import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.STATUS_CHANGE;
 import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 
 @Component
@@ -61,6 +62,8 @@ public class Router {
             demarcheService.handleNewDemarche(message);
         } else if (contentType.equals(STATUS_CHANGE)) {
             demarcheService.handleStatusChange(message);
+        } else if (contentType.equals(NEW_SUGGESTION)) {
+            demarcheService.handleNewSuggestion(message);
         } else if (contentType.equals(NEW_DOCUMENT)) {
             courrierService.handleNewDocument(message);
         } else if (contentType.equals(NEW_COURRIER)) {

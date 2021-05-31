@@ -8,7 +8,7 @@ import ch.ge.ael.enu.mediation.business.exception.MissingFieldException;
 import ch.ge.ael.enu.mediation.business.exception.TooLargeListException;
 import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import ch.ge.ael.enu.mediation.business.domain.DemarcheStatus;
-import ch.ge.ael.enu.mediation.routes.http.MediaType;
+import ch.ge.ael.enu.mediation.routes.http.EnuMediaType;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ class ValidationUtilsTest {
 
     @Test
     void checkEnum_with_non_enum_class_should_fail() {
-        assertThatThrownBy(() -> ValidationUtils.checkEnum("ANY_VALUE", MediaType.class, "someEnumField"))
+        assertThatThrownBy(() -> ValidationUtils.checkEnum("ANY_VALUE", EnuMediaType.class, "someEnumField"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

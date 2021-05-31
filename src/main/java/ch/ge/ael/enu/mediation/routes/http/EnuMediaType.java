@@ -1,6 +1,6 @@
 package ch.ge.ael.enu.mediation.routes.http;
 
-public class MediaType {
+public class EnuMediaType {
 
     public static final String NEW_DEMARCHE = "application/new-demarche-v1.0+json";
 
@@ -12,7 +12,7 @@ public class MediaType {
 
     public static final String NEW_COURRIER = "application/new-courrier-v1.0+json";
 
-    private MediaType() {
+    private EnuMediaType() {
     }
 
 }
