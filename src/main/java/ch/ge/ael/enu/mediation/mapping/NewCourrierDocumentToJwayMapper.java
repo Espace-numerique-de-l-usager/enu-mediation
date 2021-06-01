@@ -31,9 +31,6 @@ public class NewCourrierDocumentToJwayMapper extends AbstractDocumentToJwayMappe
             decodedContentAsBytes = Base64.getDecoder().decode(courrierDoc.getContenu());
         }
 
-        // preparation des donnees : mime
-        //        String mime = courrierDoc.getMime();
-
         // preparation des donnees : name
         String name = courrierDoc.getLibelleDocument()
                 + "|" + courrierDoc.getIdDocumentSiMetier()

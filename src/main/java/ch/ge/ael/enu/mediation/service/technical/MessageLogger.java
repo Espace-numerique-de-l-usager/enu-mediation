@@ -31,7 +31,7 @@ public class MessageLogger {
 
         // TODO changer la signature en String plutot que byte[]
         byte[] reducedBody = new BodyReducer(maxFileContentSize).reduceBody(message.getBody());
-        log.info(new String(reducedBody));
+        log.info("Body {}, {}", new String(reducedBody), message.getMessageProperties());
     }
 
     public void logJsonSent(HttpMethod method, String path, String content) {

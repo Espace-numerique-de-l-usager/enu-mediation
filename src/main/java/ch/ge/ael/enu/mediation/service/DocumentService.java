@@ -118,7 +118,6 @@ public class DocumentService {
         writableHeaders.add(X_CSRF_TOKEN, token);
         entity2 = new HttpEntity<>(entity2.getBody(), writableHeaders);
         ParameterizedTypeReference<Document> typeReference2 = new ParameterizedTypeReference<Document>() {};
-//        messageLogger.logJsonSent(path2, entity2.toString());
         formServices.postEntity(path2, entity2, idUsager, typeReference2);
         log.info("Document cree");
     }
@@ -134,15 +133,23 @@ public class DocumentService {
         // courrier et permettra donc de regrouper les documents du courrier
         newCourrier.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
 
+        // recuperation dans FormServices de l'uuid de la demarche
+        String demarcheUuid = null;
+        if (newCourrier.getIdDemarcheSiMetier() != null) {
+            File demarche = demarcheService.getDemarche(newCourrier.getIdDemarcheSiMetier(), newCourrier.getIdUsager());
+            demarcheUuid = demarche.getUuid().toString();
+            log.info("UUID demarche = [{}]", demarcheUuid);
+        }
+        final String demarcheUuidCopy = demarcheUuid;   // pour eviter une erreur de compilation plus bas
+
         // scission du courrier en "n" documents
         List<NewCourrierDocument> documents = splitter.splitCourrier(newCourrier);
 
         // pour chacun des "n" documents, creation du document dans FormServices
         documents.stream()
-                .map(courrierDoc -> newCourrierDocumentToJwayMapper.map(courrierDoc, newCourrier.getIdDemarcheSiMetier()))
+                .map(courrierDoc -> newCourrierDocumentToJwayMapper.map(courrierDoc, demarcheUuidCopy))
                 .forEach(entity -> {
                     String path = "alpha/document";
-//                    messageLogger.logJsonSent(path, entity.toString());
                     ParameterizedTypeReference<Document> typeReference = new ParameterizedTypeReference<Document>() {};
                     formServices.postEntity(path, entity, newCourrier.getIdUsager(), typeReference);
                     log.info("Document de courrier cree");
