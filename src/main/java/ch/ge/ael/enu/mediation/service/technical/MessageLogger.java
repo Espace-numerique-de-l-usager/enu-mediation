@@ -4,6 +4,7 @@ import ch.ge.ael.enu.mediation.util.logging.BodyReducer;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 /**
@@ -33,8 +34,8 @@ public class MessageLogger {
         log.info(new String(reducedBody));
     }
 
-    public void logJsonSent(String content) {
-        log.info("JSON envoye a FormServices ({}) = [{}]", formServicesUrl, content);
+    public void logJsonSent(HttpMethod method, String path, String content) {
+        log.info("Appel REST a FormServices : {} {} with {}", method, formServicesUrl + "/" + path, content);
     }
 
 }

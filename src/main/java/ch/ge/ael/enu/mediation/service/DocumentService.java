@@ -106,7 +106,7 @@ public class DocumentService {
         headers.add(X_CSRF_TOKEN, "fetch");
         HttpEntity<Void> entity = new HttpEntity<>(null, headers);
         ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {};
-        messageLogger.logJsonSent(entity.toString());
+//        messageLogger.logJsonSent(path, entity.toString());
         ResponseEntity<String> response = formServices.headEntity(path, entity, idUsager, typeReference);
         String token = response.getHeaders().get(X_CSRF_TOKEN).get(0);
         log.info("Jeton CSRF obtenu = [{}]", token);
@@ -118,7 +118,7 @@ public class DocumentService {
         writableHeaders.add(X_CSRF_TOKEN, token);
         entity2 = new HttpEntity<>(entity2.getBody(), writableHeaders);
         ParameterizedTypeReference<Document> typeReference2 = new ParameterizedTypeReference<Document>() {};
-        messageLogger.logJsonSent(entity2.toString());
+//        messageLogger.logJsonSent(path2, entity2.toString());
         formServices.postEntity(path2, entity2, idUsager, typeReference2);
         log.info("Document cree");
     }
@@ -141,9 +141,10 @@ public class DocumentService {
         documents.stream()
                 .map(courrierDoc -> newCourrierDocumentToJwayMapper.map(courrierDoc, newCourrier.getIdDemarcheSiMetier()))
                 .forEach(entity -> {
-                    messageLogger.logJsonSent(entity.toString());
+                    String path = "alpha/document";
+//                    messageLogger.logJsonSent(path, entity.toString());
                     ParameterizedTypeReference<Document> typeReference = new ParameterizedTypeReference<Document>() {};
-                    formServices.postEntity("alpha/document", entity, newCourrier.getIdUsager(), typeReference);
+                    formServices.postEntity(path, entity, newCourrier.getIdUsager(), typeReference);
                     log.info("Document de courrier cree");
                 });
     }

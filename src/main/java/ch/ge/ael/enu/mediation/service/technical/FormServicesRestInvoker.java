@@ -36,6 +36,9 @@ public class FormServicesRestInvoker {
     @Resource
     private RestTemplate restTemplate;
 
+    @Resource
+    private MessageLogger messageLogger;
+
     /**
      * Requete HEAD.
      */
@@ -92,6 +95,7 @@ public class FormServicesRestInvoker {
             writableHeaders.add(REMOTE_USER, idUsager);
             sentEntity = new HttpEntity<>(requestEntity.getBody(), writableHeaders);
         }
+        messageLogger.logJsonSent(method, path, sentEntity.toString());
 
         ResponseEntity<T> response = restTemplate.exchange(
                 formServicesUrl + "/" + path,
