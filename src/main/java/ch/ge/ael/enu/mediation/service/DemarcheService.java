@@ -118,10 +118,16 @@ public class DemarcheService {
     }
 
     public File getDemarche(String demarcheId, String userId) {
-        String path = format("file/mine?name=%s&max=1&order=id&reverse=true", demarcheId);
+        final String SEARCH_PATH = "file/mine?name=%s&max=1&order=id&reverse=true";
+        String path = format(SEARCH_PATH, demarcheId);
         List<File> demarches = formServices.get(path, userId,  new ParameterizedTypeReference<List<File>>(){});
         if (demarches.isEmpty()) {
-            throw new ValidationException("Pas trouve la demarche \"" + demarcheId + "\"");
+            // si on ne trouve pas de demarche, on cherche avec le prefixe "DRAFT"
+            path = format(SEARCH_PATH, "(DRAFT)" + demarcheId);
+            demarches = formServices.get(path, userId,  new ParameterizedTypeReference<List<File>>(){});
+            if (demarches.isEmpty()) {
+                throw new ValidationException("Pas trouve la demarche \"" + demarcheId + "\"");
+            }
         }
         return demarches.get(0);
     }
@@ -132,7 +138,7 @@ public class DemarcheService {
         String idUsager = statusChange.getIdUsager();
 
         // recuperation de l'uuid de la demarche dans FormServices
-        File demarche = getDemarche(statusChange.getIdDemarcheSiMetier(), statusChange.getIdDemarcheSiMetier());
+        File demarche = getDemarche(statusChange.getIdDemarcheSiMetier(), statusChange.getIdUsager());
         String demarcheUuid = demarche.getUuid().toString();
         log.info("UUID demarche = [{}]", demarcheUuid);
 
