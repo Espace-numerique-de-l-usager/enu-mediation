@@ -13,10 +13,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Resource;
 import javax.net.ssl.SSLContext;
 import java.text.DateFormat;
 import java.time.LocalDateTime;
@@ -48,12 +49,16 @@ public class ApplicationConfiguration {
     @Value("${app.formservices.ssl.trust-store.password}")
     private String trustStorePassword;
 
+    @Resource
+    private ResourceLoader resourceLoader;
+
     @Bean
     public RestTemplate restTemplate() throws Exception {
         SSLContext sslContext = SSLContextBuilder
                 .create()
                 .loadTrustMaterial(
-                        ResourceUtils.getFile(trustStorePath), trustStorePassword.toCharArray())
+                        resourceLoader.getResource(trustStorePath).getFile(),
+                        trustStorePassword.toCharArray())
                 .build();
 
         CloseableHttpClient client = HttpClients.custom()
