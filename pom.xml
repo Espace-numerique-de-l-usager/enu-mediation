@@ -8,14 +8,12 @@
     <packaging>war</packaging>
     <description>Médiation et transformation de données pour l'ENU</description>
 
-    <!--
     <scm>
-        <connection>scm:git:***REMOVED***/enu-mediation.git</connection>
-        <developerConnection>scm:git:***REMOVED***/enu-mediation.git</developerConnection>
-        <url>***REMOVED***/enu-mediation.git</url>
+        <connection>scm:git:${env.GITLAB_PROJECT_BASE_URL}/enu-mediation.git</connection>
+        <developerConnection>scm:git:${env.GITLAB_PROJECT_BASE_URL}/enu-mediation.git</developerConnection>
+        <url>${env.GITLAB_PROJECT_BASE_URL}/enu-mediation.git</url>
         <tag>HEAD</tag>
     </scm>
-    -->
 
     <distributionManagement>
         <repository>
