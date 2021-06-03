@@ -76,5 +76,5 @@ release_master:
     - git config --global user.email "***REMOVED***"
     - git config --global user.name "***REMOVED***"
     - git checkout $CI_COMMIT_REF_NAME
-    - mvn $MAVEN_CLI_OPTS release:prepare release:perform -Dresume=false -Dusername=$GITLAB_USER -Dpassword=$GITLAB_PASSWORD -Darguments="-DskipTests -DconnectionUrl=$GITLAB_PROJECT_URL -DdeveloperConnection=$GITLAB_PROJECT_URL -DdeveloperConnectionUrl=$GITLAB_PROJECT_URL"
+    - mvn $MAVEN_CLI_OPTS release:prepare release:perform -Dresume=false -Dusername=$GITLAB_USER -Dpassword=$GITLAB_PASSWORD -Darguments="-DskipTests"
   when: manual
