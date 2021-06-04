@@ -73,8 +73,8 @@ release_master:
     - pwd
     - ls -hal ./
   script:
-    - git config --global user.email "***REMOVED***"
-    - git config --global user.name "***REMOVED***"
+    - git config --global user.email "$RUNNER_EMAIL"
+    - git config --global user.name "$RUNNER_USERNAME"
     - git checkout $CI_COMMIT_REF_NAME
     - mvn $MAVEN_CLI_OPTS release:prepare release:perform -Dresume=false -Dusername=$GITLAB_USER -Dpassword=$GITLAB_PASSWORD -Darguments="-DskipTests"
   when: manual
