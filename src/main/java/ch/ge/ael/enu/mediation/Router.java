@@ -24,9 +24,6 @@ import static org.apache.http.HttpHeaders.CONTENT_TYPE;
 @Slf4j
 public class Router {
 
-    // TODO mettre dans la configuration
-    private static final String QUEUE_NAME = "simetier1-to-enu-main-q";
-
     @Resource
     private MessageLogger messageLogger;
 
@@ -42,7 +39,7 @@ public class Router {
     /**
      * Le point d'entree de l'application : consommation d'un message RabbitMQ.
      */
-    @RabbitListener(queues = QUEUE_NAME)
+    @RabbitListener(queues = "${app.rabbitmq.main.queue}")
     public void consume(Message message) {
         messageLogger.logMessage(message);
 
