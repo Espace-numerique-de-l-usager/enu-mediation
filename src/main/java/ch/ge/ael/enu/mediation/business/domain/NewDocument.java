@@ -7,7 +7,7 @@ import lombok.Data;
 @JsonIgnoreProperties(ignoreUnknown = true)
 /**
  * Donnees contenues dans un message JSON d'ajout d'un document a une demarche existante.
- * Reference : <a href="***REMOVED***/browse/ENU-424">ENU-424</a>.
+ * Reference : JIRA ENU-424.
  */
 public class NewDocument {
 

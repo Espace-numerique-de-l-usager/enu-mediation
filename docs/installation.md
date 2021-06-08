@@ -1,5 +1,17 @@
 # Installation
 
+## Préliminaires
+
+### Pour un développeur de l'État de Genève
+
+Faire un clone du projet `enu-mediation-secrets` et copier le fichier `application-dev.properties` dans le
+répertoire `src/main/resources`.
+
+### Pour un développeur de la communauté open source
+
+Dans le répertoire `src/main/resources`, copier le fichier `application-dev.template.properties` en
+`application-dev.properties` et adapter les valeurs manquantes.
+
 ## Construction
 
 L'application `enu-mediation` se construit avec Maven 3 et Java 8+, via la commande
