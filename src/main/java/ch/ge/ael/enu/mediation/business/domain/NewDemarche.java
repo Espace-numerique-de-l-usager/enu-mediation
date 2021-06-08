@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 /**
  * Donnees contenues dans un message JSON de creation d'une nouvelle demarche.
  * <br/>
- * Reference : <a href="***REMOVED***/browse/ENU-422">ENU-422</a>.
+ * Reference : JIRA ENU-422.
  */
 public class NewDemarche {
 

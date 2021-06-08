@@ -9,7 +9,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 /**
  * Donnees contenues dans un message JSON de creation d'un courrier, lie ou non a une demarche existante.
- * Reference : <a href="***REMOVED***/browse/ENU-425">ENU-424</a>.
+ * Reference : JIRA ENU-425.
  */
 public class NewCourrier {
 

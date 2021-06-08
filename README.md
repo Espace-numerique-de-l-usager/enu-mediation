@@ -11,7 +11,7 @@ Une vue d'ensemble du système Espace numérique de l'usager est disponible sur
 [GitHub](https://github.com/Espace-numerique-de-l-usager/enu-geneve).
 Le rôle de l'application de médiation y est clairement présenté.
 
-## Installation
+## Installation et exécution
 
 Voir [ici](docs/installation.md).
 

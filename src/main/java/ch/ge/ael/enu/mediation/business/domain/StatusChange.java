@@ -6,7 +6,7 @@ import lombok.Data;
 /**
  * Donnees contenues dans un message JSON de changement d'etat d'une demarche existante.
  * <p>
- * Reference : ***REMOVED***/browse/ENU-427
+ * Reference : JIRA ENU-427.
  */
 @Data
 @JsonIgnoreProperties(ignoreUnknown = true)
