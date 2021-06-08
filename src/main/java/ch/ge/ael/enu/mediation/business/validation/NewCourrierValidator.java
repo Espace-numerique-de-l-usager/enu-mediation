@@ -1,8 +1,8 @@
 package ch.ge.ael.enu.mediation.business.validation;
 
-import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import ch.ge.ael.enu.mediation.business.domain.NewCourrier;
 import ch.ge.ael.enu.mediation.business.domain.NewDocument;
+import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
