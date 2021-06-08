@@ -19,7 +19,7 @@ public class BodyReducer {
     /**
      * Tronque le Body s'il est trop long.
      */
-    public byte[] reduceBody(byte[] body) {
+    public String reduceBody(byte[] body) {
         String sBody = new String(body);
 
         String toLog = sBody;
@@ -35,7 +35,7 @@ public class BodyReducer {
             }
         }
 
-        return toLog.getBytes();
+        return toLog;
     }
 
     /**

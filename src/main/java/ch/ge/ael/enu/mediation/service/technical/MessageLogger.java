@@ -29,8 +29,7 @@ public class MessageLogger {
         log.info("*** Message recu de RabbitMQ ***");
         log.info("********************************");
 
-        // TODO changer la signature en String plutot que byte[]
-        byte[] reducedBody = new BodyReducer(maxFileContentSize).reduceBody(message.getBody());
+        String reducedBody = new BodyReducer(maxFileContentSize).reduceBody(message.getBody());
         log.info("Body {}, {}", new String(reducedBody), message.getMessageProperties());
     }
 
