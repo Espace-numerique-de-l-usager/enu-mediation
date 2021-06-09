@@ -15,6 +15,7 @@ import static ch.ge.ael.enu.mediation.business.validation.NewDocumentValidator.M
 import static ch.ge.ael.enu.mediation.business.validation.ValidationUtils.checkExistence;
 import static ch.ge.ael.enu.mediation.business.validation.ValidationUtils.checkListMaxSize;
 import static ch.ge.ael.enu.mediation.business.validation.ValidationUtils.checkListNotEmpty;
+import static ch.ge.ael.enu.mediation.business.validation.ValidationUtils.checkMutualExclusion;
 import static ch.ge.ael.enu.mediation.business.validation.ValidationUtils.checkSize;
 import static ch.ge.ael.enu.mediation.business.validation.ValidationUtils.checkSizeIdDemarcheSiMetier;
 import static ch.ge.ael.enu.mediation.business.validation.ValidationUtils.checkSizeIdPrestation;
@@ -74,9 +75,8 @@ public class NewCourrierValidator {
             checkExistence(doc.getLibelleDocument(), prefix + LIBELLE_DOCUMENT);
             checkExistence(doc.getIdDocumentSiMetier(), prefix + ID_DOCUMENT_SI_METIER);
             checkExistence(doc.getMime(), prefix + MIME);
-            checkExistence(doc.getContenu(), prefix + CONTENU);
-            log.warn("A FAIRE : remettre le controle de l'exclusion mutuelle");
-//            checkMutualExclusion(doc.getContenu(), prefix + CONTENU, doc.getGed() == null ? null : GED, prefix + GED);
+
+            checkMutualExclusion(doc.getContenu(), prefix + CONTENU, doc.getGed() == null ? null : GED, prefix + GED);
 
             checkSize(doc.getLibelleDocument(), 1, MAX_SIZE_LIBELLE, prefix + LIBELLE_DOCUMENT);
             checkSize(doc.getIdDocumentSiMetier(), 1, MAX_SIZE_ID_DOCUMENT_SI_METIER, prefix + ID_DOCUMENT_SI_METIER);
