@@ -12,6 +12,8 @@ public class EnuMediaType {
 
     public static final String NEW_COURRIER = "application/new-courrier-v1.0+json";
 
+    public static final String REPLY = "application/reply-v1.0+json";
+
     private EnuMediaType() {
     }
 
