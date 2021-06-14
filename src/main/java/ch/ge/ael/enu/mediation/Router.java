@@ -13,12 +13,12 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 
-import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.NEW_COURRIER;
-import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.NEW_DEMARCHE;
-import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.NEW_DOCUMENT;
-import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.NEW_SUGGESTION;
-import static ch.ge.ael.enu.mediation.routes.http.EnuMediaType.STATUS_CHANGE;
-import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.NEW_COURRIER;
+import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.NEW_DEMARCHE;
+import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.NEW_DOCUMENT;
+import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.NEW_SUGGESTION;
+import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.STATUS_CHANGE;
+import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
 
 @Component
 @Slf4j
@@ -54,7 +54,7 @@ public class Router {
     private void route(Message message) {
         String contentType = message.getMessageProperties().getHeader(CONTENT_TYPE);
         if (StringUtils.isBlank(contentType)) {
-            throw new IllegalMessageException("L'en-tete " + CONTENT_TYPE + " manque dans le message");
+            throw new IllegalMessageException("L'en-tete \"" + CONTENT_TYPE + "\" manque dans le message");
         } else if (contentType.equals(NEW_DEMARCHE)) {
             demarcheService.handleNewDemarche(message);
         } else if (contentType.equals(STATUS_CHANGE)) {
@@ -67,7 +67,7 @@ public class Router {
             courrierService.handleNewCourrier(message);
         } else {
             throw new IllegalMessageException(
-                    "La valeur \"" + contentType + "\" de 'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
+                    "La valeur \"" + contentType + "\" de l'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
         }
     }
 

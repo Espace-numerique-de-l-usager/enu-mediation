@@ -13,7 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
 
-import static ch.ge.ael.enu.mediation.routes.http.Header.REMOTE_USER;
+import static ch.ge.ael.enu.mediation.routes.communication.Header.REMOTE_USER;
 import static ch.ge.ael.enu.mediation.util.invocation.Precondition.checkNotBlank;
 import static org.springframework.http.HttpMethod.GET;
 import static org.springframework.http.HttpMethod.HEAD;

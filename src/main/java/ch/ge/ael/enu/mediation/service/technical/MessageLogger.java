@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
+import static ch.ge.ael.enu.mediation.routes.communication.Header.CORRELATION_ID;
+
 /**
  * Genere une trace du contenu d'un message recu de RabbitMQ.
  */
@@ -30,7 +32,11 @@ public class MessageLogger {
         log.info("********************************");
 
         String reducedBody = new BodyReducer(maxFileContentSize).reduceBody(message.getBody());
-        log.info("Body {}, {}", new String(reducedBody), message.getMessageProperties());
+        log.info("Body {}, {}", reducedBody, message.getMessageProperties());
+
+        if (message.getMessageProperties().getHeader(CORRELATION_ID) == null) {
+            log.warn("Le message ne contient pas l'en-tete \"{}\"", CORRELATION_ID);
+        }
     }
 
     public void logJsonSent(HttpMethod method, String path, String content) {

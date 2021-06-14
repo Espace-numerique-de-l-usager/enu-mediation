@@ -35,7 +35,7 @@ public class ErrorHandler {
     public void handle(Exception e, Message message) {
         if (e instanceof ValidationException) {
             // erreur client : on renvoie le message dans la boite morte, avec le message d'erreur
-            log.info("Erreur client lors du traitement du message. {}", e.getMessage());
+            log.info("Erreur client relevee lors du traitement du message : {}", e.getMessage());
             message.getMessageProperties().setHeader(ERROR_HEADER, e.getMessage());
             template.send(deadLetterExchange, deadLetterRoutingKey, message);
         } else if (e instanceof TechnicalException) {
