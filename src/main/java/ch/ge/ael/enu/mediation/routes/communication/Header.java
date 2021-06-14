@@ -1,4 +1,4 @@
-package ch.ge.ael.enu.mediation.routes.http;
+package ch.ge.ael.enu.mediation.routes.communication;
 
 import org.springframework.http.HttpHeaders;
 
@@ -6,6 +6,10 @@ import org.springframework.http.HttpHeaders;
  * Pour les autres en-tetes, notamment HTTP, voir {}@link {@link HttpHeaders}.
  */
 public class Header {
+
+    public static final String CONTENT_TYPE = "ContentType";
+
+    public static final String CORRELATION_ID = "CorrelationId";
 
     public static final String X_CSRF_TOKEN = "X-CSRF-Token";
 

@@ -27,7 +27,7 @@ import javax.annotation.Resource;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-import static ch.ge.ael.enu.mediation.routes.http.Header.X_CSRF_TOKEN;
+import static ch.ge.ael.enu.mediation.routes.communication.Header.X_CSRF_TOKEN;
 import static java.lang.String.format;
 
 /**

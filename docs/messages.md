@@ -21,7 +21,9 @@ médiation) est "SI1".
 
 ### Création d'une démarche : message JSON
 
-En-tête nécessaire : `ContentType` = `application/new-demarche-v1.0+json`.
+En-têtes nécessaires :
+- `ContentType` = `application/new-demarche-v1.0+json`
+- `CorrelationId` (voir au bas de cette page)
 
 Champs :
 
@@ -46,7 +48,10 @@ Exemple : voir [newdemarche/MessageSender](https://argon.***REMOVED***/gitlab/AC
 Il s'agit ici de changer l'état d'une démarche qui a été précédemment créée via un
 message comme ci-dessus.
 
-En-tête nécessaire : `Content-Type` = `application/status-change-v1.0+json`.
+En-têtes nécessaires :
+
+- `Content-Type` = `application/status-change-v1.0+json`
+- `CorrelationId` (voir au bas de cette page)
 
 Champs :
 
@@ -81,7 +86,9 @@ Exemples : voir [statuschange/MessageSender](https://argon.***REMOVED***/gitlab/
 
 Il s'agit ici de compléter une démarche qui a été précédemment créée.
 
-En-tête nécessaire : `Content-Type` = `application/new-document-v1.0+json`.
+En-têtes nécessaires :
+- `Content-Type` = `application/new-document-v1.0+json`
+- `CorrelationId` (voir au bas de cette page)
 
 Champs :
 
@@ -108,7 +115,9 @@ Il s'agit ici de créer un courrier, c'est-à-dire l'équivalent numérique d'un
 Le courrier est constitué d'un ou plusieurs documents, ainsi que d'un en-tête.
 Le courrier peut soit porter sur une démarche qui a été précédemment créée, soit ne porter sur aucune démarche.
 
-En-tête nécessaire : `Content-Type` = `application/new-courrier-v1.0+json`.
+En-têtes nécessaires :
+- `Content-Type` = `application/new-courrier-v1.0+json`
+- `CorrelationId` (voir au bas de cette page)
 
 Champs :
 
@@ -135,7 +144,9 @@ Le courrier doit contenir au minimum 1 document et au maximum 20 documents.
 
 ### Création d'une suggestion de démarche : message JSON
 
-En-tête nécessaire : `ContentType` = `application/new-suggestion-v1.0+json`.
+En-têtes nécessaires :
+- `ContentType` = `application/new-suggestion-v1.0+json`
+- `CorrelationId` (voir au bas de cette page)
 
 Champs :
 
@@ -165,8 +176,12 @@ cependant certains messages vont dans l'autre sens.
 
 ### Destruction d'une démarche brouillon : message JSON
 
-Cas d'usage : l'usager avait une ou plusieurs suggestions de démarches.
-Il a décidé d'en détruire une plutôt que de la compléter.
+Cas d'usage : l'usager a une ou plusieurs suggestions de démarches à compléter.
+Il décide d'en détruire une plutôt que de la compléter.
+
+En-têtes garantis :
+- `ContentType` = `application/brouillon-deletion-v1.0+json`
+- `CorrelationId` (voir au bas de cette page)
 
 Champs :
 
@@ -181,6 +196,10 @@ Champs :
 Cas d'usage : l'usager a consulté un document, ou bien le délai qui lui était imparti pour consulter
 ce document est écoulé.
 
+En-têtes garantis :
+- `ContentType` = `application/document-access-v1.0+json`
+- `CorrelationId` (voir au bas de cette page)
+
 Champs :
 
 | Nom | Description | Obligatoire | Exemple | Commentaire |
@@ -193,12 +212,29 @@ Champs :
 
 Cas d'usage : l'usager a modifié son choix du mode de réception de ses documents.
 
+En-têtes garantis :
+- `ContentType` = `application/document-reception-mode-v1.0+json`
+- `CorrelationId` (voir au bas de cette page)
+
 Champs :
 
 | Nom | Description | Obligatoire | Exemple | Commentaire |
 | --- | ----------- | ------- | ----------- | ----------- |
 | idUsager | identifiant de l'usager | oui | CGE-1000000 | Cet usager doit être connu de Gina |
 | choixReception | mode de réception des documents adressés à l'usager par l'administration | oui | ELECTRONIQUE | Doit valoir soit `ELECTRONIQUE` (= en version numérique uniquement, c'est-à-dire dans l'ENU seulement), soit `TOUT` (= en version numérique et par voie postale) |
+
+## Identifiant de corrélation
+
+Dans chaque message JSON, un identifiant de corrélation est attendu.
+Cet identifiant est une chaîne de caractères, de taille inférieure à 50 caractères et dont la valeur est entièrement
+à la discrétion du producteur du message.
+Il est utilisé par le consommateur - en général l'application `enu-mediation` - dans les messages envoyés en retour
+au producteur.
+Un message de retour, qu'il contienne un signal de traitement réussi ou un message d'erreur, inclut
+l'identifiant de corrélation et permet au producteur initial de croiser ses données, c'est-à-dire de déterminer
+auquel de ses messages correspond le message de retour.
+En effet, le message de retour ne contient pas une copie du message initial, mais uniquement l'information
+de réussite ou d'erreur, plus l'identifiant de corrélation.
 
 ## Gestion électronique des documents (GED)
 

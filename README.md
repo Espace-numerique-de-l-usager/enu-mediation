@@ -23,7 +23,7 @@ Voir [ici](docs/queues_rabbitmq.md).
 
 Voir [ici](docs/nouveau_si_metier.md).
 
-## Messages JSON
+## Messages JSON à RabbitMQ
 
 Voir [ici](docs/messages.md).
 

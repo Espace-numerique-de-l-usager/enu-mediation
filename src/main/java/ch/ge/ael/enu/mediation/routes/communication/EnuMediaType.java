@@ -1,4 +1,4 @@
-package ch.ge.ael.enu.mediation.routes.http;
+package ch.ge.ael.enu.mediation.routes.communication;
 
 public class EnuMediaType {
 
