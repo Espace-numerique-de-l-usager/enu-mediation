@@ -11,6 +11,8 @@ public class Header {
 
     public static final String CORRELATION_ID = "CorrelationId";
 
+    public static final String TECHNICAL_ERROR = "TechnicalError";
+
     public static final String X_CSRF_TOKEN = "X-CSRF-Token";
 
     public static final String REMOTE_USER = "remote_user";

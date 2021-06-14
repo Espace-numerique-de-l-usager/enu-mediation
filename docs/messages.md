@@ -5,7 +5,7 @@ uniquement avec RabbitMQ,
 au moyen de la production et de la consommation de messages JSON via le protocole AMQP.
 Ces messages sont décrits ici.
 
-## Échanges du SI métier avec enu-mediation
+## Messages du SI métier pour l'Espace numérique
 
 Le tableau ci-dessous fournit la liste des messages échangés, pour un SI métier dont le code (fourni par l'équipe
 médiation) est "SI1".
@@ -163,16 +163,37 @@ Champs :
 Exemple : voir [newdemarche/MessageSender](https://argon.***REMOVED***/gitlab/ACCES_RESTREINT/3417_espace_numerique_usager/enu-mediation-client/-/blob/master/src/main/java/ch/ge/ael/enu/mediationclient/newdemarche/MessageSender.java).
 (TODO : lien à mettre à jour ci-dessus lors du passage à GitHub)
 
-## Échanges de enu-backend avec le SI métier
+## Messages de l'Espace numérique pour le SI métier
 
 L'essentiel du trafic se fait dans le sens SI métier -> Espace numérique,
 cependant certains messages vont dans l'autre sens.
 
 | Message | Producteur | Consommateur | Exchange RabbitMQ / queue RabbitMQ |
 | ------- | ---------- | ------------ | ---------------------------------- |
+| réponse à un message | enu-mediation | SI métier | enu-to-si1 / enu-to-si1-main |
 | destruction d'une démarche brouillon | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
 | consultation d'un document par l'usager | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
 | changement de mode de réception des documents par l'usager | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
+
+### Réponse à un message
+
+Cas d'usage : le SI métier a envoyé un message à l'ENU, par exemple un message de création d'une démarche.
+L'ENU a traité ce message d'origine et en retour envoie au SI métier un message ; celui-ci est un message de
+réussite ou d'échec.
+
+En-têtes garantis :
+- `ContentType` = `application/reply-v1.0+json`
+- `CorrelationId` (voir au bas de cette page)
+
+Champs :
+
+| Nom | Description | Obligatoire | Exemple | Commentaire |
+| --- | ----------- | ------- | ----------- | ----------- |
+| resultat | résultat du traitement du message d'origine | oui | OK | Doit valoir soit `OK`, soit `KO`|
+| description | description du résultat | oui si `resultat` vaut `KO`, pas applicable sinon | Le champ "idPrestation" est obligatoire | - | 
+
+En l'occurrence, l'identifiant de corrélation n'est pas créé par le producteur `enu-mediation`, mais est
+identique à l'identifiant contenu dans le message d'origine.
 
 ### Destruction d'une démarche brouillon : message JSON
 

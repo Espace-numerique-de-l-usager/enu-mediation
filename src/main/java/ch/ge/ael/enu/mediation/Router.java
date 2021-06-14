@@ -3,8 +3,8 @@ package ch.ge.ael.enu.mediation;
 import ch.ge.ael.enu.mediation.exception.IllegalMessageException;
 import ch.ge.ael.enu.mediation.service.DemarcheService;
 import ch.ge.ael.enu.mediation.service.DocumentService;
-import ch.ge.ael.enu.mediation.service.technical.ErrorHandler;
 import ch.ge.ael.enu.mediation.service.technical.MessageLogger;
+import ch.ge.ael.enu.mediation.service.technical.ResponseHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.Message;
@@ -34,7 +34,7 @@ public class Router {
     private DocumentService courrierService;
 
     @Resource
-    private ErrorHandler errorHandler;
+    private ResponseHandler responseHandler;
 
     /**
      * Le point d'entree de l'application : consommation d'un message RabbitMQ.
@@ -47,7 +47,7 @@ public class Router {
             route(message);
             log.info("Traitement OK");
         } catch (Exception e) {
-            errorHandler.handle(e, message);
+            responseHandler.handleKo(e, message);
         }
     }
 
@@ -69,6 +69,7 @@ public class Router {
             throw new IllegalMessageException(
                     "La valeur \"" + contentType + "\" de l'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
         }
+        responseHandler.handleOk(message);
     }
 
 }
