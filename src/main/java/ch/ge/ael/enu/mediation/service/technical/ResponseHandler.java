@@ -18,6 +18,7 @@ import static ch.ge.ael.enu.mediation.business.domain.ResponseType.OK;
 import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.REPLY;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.CORRELATION_ID;
+import static ch.ge.ael.enu.mediation.routes.communication.Header.SI_METIER;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.TECHNICAL_ERROR;
 
 /**
@@ -36,34 +37,35 @@ public class ResponseHandler {
     @Value("${app.rabbitmq.reply.exchange}")
     private String replyExchange;
 
-    @Value("${app.rabbitmq.reply.routing-key}")
-    private String replyRoutingKey;
-
     @Value("${app.rabbitmq.dlq.exchange}")
     private String deadLetterExchange;
 
     @Value("${app.rabbitmq.dlq.routing-key}")
     private String deadLetterRoutingKey;
 
-    public void handleOk(Message message) {
+    public void handleOk(Message originalMessage) {
        log.info("Envoi a RabbitMQ d'un message de reussite");
-        sendReplyMessage(OK, null, message);
+        sendReplyMessage(OK, null, originalMessage);
     }
 
-    public void handleKo(Exception e, Message message) {
+    /**
+     * Si erreur due au client, une reponse est renvoyee au client (queue de reponse).
+     * Si erreur due a la mediation, le message est rejete dans la queue d'erreur (DLQ).
+     */
+    public void handleKo(Exception e, Message originalMessage) {
         if (e instanceof ValidationException) {
             log.info("Envoi a RabbitMQ d'un message d'erreur client");
-            sendReplyMessage(KO, e.getMessage(), message);
+            sendReplyMessage(KO, e.getMessage(), originalMessage);
         } else {
             log.error("Envoi a RabbitMQ d'un message d'erreur serveur (DLQ), suite a ", e);
-            message.getMessageProperties().setHeader(TECHNICAL_ERROR, e.getMessage());
-            template.send(deadLetterExchange, "", message);
+            originalMessage.getMessageProperties().setHeader(TECHNICAL_ERROR, e.getMessage());
+            template.send(deadLetterExchange, "", originalMessage);
         }
     }
 
-    private void sendReplyMessage(ResponseType type, String description, Message message) {
+    private void sendReplyMessage(ResponseType type, String description, Message originalMessage) {
         Response response = new Response();
-        response.setResultat(KO);
+        response.setResultat(type);
         response.setDescription(description);
         String jsonResponse = "Reponse mal formee";
         try {
@@ -71,9 +73,10 @@ public class ResponseHandler {
         } catch (JsonProcessingException e2) {
             log.error("Erreur lors du traitement d'erreur", e2);
         }
+        String replyRoutingKey = originalMessage.getMessageProperties().getHeader(SI_METIER);
         template.convertAndSend(replyExchange, replyRoutingKey, jsonResponse, msg -> {
             msg.getMessageProperties().setHeader(CONTENT_TYPE, REPLY);
-            msg.getMessageProperties().setHeader(CORRELATION_ID, message.getMessageProperties().getHeader(CORRELATION_ID));
+            msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
             return msg;
         });
     }
