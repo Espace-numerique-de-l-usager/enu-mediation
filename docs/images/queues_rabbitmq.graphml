@@ -17,7 +17,7 @@
     <node id="n0">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="-23.0" y="97.88400077819824"/>
+          <y:Geometry height="30.0" width="30.0" x="-23.0" y="128.06153170001855"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -28,7 +28,7 @@
     <node id="n1">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="-22.5" y="256.0"/>
+          <y:Geometry height="30.0" width="30.0" x="-22.5" y="286.17753092182033"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -39,7 +39,7 @@
     <node id="n2">
       <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-219.54764938354492" y="84.76800155639648"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-219.54764938354492" y="114.94553247821679"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -53,7 +53,7 @@
     <node id="n3">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="242.0" y="173.88400077819824"/>
+          <y:Geometry height="30.0" width="30.0" x="242.0" y="204.06153170001855"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -64,7 +64,7 @@
     <node id="n4">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="-100.5" y="61.88400077819824"/>
+          <y:Geometry height="30.0" width="143.0" x="-100.5" y="92.06153170001855"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="120.70703125" x="11.146484375" y="7.298828125">simetier1-to-enu-main</y:NodeLabel>
@@ -75,7 +75,7 @@
     <node id="n5">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="-273.5" y="38.0"/>
+          <y:Geometry height="30.0" width="143.0" x="-273.5" y="68.1775309218203"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="62.01953125" x="40.490234375" y="7.298828125">SI métier 1</y:NodeLabel>
@@ -86,7 +86,7 @@
     <node id="n6">
       <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-219.54764938354492" y="242.88400077819824"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-219.54764938354492" y="273.0615317000186"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -100,7 +100,7 @@
     <node id="n7">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="-259.5" y="203.0"/>
+          <y:Geometry height="30.0" width="143.0" x="-259.5" y="233.1775309218203"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="62.01953125" x="40.490234375" y="7.298828125">SI métier 2</y:NodeLabel>
@@ -111,7 +111,7 @@
     <node id="n8">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="-79.5" y="214.94200038909912"/>
+          <y:Geometry height="30.0" width="143.0" x="-79.5" y="245.11953131091943"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="120.70703125" x="11.146484375" y="7.298828125">simetier2-to-enu-main</y:NodeLabel>
@@ -122,7 +122,7 @@
     <node id="n9">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="72.5" y="113.88400077819824"/>
+          <y:Geometry height="30.0" width="143.0" x="72.5" y="144.06153170001855"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="tr" textColor="#000000" visible="true" width="149.0546875" x="-10.0546875" y="4.0">en-tête simetier = simetier1</y:NodeLabel>
@@ -133,7 +133,7 @@
     <node id="n10">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="54.5" y="248.0"/>
+          <y:Geometry height="30.0" width="143.0" x="54.5" y="278.17753092182033"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="tr" textColor="#000000" visible="true" width="149.0546875" x="-10.0546875" y="4.0">en-tête simetier = simetier2</y:NodeLabel>
@@ -144,7 +144,7 @@
     <node id="n11">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="97.5" x="208.25" y="138.0"/>
+          <y:Geometry height="30.0" width="97.5" x="208.25" y="168.1775309218203"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="94.703125" x="1.3984375" y="7.298828125">all-to-enu-main-q</y:NodeLabel>
@@ -155,7 +155,7 @@
     <node id="n12">
       <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="415.4523506164551" y="160.76800155639648"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="415.4523506164551" y="190.9455324782168"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -169,7 +169,7 @@
     <node id="n13">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="361.5" y="121.88400077819824"/>
+          <y:Geometry height="30.0" width="143.0" x="361.5" y="152.06153170001855"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="80.048828125" x="31.4755859375" y="7.298828125">enu-mediation</y:NodeLabel>
@@ -180,10 +180,10 @@
     <node id="n14">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="321.0" x="-140.5" y="-82.0"/>
+          <y:Geometry height="30.0" width="321.0" x="-12.457679346557939" y="-91.64917806301051"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="405.4375" x="-42.21875" y="2.3984375">Flux principal : messages des SI métier destinés à l'ENU</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="20" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="28.501953125" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="505.796875" x="-92.3984375" y="-2.501953125">Flux principal : messages des SI métier destinés à l'ENU</y:NodeLabel>
           <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
@@ -193,7 +193,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="28.0" width="217.0" x="-1.158109684947533" y="-38.0"/>
+          <y:Geometry height="28.0" width="217.0" x="-1.158109684947533" y="-7.822469078179687"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="182.78125" x="17.109375" y="4.6494140625">Chaque SI métier a son échange.</y:NodeLabel>
@@ -205,7 +205,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="36.0" width="432.7870478413069" x="106.4690781796966" y="62.0"/>
+          <y:Geometry height="36.0" width="432.7870478413069" x="106.4690781796966" y="92.1775309218203"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="403.85546875" x="14.46578954565345" y="8.6494140625">RabbitMQ contrôle que le message contient l'en-tête, avec la bonne valeur.</y:NodeLabel>
@@ -217,7 +217,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="36.0" width="396.0" x="80.5" y="308.0"/>
+          <y:Geometry height="36.0" width="396.0" x="80.5" y="338.17753092182033"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="372.900390625" x="11.5498046875" y="13.298828125">Les messages de tous les SI métier tombent dans une queue unique.</y:NodeLabel>
@@ -229,7 +229,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="28.0" width="211.0" x="81.13827304550762" y="4.0"/>
+          <y:Geometry height="28.0" width="211.0" x="81.13827304550762" y="34.17753092182031"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="179.599609375" x="15.7001953125" y="4.6494140625">L'échange est de type "headers".</y:NodeLabel>
@@ -239,10 +239,10 @@
     <node id="n19">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="321.0" x="-134.25904317386227" y="422.9649941656943"/>
+          <y:Geometry height="30.0" width="321.0" x="-22.5" y="465.17753092182033"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="236.4921875" x="42.25390625" y="2.3984375">Flux principal : réponse de l'ENU</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="20" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="28.501953125" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="294.615234375" x="13.1923828125" y="-2.501953125">Flux principal : réponse de l'ENU</y:NodeLabel>
           <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
@@ -250,7 +250,7 @@
     <node id="n20">
       <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="384.9523506164551" y="688.4156094910522"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="384.9523506164551" y="760.9846376586393"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -264,7 +264,7 @@
     <node id="n21">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="99.04764938354492" x="353.25" y="649.531608712854"/>
+          <y:Geometry height="30.0" width="99.04764938354492" x="353.25" y="722.100636880441"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="80.048828125" x="9.499410629272461" y="7.298828125">enu-mediation</y:NodeLabel>
@@ -275,7 +275,7 @@
     <node id="n22">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="229.5" y="701.531608712854"/>
+          <y:Geometry height="30.0" width="30.0" x="229.5" y="774.100636880441"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -286,7 +286,7 @@
     <node id="n23">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="-28.5" y="619.531608712854"/>
+          <y:Geometry height="30.0" width="30.0" x="-28.5" y="692.100636880441"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -297,7 +297,7 @@
     <node id="n24">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="-28.5" y="767.1836110474487"/>
+          <y:Geometry height="30.0" width="30.0" x="-28.5" y="839.7526392150357"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -308,7 +308,7 @@
     <node id="n25">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="125.5" x="188.75" y="731.531608712854"/>
+          <y:Geometry height="30.0" width="125.5" x="188.75" y="804.100636880441"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="84.033203125" x="20.7333984375" y="7.298828125">enu-to-all-reply</y:NodeLabel>
@@ -319,7 +319,7 @@
     <node id="n26">
       <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-222.04764938354492" y="606.4156094910522"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-222.04764938354492" y="678.9846376586393"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -333,7 +333,7 @@
     <node id="n27">
       <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-222.04764938354492" y="754.067611825647"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-222.04764938354492" y="826.636639993234"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -347,7 +347,7 @@
     <node id="n28">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="69.07147407531738" x="-239.0357370376587" y="714.2636071564575"/>
+          <y:Geometry height="30.0" width="69.07147407531738" x="-239.0357370376587" y="786.8326353240445"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="62.01953125" x="3.5259714126586914" y="7.298828125">SI métier 2</y:NodeLabel>
@@ -358,7 +358,7 @@
     <node id="n29">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="89.04764938354492" x="-249.02382469177246" y="557.031608712854"/>
+          <y:Geometry height="30.0" width="89.04764938354492" x="-249.02382469177246" y="629.600636880441"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="62.01953125" x="13.514059066772461" y="7.298828125">SI métier 1</y:NodeLabel>
@@ -371,7 +371,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="45.231998443603516" width="363.7976493835449" x="88.5" y="822.4156094910522"/>
+          <y:Geometry height="45.231998443603516" width="363.7976493835449" x="88.5" y="894.9846376586393"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="node_size" configuration="CroppingLabel" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="45.231998443603516" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="363.7976493835449" x="0.0" y="0.0">Une clef de routage incluse par l'ENU dans le message 
@@ -382,7 +382,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     <node id="n31">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="99.04764938354492" x="38.5" y="671.531608712854"/>
+          <y:Geometry height="30.0" width="99.04764938354492" x="38.5" y="744.100636880441"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="85.029296875" x="7.009176254272461" y="4.0">clef = simetier1</y:NodeLabel>
@@ -393,7 +393,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     <node id="n32">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="-85.0" y="649.531608712854"/>
+          <y:Geometry height="30.0" width="143.0" x="-85.0" y="722.100636880441"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="131.376953125" x="5.8115234375" y="7.298828125">enu-to-simetier1-reply-q</y:NodeLabel>
@@ -404,7 +404,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     <node id="n33">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="-79.0" y="797.1836110474487"/>
+          <y:Geometry height="30.0" width="143.0" x="-79.0" y="869.7526392150357"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="131.376953125" x="5.8115234375" y="7.298828125">enu-to-simetier2-reply-q</y:NodeLabel>
@@ -417,7 +417,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="28.0" width="211.0" x="282.0" y="599.6476079346558"/>
+          <y:Geometry height="28.0" width="211.0" x="282.0" y="672.2166361022428"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="165.578125" x="22.7109375" y="4.6494140625">L'échange est de type "direct".</y:NodeLabel>
@@ -427,7 +427,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     <node id="n35">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="56.231998443603516" width="436.0476493835449" x="-169.42337867175962" y="463.64760793465575"/>
+          <y:Geometry height="56.231998443603516" width="436.0476493835449" x="-169.42337867175962" y="536.2166361022428"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="62.8046875" modelName="internal" modelPosition="l" textColor="#000000" visible="true" width="646.931640625" x="4.0" y="-3.286344528198242">Que l'ENU ait rencontré une erreur de validation ou qu'il ait réussi à traiter le message, il envoie un message de réponse.
@@ -441,7 +441,7 @@ RabbitMQ ne semble pas prévoir de boîte morte (DLQ) de type "headers".</y:Node
     <node id="n36">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="99.04764938354492" x="50.5" y="760.4156094910522"/>
+          <y:Geometry height="30.0" width="99.04764938354492" x="50.5" y="832.9846376586393"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="85.029296875" x="7.009176254272461" y="4.0">clef = simetier2</y:NodeLabel>
@@ -454,7 +454,7 @@ RabbitMQ ne semble pas prévoir de boîte morte (DLQ) de type "headers".</y:Node
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="36.0" width="339.5" x="43.0" y="549.8796063782593"/>
+          <y:Geometry height="36.0" width="339.5" x="43.0" y="622.4486345458463"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" configuration="CroppingLabel" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.09375" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="318.15625" x="10.671875" y="9.90625">L'ENU poste tous ses messages dans un échange unique.</y:NodeLabel>
@@ -464,10 +464,10 @@ RabbitMQ ne semble pas prévoir de boîte morte (DLQ) de type "headers".</y:Node
     <node id="n38">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="321.0" x="-138.58576429404903" y="957.5049293387501"/>
+          <y:Geometry height="30.0" width="321.0" x="-23.01664460707019" y="1039.437439179373"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="240.5234375" x="40.23828125" y="2.3984375">Flux principal : boîte morte (DLQ)</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="20" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="28.501953125" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="299.654296875" x="10.6728515625" y="-2.501953125">Flux principal : boîte morte (DLQ)</y:NodeLabel>
           <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
@@ -475,7 +475,7 @@ RabbitMQ ne semble pas prévoir de boîte morte (DLQ) de type "headers".</y:Node
     <node id="n39">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="484.52562679459913" x="-186.54227140166932" y="1010.531608712854"/>
+          <y:Geometry height="30.0" width="484.52562679459913" x="-104.77945800436976" y="1127.1529097278028"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="62.8046875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="435.583984375" x="24.470821209799567" y="-16.40234375">La boîte morte accueille les messages
@@ -489,10 +489,10 @@ Un message de cette queue nécessitera un traitement manuel, qui peut consister
     <node id="n40">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="321.0" x="-83.86305353608472" y="1257.2516726721024"/>
+          <y:Geometry height="30.0" width="321.0" x="-37.529092275874774" y="1444.4456476875266"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="16" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="23.6015625" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="398.328125" x="-38.6640625" y="2.3984375">Flux inverse : messages de l'ENU destinés au SI métier</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="20" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="28.501953125" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="496.91015625" x="-87.955078125" y="-2.501953125">Flux inverse : messages de l'ENU destinés au SI métier</y:NodeLabel>
           <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
@@ -500,7 +500,7 @@ Un message de cette queue nécessitera un traitement manuel, qui peut consister
     <node id="n41">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="436.0476493835449" x="-144.27589049255835" y="1307.7701728677425"/>
+          <y:Geometry height="30.0" width="436.0476493835449" x="-95.05291696764723" y="1550.0863833126557"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="413.86328125" x="11.092184066772461" y="-9.0517578125">Ce flux est très semblable au flux de réponse principal.
@@ -513,7 +513,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n42">
       <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="394.94043827056885" y="1521.43967811949"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="387.10116089794695" y="1748.6223864254487"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -527,7 +527,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n43">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="99.04764938354492" x="363.23808765411377" y="1482.5556773412918"/>
+          <y:Geometry height="30.0" width="99.04764938354492" x="355.3988102814919" y="1709.7383856472504"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="80.048828125" x="9.499410629272461" y="7.298828125">enu-mediation</y:NodeLabel>
@@ -538,7 +538,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n44">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="239.48808765411377" y="1534.5556773412918"/>
+          <y:Geometry height="30.0" width="30.0" x="231.64881028149188" y="1761.7383856472504"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -549,7 +549,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n45">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="-18.51191234588623" y="1452.5556773412918"/>
+          <y:Geometry height="30.0" width="30.0" x="-26.351189718508124" y="1679.7383856472504"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -560,7 +560,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n46">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="-18.51191234588623" y="1600.2076796758865"/>
+          <y:Geometry height="30.0" width="30.0" x="-26.351189718508124" y="1827.3903879818452"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -571,7 +571,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n47">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="125.5" x="198.73808765411377" y="1564.5556773412918"/>
+          <y:Geometry height="30.0" width="125.5" x="190.89881028149188" y="1791.7383856472504"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="84.033203125" x="20.7333984375" y="7.298828125">enu-to-all-main</y:NodeLabel>
@@ -582,7 +582,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n48">
       <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-212.05956172943115" y="1439.43967811949"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-219.89883910205305" y="1666.6223864254487"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -596,7 +596,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n49">
       <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-212.05956172943115" y="1587.0916804540848"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="-219.89883910205305" y="1814.2743887600434"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -610,7 +610,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n50">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="69.07147407531738" x="-229.04764938354492" y="1547.2876757848953"/>
+          <y:Geometry height="30.0" width="69.07147407531738" x="-236.88692675616682" y="1774.470384090854"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="62.01953125" x="3.5259714126586914" y="7.298828125">SI métier 2</y:NodeLabel>
@@ -621,7 +621,7 @@ aux propos distincts.</y:NodeLabel>
     <node id="n51">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="89.04764938354492" x="-239.0357370376587" y="1390.0556773412918"/>
+          <y:Geometry height="30.0" width="89.04764938354492" x="-246.87501441028058" y="1617.2383856472504"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="62.01953125" x="13.514059066772461" y="7.298828125">SI métier 1</y:NodeLabel>
@@ -634,7 +634,7 @@ aux propos distincts.</y:NodeLabel>
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="45.231998443603516" width="363.7976493835449" x="98.48808765411377" y="1655.43967811949"/>
+          <y:Geometry height="45.231998443603516" width="363.7976493835449" x="90.64881028149188" y="1882.6223864254487"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="node_size" configuration="CroppingLabel" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="45.231998443603516" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="363.7976493835449" x="0.0" y="0.0">Une clef de routage incluse par l'ENU dans le message 
@@ -645,7 +645,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     <node id="n53">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="99.04764938354492" x="48.48808765411377" y="1504.5556773412918"/>
+          <y:Geometry height="30.0" width="99.04764938354492" x="40.648810281491876" y="1731.7383856472504"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="85.029296875" x="7.009176254272461" y="4.0">clef = simetier1</y:NodeLabel>
@@ -656,7 +656,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     <node id="n54">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="-75.01191234588623" y="1482.5556773412918"/>
+          <y:Geometry height="30.0" width="143.0" x="-82.85118971850812" y="1709.7383856472504"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="131.376953125" x="5.8115234375" y="7.298828125">enu-to-simetier1-main-q</y:NodeLabel>
@@ -667,7 +667,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     <node id="n55">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="143.0" x="-69.01191234588623" y="1630.2076796758865"/>
+          <y:Geometry height="30.0" width="143.0" x="-76.85118971850812" y="1857.3903879818452"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="131.376953125" x="5.8115234375" y="7.298828125">enu-to-simetier2-main-q</y:NodeLabel>
@@ -680,7 +680,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="28.0" width="211.0" x="291.98808765411377" y="1432.6716765630936"/>
+          <y:Geometry height="28.0" width="211.0" x="284.1488102814919" y="1659.8543848690522"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="165.578125" x="22.7109375" y="4.6494140625">L'échange est de type "direct".</y:NodeLabel>
@@ -690,7 +690,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     <node id="n57">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="99.04764938354492" x="60.48808765411377" y="1593.43967811949"/>
+          <y:Geometry height="30.0" width="99.04764938354492" x="52.648810281491876" y="1820.6223864254487"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="85.029296875" x="7.009176254272461" y="4.0">clef = simetier2</y:NodeLabel>
@@ -703,7 +703,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="36.0" width="339.5" x="52.98808765411377" y="1382.903675006697"/>
+          <y:Geometry height="36.0" width="339.5" x="45.148810281491876" y="1610.0863833126557"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" configuration="CroppingLabel" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.09375" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="318.15625" x="10.671875" y="9.90625">L'ENU poste tous ses messages dans un échange unique.</y:NodeLabel>
@@ -712,19 +712,8 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     </node>
     <node id="n59">
       <data key="d6">
-        <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="-52.679356919981956" y="1671.4247819692591"/>
-          <y:Fill color="#FFCC00" transparent="false"/>
-          <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" borderDistance="0.0" fontFamily="Dialog" fontSize="13" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="19.92626953125" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="18.4599609375" x="5.77001953125" y="5.036865234375">60</y:NodeLabel>
-          <y:Shape type="rectangle"/>
-        </y:ShapeNode>
-      </data>
-    </node>
-    <node id="n60">
-      <data key="d6">
         <y:SVGNode>
-          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="387.10116089794695" y="1104.7102484082498"/>
+          <y:Geometry height="56.231998443603516" width="35.095298767089844" x="387.10116089794695" y="1221.3315494231986"/>
           <y:Fill color="#CCCCFF" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="sandwich" modelPosition="s" textColor="#000000" visible="true" width="4.0" x="15.547649383544922" y="60.231998443603516"/>
@@ -735,10 +724,10 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
         </y:SVGNode>
       </data>
     </node>
-    <node id="n61">
+    <node id="n60">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="99.04764938354492" x="355.1249855897194" y="1063.0990174989136"/>
+          <y:Geometry height="30.0" width="99.04764938354492" x="355.1249855897194" y="1179.7203185138624"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="80.048828125" x="9.499410629272461" y="7.298828125">enu-mediation</y:NodeLabel>
@@ -746,10 +735,10 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n62">
+    <node id="n61">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="220.2333553929298" y="1117.8262476300515"/>
+          <y:Geometry height="30.0" width="30.0" x="220.2333553929298" y="1234.4475486450003"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -757,10 +746,10 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n63">
+    <node id="n62">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="30.0" x="-37.76644379672007" y="1117.8262476300515"/>
+          <y:Geometry height="30.0" width="30.0" x="-37.76644379672007" y="1234.4475486450003"/>
           <y:Fill color="#FFCC00" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" hasText="false" height="4.0" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="4.0" x="13.0" y="13.0"/>
@@ -768,10 +757,10 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n64">
+    <node id="n63">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="125.5" x="172.4833553929298" y="1159.1508907902983"/>
+          <y:Geometry height="30.0" width="125.5" x="172.4833553929298" y="1275.772191805247"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="44.03125" x="40.734375" y="7.298828125">enu-dlq</y:NodeLabel>
@@ -779,13 +768,57 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
         </y:ShapeNode>
       </data>
     </node>
-    <node id="n65">
+    <node id="n64">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="30.0" width="125.5" x="-85.51644379672007" y="1159.1508907902983"/>
+          <y:Geometry height="30.0" width="125.5" x="-85.51644379672007" y="1275.772191805247"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="54.701171875" x="35.3994140625" y="7.298828125">enu-dlq-q</y:NodeLabel>
+          <y:Shape type="rectangle"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n65">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="321.0" x="-28.86172695449237" y="-61.64917806301051"/>
+          <y:Fill hasColor="false" transparent="false"/>
+          <y:BorderStyle hasColor="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="279.4140625" x="20.79296875" y="4.0">Exemple de cas d'usage : création d'une démarche </y:NodeLabel>
+          <y:Shape type="rectangle"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n66">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="321.0" x="-22.499999999999986" y="500.69708351203155"/>
+          <y:Fill hasColor="false" transparent="false"/>
+          <y:BorderStyle hasColor="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="421.509765625" x="-50.2548828125" y="4.0">Exemple de cas d'usage : réponse à un message de création d'une démarche </y:NodeLabel>
+          <y:Shape type="rectangle"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n67">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="321.0" x="-5.115656470105122" y="1069.437439179373"/>
+          <y:Fill hasColor="false" transparent="false"/>
+          <y:BorderStyle hasColor="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="613.228515625" x="-146.1142578125" y="4.0">Exemple de cas d'usage : erreur technique survenue lors du traitement d'un message de création d'une démarche </y:NodeLabel>
+          <y:Shape type="rectangle"/>
+        </y:ShapeNode>
+      </data>
+    </node>
+    <node id="n68">
+      <data key="d6">
+        <y:ShapeNode>
+          <y:Geometry height="30.0" width="321.0" x="-9.431982251762065" y="1490.0863833126557"/>
+          <y:Fill hasColor="false" transparent="false"/>
+          <y:BorderStyle hasColor="false" type="line" width="1.0"/>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="t" textColor="#000000" visible="true" width="566.25390625" x="-122.626953125" y="4.0">Exemple de cas d'usage : notification au SI métier qu'un usager a supprimé une suggestion de démarche </y:NodeLabel>
           <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
@@ -1040,7 +1073,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e25" source="n60" target="n62">
+    <edge id="e25" source="n59" target="n61">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
@@ -1050,7 +1083,7 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
         </y:PolyLineEdge>
       </data>
     </edge>
-    <edge id="e26" source="n62" target="n63">
+    <edge id="e26" source="n61" target="n62">
       <data key="d10">
         <y:PolyLineEdge>
           <y:Path sx="0.0" sy="0.0" tx="0.0" ty="0.0"/>
