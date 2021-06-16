@@ -125,7 +125,7 @@
           <y:Geometry height="30.0" width="143.0" x="72.5" y="144.06153170001855"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="tr" textColor="#000000" visible="true" width="149.0546875" x="-10.0546875" y="4.0">en-tête simetier = simetier1</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="tr" textColor="#000000" visible="true" width="151.05859375" x="-12.05859375" y="4.0">en-tête SiMetier = simetier1</y:NodeLabel>
           <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
@@ -136,7 +136,7 @@
           <y:Geometry height="30.0" width="143.0" x="54.5" y="278.17753092182033"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="tr" textColor="#000000" visible="true" width="149.0546875" x="-10.0546875" y="4.0">en-tête simetier = simetier2</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="tr" textColor="#000000" visible="true" width="151.05859375" x="-12.05859375" y="4.0">en-tête SiMetier = simetier2</y:NodeLabel>
           <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
@@ -193,7 +193,7 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="28.0" width="217.0" x="-1.158109684947533" y="-7.822469078179687"/>
+          <y:Geometry height="28.0" width="217.0" x="-17.324644107351276" y="-7.822469078179687"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="182.78125" x="17.109375" y="4.6494140625">Chaque SI métier a son échange.</y:NodeLabel>
@@ -217,10 +217,12 @@
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="36.0" width="396.0" x="80.5" y="338.17753092182033"/>
+          <y:Geometry height="56.231998443603516" width="396.0" x="80.5" y="338.17753092182033"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="18.701171875" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="372.900390625" x="11.5498046875" y="13.298828125">Les messages de tous les SI métier tombent dans une queue unique.</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="48.103515625" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="372.900390625" x="11.5498046875" y="4.128482818603516">Les messages de tous les SI métier tombent dans une queue unique.
+L'en-tête "SiMetier" permet à enu-mediation d'identifier le SI métier,
+ce qui sera précieux lors du routage du message de réponse.</y:NodeLabel>
         </y:UMLNoteNode>
       </data>
     </node>
@@ -427,11 +429,12 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
     <node id="n35">
       <data key="d6">
         <y:ShapeNode>
-          <y:Geometry height="56.231998443603516" width="436.0476493835449" x="-169.42337867175962" y="536.2166361022428"/>
+          <y:Geometry height="56.231998443603516" width="493.2550350425238" x="-145.73467854112585" y="536.2166361022428"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle hasColor="false" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="62.8046875" modelName="internal" modelPosition="l" textColor="#000000" visible="true" width="646.931640625" x="4.0" y="-3.286344528198242">Que l'ENU ait rencontré une erreur de validation ou qu'il ait réussi à traiter le message, il envoie un message de réponse.
-Techniquement il ne peut pas s'agir pas d'une DLQ (boîte morte),
+          <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="77.505859375" modelName="internal" modelPosition="r" textColor="#000000" visible="true" width="464.1484375" x="25.106597542523787" y="-10.636930465698242">Que l'ENU ait rencontré une erreur de validation ou qu'il ait réussi à traiter le message,
+il envoie un message de réponse.
+Techniquement il ne peut pas s'agir d'une DLQ (boîte morte),
 car RabbitMQ ne peut pas automatiquement mettre la clef de routage.
 RabbitMQ ne semble pas prévoir de boîte morte (DLQ) de type "headers".</y:NodeLabel>
           <y:Shape type="rectangle"/>
@@ -454,10 +457,10 @@ RabbitMQ ne semble pas prévoir de boîte morte (DLQ) de type "headers".</y:Node
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="36.0" width="339.5" x="43.0" y="622.4486345458463"/>
+          <y:Geometry height="36.0" width="363.7976493835449" x="24.677927654609107" y="622.4486345458463"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" configuration="CroppingLabel" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.09375" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="318.15625" x="10.671875" y="9.90625">L'ENU poste tous ses messages dans un échange unique.</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" configuration="CroppingLabel" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.09375" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="318.15625" x="22.82069969177246" y="9.90625">L'ENU poste tous ses messages dans un échange unique.</y:NodeLabel>
         </y:UMLNoteNode>
       </data>
     </node>
@@ -481,7 +484,7 @@ RabbitMQ ne semble pas prévoir de boîte morte (DLQ) de type "headers".</y:Node
           <y:NodeLabel alignment="center" autoSizePolicy="content" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="62.8046875" modelName="internal" modelPosition="c" textColor="#000000" visible="true" width="435.583984375" x="24.470821209799567" y="-16.40234375">La boîte morte accueille les messages
 que l'ENU n'a pas réussi à traiter, pour des causes ne relevant pas du SI métier.
 Un message de cette queue nécessitera un traitement manuel, qui peut consister
- à reverser le message dans la queue all-to-enu-main-q.</y:NodeLabel>
+ à reverser le message dans la queue princiapale all-to-enu-main-q.</y:NodeLabel>
           <y:Shape type="rectangle"/>
         </y:ShapeNode>
       </data>
@@ -703,10 +706,10 @@ permet à RabbitMQ de router le message vers la bonne queue.</y:NodeLabel>
       <data key="d5"><![CDATA[UMLNote]]></data>
       <data key="d6">
         <y:UMLNoteNode>
-          <y:Geometry height="36.0" width="339.5" x="45.148810281491876" y="1610.0863833126557"/>
+          <y:Geometry height="36.0" width="361.0553792298716" x="45.148810281491876" y="1610.0863833126557"/>
           <y:Fill hasColor="false" transparent="false"/>
           <y:BorderStyle color="#000000" type="line" width="1.0"/>
-          <y:NodeLabel alignment="center" autoSizePolicy="content" configuration="CroppingLabel" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.09375" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="318.15625" x="10.671875" y="9.90625">L'ENU poste tous ses messages dans un échange unique.</y:NodeLabel>
+          <y:NodeLabel alignment="center" autoSizePolicy="content" configuration="CroppingLabel" fontFamily="Dialog" fontSize="12" fontStyle="plain" hasBackgroundColor="false" hasLineColor="false" height="22.09375" modelName="internal" modelPosition="b" textColor="#000000" visible="true" width="318.15625" x="21.44956461493581" y="9.90625">L'ENU poste tous ses messages dans un échange unique.</y:NodeLabel>
         </y:UMLNoteNode>
       </data>
     </node>
