@@ -21,8 +21,9 @@ package ch.ge.ael.enu.mediation;
 import ch.ge.ael.enu.mediation.exception.IllegalMessageException;
 import ch.ge.ael.enu.mediation.service.DemarcheService;
 import ch.ge.ael.enu.mediation.service.DocumentService;
-import ch.ge.ael.enu.mediation.service.technical.MessageLogger;
+import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import ch.ge.ael.enu.mediation.service.technical.ResponseHandler;
+import ch.ge.ael.enu.mediation.service.technical.SecurityService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.Message;
@@ -43,13 +44,16 @@ import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
 public class Router {
 
     @Resource
-    private MessageLogger messageLogger;
+    private MessageLoggingService messageLoggingService;
 
     @Resource
     private DemarcheService demarcheService;
 
     @Resource
     private DocumentService courrierService;
+
+    @Resource
+    private SecurityService securityService;
 
     @Resource
     private ResponseHandler responseHandler;
@@ -59,9 +63,10 @@ public class Router {
      */
     @RabbitListener(queues = "${app.rabbitmq.main.queue}")
     public void consume(Message message) {
-        messageLogger.logMessage(message);
+        messageLoggingService.logMessage(message);
 
         try {
+            securityService.checkAuthorizedPrestation(message);
             route(message);
             log.info("Traitement OK");
         } catch (Exception e) {

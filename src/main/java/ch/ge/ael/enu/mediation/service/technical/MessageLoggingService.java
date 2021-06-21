@@ -32,7 +32,7 @@ import static ch.ge.ael.enu.mediation.routes.communication.Header.CORRELATION_ID
  */
 @Service
 @Slf4j
-public class MessageLogger {
+public class MessageLoggingService {
 
     /**
      * Taille (en bytes Base 64) des fichiers au-dela de laquelle le contenu des fichiers n'est plus trace dans
