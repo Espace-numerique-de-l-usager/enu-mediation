@@ -30,7 +30,7 @@ import ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapper;
 import ch.ge.ael.enu.mediation.routes.processing.NewCourrierSplitter;
 import ch.ge.ael.enu.mediation.service.technical.DeserializationService;
 import ch.ge.ael.enu.mediation.service.technical.FormServicesRestInvoker;
-import ch.ge.ael.enu.mediation.service.technical.MessageLogger;
+import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
@@ -80,7 +80,7 @@ public class DocumentService {
     private DemarcheService demarcheService;
 
     @Resource
-    private MessageLogger messageLogger;
+    private MessageLoggingService messageLoggingService;
 
     @Resource
     private FormServicesRestInvoker formServices;
