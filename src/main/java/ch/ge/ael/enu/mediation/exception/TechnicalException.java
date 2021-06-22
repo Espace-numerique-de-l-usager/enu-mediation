@@ -28,8 +28,8 @@ public class TechnicalException extends RuntimeException {
         super(msg);
     }
 
-    public TechnicalException(String msg, Throwable cause) {
-        super(msg, cause);
+    public TechnicalException(Throwable cause) {
+        super(cause);
     }
 
 }

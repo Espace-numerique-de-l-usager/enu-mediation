@@ -21,8 +21,6 @@ package ch.ge.ael.enu.mediation.business.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 /**
  * Structure resultant de la scission d'un NewCourrier en n documents.
  * Cette classe definit un de ces n documents.
@@ -30,6 +28,8 @@ import lombok.Data;
  * d'un des documents contenus dans le courrier.
  * Les informations definissant l'en-tete du courrier sont donc dupliquees dans chaque document.
  */
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NewCourrierDocument {
 
     private String idPrestation = null;

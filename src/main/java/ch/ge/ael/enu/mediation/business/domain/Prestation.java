@@ -23,11 +23,11 @@ import lombok.Data;
 
 import java.util.List;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 /**
  * Un message quelconque dont on ne veut que le champ "idPrestation".
  */
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Prestation {
 
     private String idPrestation = null;

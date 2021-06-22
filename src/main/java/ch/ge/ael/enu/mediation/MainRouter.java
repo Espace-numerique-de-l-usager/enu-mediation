@@ -39,9 +39,12 @@ import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.NEW_SUGG
 import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.STATUS_CHANGE;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
 
+/**
+ * Traitement des messages RabbitMQ du flux principal SI metier -> ENU.
+ */
 @Component
 @Slf4j
-public class Router {
+public class MainRouter {
 
     @Resource
     private MessageLoggingService messageLoggingService;
@@ -59,11 +62,11 @@ public class Router {
     private ResponseHandler responseHandler;
 
     /**
-     * Le point d'entree de l'application : consommation d'un message RabbitMQ.
+     * Le principal point d'entree de l'application : consommation d'un message RabbitMQ du flux principal.
      */
     @RabbitListener(queues = "${app.rabbitmq.main.queue}")
     public void consume(Message message) {
-        messageLoggingService.logMessage(message);
+        messageLoggingService.logMessage(message, true);
 
         try {
             securityService.checkAuthorizedPrestation(message);

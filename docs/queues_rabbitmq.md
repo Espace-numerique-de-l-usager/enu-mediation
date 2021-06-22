@@ -13,7 +13,7 @@ un message d'ajout d'un document à une démarche existante.
 ![](./images/queues_rabbitmq_1.jpg)
 
 Avoir une seule queue `all-to-enu-main-q` pour tous les messages est précieux :
-tant la programmation de `enu-mediation` que sa configuration sont simplifiés.
+tant la programmation de `enu-mediation` que sa configuration sont simplifiées.
 En particulier, l'ajout d'une nouvelle prestation ou d'un nouveau SI métier ne nécessite
 aucun développement dans `enu-mediation`, tout se jouant dans les paramètres de déploiement.
 
@@ -51,6 +51,24 @@ sans cela, il aurait fallu trouver un moyen de mettre les messages en attente du
 
 Pour l'instant, on ne considère pas de messages de réponse, ni de boîte aux lettres morte,
 dans le flux inverse.
+
+### Flux principal et flux inverse : boîte aux lettres morte
+
+La boîte aux lettres morte est un queue dans laquelle on poste des messages en erreur, sans
+espoir immédiat de résoudre l'erreur et de rejouer le message.
+
+Le projet se prête à la configuration de boîtes mortes pour traiter plusieurs cas :
+
+| Problème rencontré par | Nature du problème | Queue d'où le message a été extrait | Boîte morte (DLQ) |
+| ---------------------- | ------------------ | ----------------------------------- | ----------------- |
+| `enu-mediation` | erreur technique lors du traitement d'un message d'un SI métier (flux principal) | `all-to-enu-main-q` | `enu-dlq-q` |
+| `enu-mediation` | erreur technique lors du traitement d'un message de `enu-backend` destiné à un SI métier (flux inverse) | `backend-to-mediation-q` | `enu-dlq-q` |
+| SI métier | erreur lors du traitement d'un message de réponse reçu de `enu-mediation` (flux principal) | `enu-to-simetier-X-reply-q` | aucune (cas pas traité) |
+| SI métier | erreur lors du traitement d'un message de notification reçu de `enu-mediation` (flux inverse) | `enu-to-simetier-X-main-q` | aucune (cas pas traité) |
+
+Le diagramme suivant représente la configuration pour le premier cas :
+
+![](./images/queues_rabbitmq_3.jpg)
 
 ## Sécurité
 

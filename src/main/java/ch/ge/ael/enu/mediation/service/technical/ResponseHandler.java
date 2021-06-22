@@ -62,7 +62,7 @@ public class ResponseHandler {
     private String deadLetterRoutingKey;
 
     public void handleOk(Message originalMessage) {
-       log.info("Envoi a RabbitMQ d'un message de reussite");
+        log.info("Envoi a RabbitMQ d'un message de reussite");
         sendReplyMessage(OK, null, originalMessage);
     }
 
@@ -72,7 +72,7 @@ public class ResponseHandler {
      */
     public void handleKo(Exception e, Message originalMessage) {
         if (e instanceof ValidationException) {
-            log.info("Envoi a RabbitMQ d'un message d'erreur client");
+            log.info("Envoi a RabbitMQ du message d'erreur client suivant : {}", e.getMessage());
             sendReplyMessage(KO, e.getMessage(), originalMessage);
         } else {
             log.error("Envoi a RabbitMQ d'un message d'erreur serveur (DLQ), suite a ", e);

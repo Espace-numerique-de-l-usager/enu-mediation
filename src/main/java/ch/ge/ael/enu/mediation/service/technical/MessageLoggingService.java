@@ -44,7 +44,7 @@ public class MessageLoggingService {
     @Value("${app.formservices.url}")
     private String formServicesUrl;
 
-    public void logMessage(Message message) {
+    public void logMessage(Message message, boolean checkCorrelationId) {
         log.info("********************************");
         log.info("*** Message recu de RabbitMQ ***");
         log.info("********************************");
@@ -52,7 +52,7 @@ public class MessageLoggingService {
         String reducedBody = new BodyReducer(maxFileContentSize).reduceBody(message.getBody());
         log.info("Body {}, {}", reducedBody, message.getMessageProperties());
 
-        if (message.getMessageProperties().getHeader(CORRELATION_ID) == null) {
+        if (checkCorrelationId && message.getMessageProperties().getHeader(CORRELATION_ID) == null) {
             log.warn("Le message ne contient pas l'en-tete \"{}\"", CORRELATION_ID);
         }
     }

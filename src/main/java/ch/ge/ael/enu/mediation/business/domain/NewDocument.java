@@ -21,12 +21,11 @@ package ch.ge.ael.enu.mediation.business.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 /**
  * Donnees contenues dans un message JSON d'ajout d'un document a une demarche existante.
- * Reference : JIRA ENU-424.
  */
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NewDocument {
 
     private String idPrestation = null;
