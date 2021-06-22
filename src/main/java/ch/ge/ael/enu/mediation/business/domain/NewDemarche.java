@@ -25,13 +25,11 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-@Data
-@JsonIgnoreProperties(ignoreUnknown = true)
 /**
  * Donnees contenues dans un message JSON de creation d'une nouvelle demarche.
- * <br/>
- * Reference : JIRA ENU-422.
  */
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class NewDemarche {
 
     private String idPrestation;

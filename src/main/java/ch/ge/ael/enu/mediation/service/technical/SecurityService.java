@@ -53,6 +53,13 @@ public class SecurityService {
     }
 
     /**
+     * Rend le SI metier auquel appartient la prestation indiquee, ou null si pas trouve'.
+     */
+    public String getSimetier(String idPrestation) {
+        return simetierByPrestation.get(idPrestation);
+    }
+
+    /**
      * Verifie que le SI metier a l'origine du message a bien le droit d'utiliser la prestation indiquee
      * dans le message.
      */

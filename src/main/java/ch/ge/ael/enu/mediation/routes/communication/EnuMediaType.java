@@ -32,6 +32,12 @@ public class EnuMediaType {
 
     public static final String REPLY = "application/reply-v1.0+json";
 
+    public static final String BROUILLON_DELETION = "application/brouillon-deletion-v1.0+json";
+
+    public static final String DOCUMENT_ACCESS = "application/document-access-v1.0+json";
+
+    public static final String DOCUMENT_RECEPTION_MODE = "application/document-reception-mode-v1.0+json";
+
     private EnuMediaType() {
     }
 
