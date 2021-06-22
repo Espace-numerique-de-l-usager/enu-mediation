@@ -60,9 +60,12 @@ La confidentialité des échanges de messages est un aspect important de la config
 il faut par exemple garantir que les données fiscales des citoyens intégrées dans
 des messages produits par un SI de l'administration fiscale ne puissent jamais
 être vues par un autre SI métier.
-Cette confidentialité est obtenue en créant un échange RabbitMQ pour chaque SI métier,
-avec accès gardé par TLS (SSL).
-Chaque SI métier ne peut donc voir que "son" échange RabbitMQ. 
+Cette confidentialité est obtenue en créant, pour chaque SI métier,
+un utilisateur RabbitMQ, 
+puis un échange RabbitMQ gardé par le mot de passe de cet utilisateur.
+Chaque SI métier ne peut donc voir que "son" échange RabbitMQ.
+
+La communication se fait sous TLS (SSL).
 
 ### Droits d'accès
 

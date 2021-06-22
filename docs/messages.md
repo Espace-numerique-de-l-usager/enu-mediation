@@ -171,9 +171,12 @@ cependant certains messages vont dans l'autre sens.
 | Message | Producteur | Consommateur | Exchange RabbitMQ / queue RabbitMQ |
 | ------- | ---------- | ------------ | ---------------------------------- |
 | réponse à un message | enu-mediation | SI métier | enu-to-si1 / enu-to-si1-main |
-| destruction d'une démarche brouillon | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
-| consultation d'un document par l'usager | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
-| changement de mode de réception des documents par l'usager | enu-backend | SI métier | enu-to-si1 / enu-to-si1-main |
+| destruction d'une démarche brouillon | enu-backend (1)| SI métier | enu-to-si1 / enu-to-si1-main |
+| consultation d'un document par l'usager | enu-backend (1) | SI métier | enu-to-si1 / enu-to-si1-main |
+| changement de mode de réception des documents par l'usager | enu-backend (1) | SI métier | enu-to-si1 / enu-to-si1-main |
+
+(1) enu-backend est le producteur initial du message. En fait, le message est relayé, sans modification,
+par enu-mediation. 
 
 ### Réponse à un message
 
