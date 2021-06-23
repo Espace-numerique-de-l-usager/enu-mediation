@@ -54,21 +54,26 @@ dans le flux inverse.
 
 ### Flux principal et flux inverse : boîte aux lettres morte
 
-La boîte aux lettres morte est un queue dans laquelle on poste des messages en erreur, sans
-espoir immédiat de résoudre l'erreur et de rejouer le message.
+La boîte aux lettres morte est une queue dans laquelle on poste des messages dont le traitement
+a échoué, sans espoir immédiat de résoudre l'erreur.
 
-Le projet se prête à la configuration de boîtes mortes pour traiter plusieurs cas :
+Le projet se prête à la configuration de boîtes mortes pour traiter plusieurs situations :
 
 | Problème rencontré par | Nature du problème | Queue d'où le message a été extrait | Boîte morte (DLQ) |
 | ---------------------- | ------------------ | ----------------------------------- | ----------------- |
-| `enu-mediation` | erreur technique lors du traitement d'un message d'un SI métier (flux principal) | `all-to-enu-main-q` | `enu-dlq-q` |
-| `enu-mediation` | erreur technique lors du traitement d'un message de `enu-backend` destiné à un SI métier (flux inverse) | `backend-to-mediation-q` | `enu-dlq-q` |
+| `enu-mediation` | erreur technique lors du traitement d'un message d'un SI métier (flux principal). Note : les erreurs métiers sont envoyées dans une autre queue - la queue de réponse | `all-to-enu-main-q` | `enu-dlq-q` |
+| `enu-mediation` | erreur lors du traitement d'un message de `enu-backend` destiné à un SI métier (flux inverse) | `backend-to-mediation-q` | `enu-dlq-q` |
 | SI métier | erreur lors du traitement d'un message de réponse reçu de `enu-mediation` (flux principal) | `enu-to-simetier-X-reply-q` | aucune (cas pas traité) |
 | SI métier | erreur lors du traitement d'un message de notification reçu de `enu-mediation` (flux inverse) | `enu-to-simetier-X-main-q` | aucune (cas pas traité) |
 
-Le diagramme suivant représente la configuration pour le premier cas :
+Le diagramme suivant représente la configuration pour la première situation :
 
 ![](./images/queues_rabbitmq_3.jpg)
+
+Note : un traitement fréquent des messages contenus dans une boîte morte est de reverser en vrac les messages
+dans leur queue d'origine.
+Il semblerait donc préférable de définir une boîte morte par queue d'origine.
+La configuration actuelle avec une seule boîte morte n'est sans doute pas idéale : il en faudrait deux.
 
 ## Sécurité
 
