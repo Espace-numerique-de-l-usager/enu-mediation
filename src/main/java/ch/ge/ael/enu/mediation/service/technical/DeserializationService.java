@@ -37,7 +37,7 @@ public class DeserializationService {
         try {
             object = mapper.readValue(content, clazz);
         } catch(Exception e) {
-            log.info("Erreur lors de la deserialisation : {}", e.getMessage());
+            log.info("Erreur lors de la deserialisation en un {} : {}", clazz.getCanonicalName(), e.getMessage());
             throw new IllegalMessageException("Erreur lors de la deserialisation du message JSON : " + e.getMessage());
         }
         return object;
