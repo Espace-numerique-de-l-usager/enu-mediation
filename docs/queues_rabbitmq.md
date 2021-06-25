@@ -55,7 +55,15 @@ dans le flux inverse.
 ### Flux principal et flux inverse : boîte aux lettres morte
 
 La boîte aux lettres morte est une queue dans laquelle on poste des messages dont le traitement
-a échoué, sans espoir immédiat de résoudre l'erreur.
+a échoué et qu'on est sans espoir immédiat de résoudre l'erreur.
+
+Sans boîte morte, par défaut le message en erreur sera immédiatement remis par RabbitMQ dans sa queue,
+puis immédiatement consommé, puis immédiatement en erreur, etc., sans fin.
+La boîte morte "calme" donc le jeu.
+Elle permet également une meilleure exploitation, en faisant apparaître dans la console RabbitMQ
+le message en erreur ;
+en effet, sans boîte morte, il y a un rejeu infini du message,
+mais ce message n'apparaît jamais dans la console RabbitMQ, sinon de manière extrêmement fugace.
 
 Le projet se prête à la configuration de boîtes mortes pour traiter plusieurs situations :
 
@@ -63,10 +71,14 @@ Le projet se prête à la configuration de boîtes mortes pour traiter plusieurs si
 | ---------------------- | ------------------ | ----------------------------------- | ----------------- |
 | `enu-mediation` | erreur technique lors du traitement d'un message d'un SI métier (flux principal). Note : les erreurs métiers sont envoyées dans une autre queue - la queue de réponse | `all-to-enu-main-q` | `enu-dlq-q` |
 | `enu-mediation` | erreur lors du traitement d'un message de `enu-backend` destiné à un SI métier (flux inverse) | `backend-to-mediation-q` | `enu-dlq-q` |
-| SI métier | erreur lors du traitement d'un message de réponse reçu de `enu-mediation` (flux principal) | `enu-to-simetier-X-reply-q` | aucune (cas pas traité) |
-| SI métier | erreur lors du traitement d'un message de notification reçu de `enu-mediation` (flux inverse) | `enu-to-simetier-X-main-q` | aucune (cas pas traité) |
+| SI métier 1 | erreur lors du traitement d'un message de réponse reçu de `enu-mediation` (flux principal) | `enu-to-simetier1-reply-q` | `simetier1-dlq-q` |
+| SI métier 1| erreur lors du traitement d'un message de notification reçu de `enu-mediation` (flux inverse) | `enu-to-simetier1-main-q` | `simetier1-dlq-q` |
 
-Le diagramme suivant représente la configuration pour la première situation :
+Comme pour les queues "normales", du côté des SI métier on a deux boîtes mortes pour chaque si SI métier,
+tandis que du côté de l'Espace numérique on a deux boîtes mortes en tout et pour tout.
+
+Le diagramme suivant représente la configuration RabbitMQ pour la première des situations répertoriées
+dans le tableau précédent :
 
 ![](./images/queues_rabbitmq_3.jpg)
 
