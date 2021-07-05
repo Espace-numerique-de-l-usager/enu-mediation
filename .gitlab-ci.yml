@@ -22,30 +22,30 @@ default:
     name: $DOCKER_URL/ch/ge/cti/build/docker-npm-maven:1.0.1
 
 stages:
-  - build
+#  - build
   - deploy
   - release
 
-build_and_analyse_sonarqube_master:
-  stage: build
-  script:
-    - mvn $MAVEN_CLI_OPTS clean verify $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1
-  only:
-  - master
-
-build_on_and_analyse_sonarqube_preview:
-  stage: build
-  script:
-    - mvn $MAVEN_CLI_OPTS clean verify $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1 -Dsonar.gitlab.unique_issue_per_inline=true -Dsonar.branch.name=$CI_COMMIT_REF_NAME
-  only:
-  - master
-
-analyse_clm_master:
-  stage: build
-  script:
-    - mvn $MAVEN_CLI_OPTS $CLM_MAVEN_GOAL -Dclm.applicationId=$CLM_APPLICATION_ID -Dclm.serverUrl=$CLM_URL -Dclm.serverId=$CLM_SERVER_ID
-  only:
-    - master
+#build_and_analyse_sonarqube_master:
+#  stage: build
+#  script:
+#    - mvn $MAVEN_CLI_OPTS clean verify $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1
+#  only:
+#  - master
+#
+#build_on_and_analyse_sonarqube_preview:
+#  stage: build
+#  script:
+#    - mvn $MAVEN_CLI_OPTS clean verify $SONAR_MAVEN_GOAL -Dsonar.host.url=$SonarQube_URL -Dsonar.login=$SONAR_LOGIN -Dsonar.gitlab.project_id=$CI_PROJECT_PATH -Dsonar.gitlab.commit_sha=$CI_COMMIT_SHA -Dsonar.gitlab.ref_name=$CI_COMMIT_REF_NAME -Dsonar.gitlab.max_blocker_issues_gate=-1 -Dsonar.gitlab.max_critical_issues_gate=-1 -Dsonar.gitlab.unique_issue_per_inline=true -Dsonar.branch.name=$CI_COMMIT_REF_NAME
+#  only:
+#  - master
+#
+#analyse_clm_master:
+#  stage: build
+#  script:
+#    - mvn $MAVEN_CLI_OPTS $CLM_MAVEN_GOAL -Dclm.applicationId=$CLM_APPLICATION_ID -Dclm.serverUrl=$CLM_URL -Dclm.serverId=$CLM_SERVER_ID
+#  only:
+#    - master
 
 deploy_master:
   stage: deploy
