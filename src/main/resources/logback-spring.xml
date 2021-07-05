@@ -15,9 +15,26 @@
 		</filter>
 	</appender>
 
-	<!-- Root logger -->
-	<root level="INFO">
-		<appender-ref ref="FILE" />
-	</root>
+	<!-- Console appender -->
+	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder>
+			<pattern>%d{HH:mm:ss.SSS} %-5level %msg  \(%logger{36}.%M %line\)%n</pattern>
+		</encoder>
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>INFO</level>
+		</filter>
+	</appender>
+
+	<springProfile name="!dev">
+		<root level="INFO">
+			<appender-ref ref="FILE" />
+		</root>
+	</springProfile>
+
+	<springProfile name="dev">
+		<root level="INFO">
+			<appender-ref ref="STDOUT" />
+		</root>
+	</springProfile>
 
 </configuration>

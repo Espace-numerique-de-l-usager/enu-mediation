@@ -26,7 +26,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)public class FormUrl {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class FormUrl {
 
     private String baseUrl;
 

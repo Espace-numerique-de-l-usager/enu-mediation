@@ -64,7 +64,7 @@ public class InverseRouter {
     @Resource
     private ResponseHandler responseHandler;
 
-    private List<String> validContentTypes = Arrays.asList(
+    private final List<String> validContentTypes = Arrays.asList(
             BROUILLON_DELETION,
             DOCUMENT_ACCESS,
             DOCUMENT_RECEPTION_MODE);

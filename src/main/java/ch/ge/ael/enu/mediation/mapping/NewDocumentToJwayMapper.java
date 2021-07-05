@@ -18,8 +18,8 @@
  */
 package ch.ge.ael.enu.mediation.mapping;
 
-import ch.ge.ael.enu.mediation.business.domain.DocumentType;
-import ch.ge.ael.enu.mediation.business.domain.NewDocument;
+import ch.ge.ael.enu.business.domain.v1_0.DocumentType;
+import ch.ge.ael.enu.business.domain.v1_0.NewDocument;
 import ch.ge.ael.enu.mediation.jway.model.JwayDocumentType;
 import ch.ge.ael.enu.mediation.util.file.FileNameSanitizer;
 import ch.ge.ael.enu.mediation.util.mime.MimeUtils;

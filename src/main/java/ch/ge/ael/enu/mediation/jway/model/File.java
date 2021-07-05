@@ -23,6 +23,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -63,7 +64,7 @@ public class File {
      */
 //    @JsonDeserialize(using = JwayDateDeserializer.class)
 //    private LocalDateTime toDate;
-    private String toDate = null;
+    private LocalDate toDate = null;
 
     private String redirectUrl = null;
 

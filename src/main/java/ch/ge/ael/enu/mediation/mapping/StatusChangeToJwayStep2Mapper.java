@@ -19,11 +19,14 @@
 package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.mediation.jway.model.FileForWorkflow;
-import ch.ge.ael.enu.mediation.business.domain.StatusChange;
+import ch.ge.ael.enu.business.domain.v1_0.StatusChange;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.format.DateTimeFormatter;
 
 @Configuration
 public class StatusChangeToJwayStep2Mapper {
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public FileForWorkflow map(StatusChange statusChange) {
         FileForWorkflow file = new FileForWorkflow();
@@ -38,7 +41,7 @@ public class StatusChangeToJwayStep2Mapper {
                     .append("|")
                     .append(statusChange.getTypeAction());
             file.setStepDescription(sb.toString());
-            file.setToDate(statusChange.getDateEcheanceAction());
+            file.setToDate(statusChange.getDateEcheanceAction().format(FORMATTER));
         }
 
         if (statusChange.getTypeAction() != null) {
@@ -49,7 +52,7 @@ public class StatusChangeToJwayStep2Mapper {
             file.setStepDescription(sb.toString());
         }
 
-        file.setToDate(statusChange.getDateEcheanceAction());
+        file.setToDate(statusChange.getDateEcheanceAction().format(FORMATTER));
 
         return file;
     }

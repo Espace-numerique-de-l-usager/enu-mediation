@@ -23,7 +23,7 @@ import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.jway.model.Form;
 import ch.ge.ael.enu.mediation.jway.model.FormUrl;
 import ch.ge.ael.enu.mediation.jway.model.User;
-import ch.ge.ael.enu.mediation.business.domain.NewSuggestion;
+import ch.ge.ael.enu.business.domain.v1_0.NewSuggestion;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.ZonedDateTime;
@@ -60,7 +60,7 @@ public class NewSuggestionToJwayMapper {
         form.setUrls(new ArrayList<>());
         FormUrl formUrl = new FormUrl();
         form.getUrls().add(formUrl);
-        formUrl.setBaseUrl(newSuggestion.getUrlAction());
+        formUrl.setBaseUrl(newSuggestion.getUrlAction().toString());
 
         return file;
     }

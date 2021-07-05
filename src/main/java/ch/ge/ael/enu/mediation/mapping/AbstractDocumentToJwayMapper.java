@@ -24,6 +24,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @Slf4j
 public class AbstractDocumentToJwayMapper {
@@ -36,14 +37,14 @@ public class AbstractDocumentToJwayMapper {
 
     protected HttpHeaders createHeaders(String userId) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
         return headers;
     }
 
     public static class CustomByteArrayResource extends ByteArrayResource {
 
-        private String fileName;
+        private final String fileName;
 
         public CustomByteArrayResource(byte[] fileContent, String fileName) {
             super(fileContent);

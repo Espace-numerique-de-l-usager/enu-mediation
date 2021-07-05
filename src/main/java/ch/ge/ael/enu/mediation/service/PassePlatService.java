@@ -20,6 +20,7 @@ package ch.ge.ael.enu.mediation.service;
 
 import ch.ge.ael.enu.mediation.exception.TechnicalException;
 import ch.ge.ael.enu.mediation.service.technical.SecurityService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -62,7 +63,7 @@ public class PassePlatService {
     private String extractRoutingKey(Message message) {
         final String ID_PRESTATION = "idPrestation";
         try {
-            Map<String, Object> deserializedMessage = mapper.readValue(message.getBody(), Map.class);
+            Map<String, Object> deserializedMessage = mapper.readValue(message.getBody(), new TypeReference<Map<String, Object>>() {});
             String idPrestation = (String) deserializedMessage.get(ID_PRESTATION);
             return securityService.getSimetier(idPrestation);
         } catch (Exception e) {

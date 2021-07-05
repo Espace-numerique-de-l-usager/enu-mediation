@@ -21,25 +21,26 @@
 
 package ch.ge.ael.enu.mediation.service.technical;
 
-import ch.ge.ael.enu.mediation.business.domain.Prestation;
+import ch.ge.ael.enu.business.domain.v1_0.Prestation;
 import ch.ge.ael.enu.mediation.business.exception.ValidationException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.util.Map;
 
 import static ch.ge.ael.enu.mediation.routes.communication.Header.SI_METIER;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class SecurityService {
 
-    @Resource
-    private DeserializationService deserializationService;
+    private final DeserializationService deserializationService;
 
     @Value("${app.prestation.simetier}")
     private String simetierByPrestationJson;
@@ -48,7 +49,7 @@ public class SecurityService {
 
     @PostConstruct
     public void init() {
-        simetierByPrestation = deserializationService.deserialize(simetierByPrestationJson.getBytes(), Map.class);
+        simetierByPrestation = deserializationService.deserialize(simetierByPrestationJson.getBytes(), new TypeReference<Map<String,String>>() {});
         log.info("Table prestation -> SI metier : {}", simetierByPrestation);
     }
 

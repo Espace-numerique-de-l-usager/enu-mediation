@@ -43,4 +43,14 @@ public class DeserializationService {
         return object;
     }
 
+    public <T> T deserialize(byte[] content, com.fasterxml.jackson.core.type.TypeReference<T> valueTypeRef) {
+        T object;
+        try {
+            object = mapper.readValue(content, valueTypeRef);
+        } catch(Exception e) {
+            log.info("Erreur lors de la deserialisation en un {} : {}", valueTypeRef.getType().getClass().getCanonicalName(), e.getMessage());
+            throw new IllegalMessageException("Erreur lors de la deserialisation du message JSON : " + e.getMessage());
+        }
+        return object;
+    }
 }

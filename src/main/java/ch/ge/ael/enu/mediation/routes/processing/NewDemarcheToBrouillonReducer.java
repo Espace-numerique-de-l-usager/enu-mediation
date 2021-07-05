@@ -18,11 +18,11 @@
  */
 package ch.ge.ael.enu.mediation.routes.processing;
 
-import ch.ge.ael.enu.mediation.business.domain.NewDemarche;
+import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.BROUILLON;
+import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.BROUILLON;
 
 /**
  * Pour une NewDemarche dans n'importe quel etat, cree une NewDemarche a l'etat de brouillon.
@@ -34,11 +34,11 @@ public class NewDemarcheToBrouillonReducer {
     public NewDemarche reduce(NewDemarche newDemarche) {
         NewDemarche draft = new NewDemarche();
 
-        draft.setEtat(BROUILLON.name());
+        draft.setEtat(BROUILLON.toString());
         draft.setIdPrestation(newDemarche.getIdPrestation());
         draft.setIdUsager(newDemarche.getIdUsager());
 
-        if (newDemarche.getEtat().equals(BROUILLON.name())) {
+        if (newDemarche.getEtat().equals(BROUILLON.toString())) {
             // hack : si la demarche est un brouillon, on ajoute "DRAFT" au nom de la demarche.
             // Sans cette distinction, lors de la creation d'une demarche a l'etat "Deposee", l'application enu-backend
             // enverra coup sur coup 2 courriels a l'usager :

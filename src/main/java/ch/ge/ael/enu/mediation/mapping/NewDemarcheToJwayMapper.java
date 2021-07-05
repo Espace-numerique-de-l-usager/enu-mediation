@@ -23,12 +23,10 @@ import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.jway.model.Form;
 import ch.ge.ael.enu.mediation.jway.model.FormUrl;
 import ch.ge.ael.enu.mediation.jway.model.User;
-import ch.ge.ael.enu.mediation.business.domain.DemarcheStatus;
-import ch.ge.ael.enu.mediation.business.domain.NewDemarche;
+import ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus;
+import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
 
 import java.util.ArrayList;
-
-import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.BROUILLON;
 
 public class NewDemarcheToJwayMapper {
 
@@ -45,11 +43,11 @@ public class NewDemarcheToJwayMapper {
         application.setName(newDemarche.getIdPrestation());
         file.setApplication(application);
 
-        String jwayStatus = new StatusMapper().mapStringToJway(newDemarche.getEtat());
+        String jwayStatus = new StatusMapper().mapEnumToJway(DemarcheStatus.valueOf(newDemarche.getEtat())).toString();
         file.setWorkflowStatus(jwayStatus);
         file.setStatus(jwayStatus);
 
-        if (is(newDemarche, BROUILLON)) {
+        if (isBrouillon(newDemarche)) {
             if (newDemarche.getLibelleAction() != null) {
                 file.setStepDescription("|" + newDemarche.getLibelleAction());
             }
@@ -62,15 +60,15 @@ public class NewDemarcheToJwayMapper {
                 form.setUrls(new ArrayList<>());
                 FormUrl formUrl = new FormUrl();
                 form.getUrls().add(formUrl);
-                formUrl.setBaseUrl(newDemarche.getUrlAction());
+                formUrl.setBaseUrl(newDemarche.getUrlAction().toString());
             }
         }
 
         return file;
     }
 
-    private boolean is(NewDemarche newDemarche, DemarcheStatus status) {
-        return DemarcheStatus.valueOf(newDemarche.getEtat()) == status;
+    private boolean isBrouillon(NewDemarche newDemarche) {
+        return newDemarche.getEtat().equals(DemarcheStatus.BROUILLON.toString());
     }
 
 }

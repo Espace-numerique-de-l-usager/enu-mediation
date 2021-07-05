@@ -18,11 +18,11 @@
  */
 package ch.ge.ael.enu.mediation.service;
 
-import ch.ge.ael.enu.mediation.business.domain.NewCourrier;
-import ch.ge.ael.enu.mediation.business.domain.NewCourrierDocument;
-import ch.ge.ael.enu.mediation.business.domain.NewDocument;
-import ch.ge.ael.enu.mediation.business.validation.NewCourrierValidator;
-import ch.ge.ael.enu.mediation.business.validation.NewDocumentValidator;
+import ch.ge.ael.enu.business.domain.v1_0.NewCourrier;
+import ch.ge.ael.enu.business.domain.v1_0.NewCourrierDocument;
+import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
+import ch.ge.ael.enu.business.domain.v1_0.NewDocument;
+import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import ch.ge.ael.enu.mediation.jway.model.Document;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewCourrierDocumentToJwayMapper;
@@ -42,8 +42,14 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static ch.ge.ael.enu.mediation.routes.communication.Header.X_CSRF_TOKEN;
 import static java.lang.String.format;
@@ -85,20 +91,17 @@ public class DocumentService {
     @Resource
     private FormServicesRestInvoker formServices;
 
-    private NewDocumentValidator newDocumentValidator;
-
-    private NewCourrierValidator newCourrierValidator;
-
     private NewCourrierSplitter splitter;
 
     private NewDocumentToJwayMapper newDocumentToJwayMapper;
 
     private NewCourrierDocumentToJwayMapper newCourrierDocumentToJwayMapper;
 
+    private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator = factory.getValidator();
+
     @PostConstruct
     private void init() {
-        newDocumentValidator = new NewDocumentValidator(allowedMimeTypes);
-        newCourrierValidator = new NewCourrierValidator(allowedMimeTypes);
         splitter = new NewCourrierSplitter();
         newDocumentToJwayMapper = new NewDocumentToJwayMapper(fileNameSanitizationRegex);
         newCourrierDocumentToJwayMapper = new NewCourrierDocumentToJwayMapper(fileNameSanitizationRegex);
@@ -109,7 +112,15 @@ public class DocumentService {
         NewDocument newDocument = deserializationService.deserialize(message.getBody(), NewDocument.class);
 
         // validation metier du message
-        newDocumentValidator.validate(newDocument);
+        Set<ConstraintViolation<NewDocument>> errors = validator.validate(newDocument);
+        if(!errors.isEmpty()) {
+            // Gestion des erreurs de validation
+            ArrayList<String> texts = new ArrayList<>();
+            errors.forEach(error -> texts.add(error.getPropertyPath() + ": " + error.getMessage() + ". Valeur passée: (" + error.getInvalidValue() + ")" ));
+            throw new ValidationException(texts.toString());
+        }
+
+
         String idDemarcheSiMetier = newDocument.getIdDemarcheSiMetier();
         String idUsager = newDocument.getIdUsager();
 
@@ -145,7 +156,13 @@ public class DocumentService {
         NewCourrier newCourrier = deserializationService.deserialize(message.getBody(), NewCourrier.class);
 
         // validation metier du message
-        newCourrierValidator.validate(newCourrier);
+        Set<ConstraintViolation<NewCourrier>> errors = validator.validate(newCourrier);
+        if(!errors.isEmpty()) {
+            // Gestion des erreurs de validation
+            ArrayList<String> texts = new ArrayList<>();
+            errors.forEach(error -> texts.add(error.getPropertyPath() + ": " + error.getMessage() + ". Valeur passée: (" + error.getInvalidValue() + ")" ));
+            throw new ValidationException(texts.toString());
+        }
 
         // ajout au courrier d'une clef technique. Cette clef sera affectee a chaque document constituant le
         // courrier et permettra donc de regrouper les documents du courrier

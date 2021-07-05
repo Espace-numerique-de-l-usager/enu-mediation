@@ -18,8 +18,8 @@
  */
 package ch.ge.ael.enu.mediation.service.technical;
 
-import ch.ge.ael.enu.mediation.business.domain.Response;
-import ch.ge.ael.enu.mediation.business.domain.ResponseType;
+import ch.ge.ael.enu.business.domain.v1_0.Response;
+import ch.ge.ael.enu.business.domain.v1_0.ResponseType;
 import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,8 +31,8 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
-import static ch.ge.ael.enu.mediation.business.domain.ResponseType.KO;
-import static ch.ge.ael.enu.mediation.business.domain.ResponseType.OK;
+import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.KO;
+import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.OK;
 import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.REPLY;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.CORRELATION_ID;

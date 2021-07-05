@@ -21,21 +21,24 @@ package ch.ge.ael.enu.mediation.mapping;
 import ch.ge.ael.enu.mediation.jway.model.FileForStep;
 import ch.ge.ael.enu.mediation.jway.model.Form;
 import ch.ge.ael.enu.mediation.jway.model.FormUrl;
-import ch.ge.ael.enu.mediation.business.domain.DemarcheStatus;
-import ch.ge.ael.enu.mediation.business.domain.StatusChange;
+import ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus;
+import ch.ge.ael.enu.business.domain.v1_0.StatusChange;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
-import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.TERMINEE;
+import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.TERMINEE;
 
 public class StatusChangeToJwayStep1Mapper {
+
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     public FileForStep map(StatusChange statusChange) {
         FileForStep file = new FileForStep();
 
         file.setStep(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
 
-        file.setLastUpdate(statusChange.getDateNouvelEtat());
+        file.setLastUpdate(statusChange.getDateNouvelEtat().format(FORMATTER));
 
         String baseUrl = extractBaseUrl(statusChange);
         if (baseUrl != null) {
@@ -67,9 +70,9 @@ public class StatusChangeToJwayStep1Mapper {
      */
     private String extractBaseUrl(StatusChange statusChange) {
         if (isNewStatus(statusChange, TERMINEE)) {
-            return statusChange.getUrlRenouvellementDemarche();
+            return statusChange.getUrlRenouvellementDemarche().toString();
         } else {
-            return statusChange.getUrlAction();
+            return statusChange.getUrlAction().toString();
         }
     }
 

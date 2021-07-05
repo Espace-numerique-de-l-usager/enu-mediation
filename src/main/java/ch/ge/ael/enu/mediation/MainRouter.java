@@ -24,19 +24,13 @@ import ch.ge.ael.enu.mediation.service.DocumentService;
 import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import ch.ge.ael.enu.mediation.service.technical.ResponseHandler;
 import ch.ge.ael.enu.mediation.service.technical.SecurityService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
-
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.NEW_COURRIER;
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.NEW_DEMARCHE;
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.NEW_DOCUMENT;
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.NEW_SUGGESTION;
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.STATUS_CHANGE;
+import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.*;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
 
 /**
@@ -44,22 +38,18 @@ import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class MainRouter {
 
-    @Resource
-    private MessageLoggingService messageLoggingService;
+    private final MessageLoggingService messageLoggingService;
 
-    @Resource
-    private DemarcheService demarcheService;
+    private final DemarcheService demarcheService;
 
-    @Resource
-    private DocumentService courrierService;
+    private final DocumentService courrierService;
 
-    @Resource
-    private SecurityService securityService;
+    private final SecurityService securityService;
 
-    @Resource
-    private ResponseHandler responseHandler;
+    private final ResponseHandler responseHandler;
 
     /**
      * Le principal point d'entree de l'application : consommation d'un message RabbitMQ du flux principal.
@@ -79,23 +69,28 @@ public class MainRouter {
 
     private void route(Message message) {
         String contentType = message.getMessageProperties().getHeader(CONTENT_TYPE);
-        if (StringUtils.isBlank(contentType)) {
-            throw new IllegalMessageException("L'en-tete \"" + CONTENT_TYPE + "\" manque dans le message");
-        } else if (contentType.equals(NEW_DEMARCHE)) {
-            demarcheService.handleNewDemarche(message);
-        } else if (contentType.equals(STATUS_CHANGE)) {
-            demarcheService.handleStatusChange(message);
-        } else if (contentType.equals(NEW_SUGGESTION)) {
-            demarcheService.handleNewSuggestion(message);
-        } else if (contentType.equals(NEW_DOCUMENT)) {
-            courrierService.handleNewDocument(message);
-        } else if (contentType.equals(NEW_COURRIER)) {
-            courrierService.handleNewCourrier(message);
-        } else {
-            throw new IllegalMessageException(
-                    "La valeur \"" + contentType + "\" de l'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
+        switch (contentType==null ? "" : contentType) {
+            case "":
+                throw new IllegalMessageException("L'en-tete \"" + CONTENT_TYPE + "\" manque dans le message");
+            case NEW_DEMARCHE:
+                demarcheService.handleNewDemarche(message);
+                break;
+            case STATUS_CHANGE:
+                demarcheService.handleStatusChange(message);
+                break;
+            case NEW_SUGGESTION:
+                demarcheService.handleNewSuggestion(message);
+                break;
+            case NEW_DOCUMENT:
+                courrierService.handleNewDocument(message);
+                break;
+            case NEW_COURRIER:
+                courrierService.handleNewCourrier(message);
+                break;
+            default:
+                throw new IllegalMessageException(
+                        "La valeur \"" + contentType + "\" de l'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
         }
         responseHandler.handleOk(message);
     }
-
 }

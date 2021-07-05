@@ -18,14 +18,14 @@
  */
 package ch.ge.ael.enu.mediation.mapping;
 
-import ch.ge.ael.enu.mediation.business.domain.DemarcheStatus;
-import ch.ge.ael.enu.mediation.business.domain.NewDemarche;
-import ch.ge.ael.enu.mediation.business.domain.StatusChange;
+import ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus;
+import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
+import ch.ge.ael.enu.business.domain.v1_0.StatusChange;
 
 import java.time.format.DateTimeFormatter;
 
-import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.DEPOSEE;
-import static ch.ge.ael.enu.mediation.business.domain.DemarcheStatus.EN_TRAITEMENT;
+import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.DEPOSEE;
+import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.EN_TRAITEMENT;
 
 /**
  * Transforme une requete de creation de demarche (NewDemarche) en une requete de changement d'etat (StatusChange).
@@ -48,9 +48,9 @@ public class NewDemarcheToStatusChangeMapper {
         statusChange.setIdDemarcheSiMetier(newDemarche.getIdDemarcheSiMetier());
         statusChange.setNouvelEtat(demarcheStatus.name());
         if (demarcheStatus == DEPOSEE) {
-            statusChange.setDateNouvelEtat(newDemarche.getDateDepot().format(FORMATTER));
+            statusChange.setDateNouvelEtat(newDemarche.getDateDepot().toLocalDate());
         } else if (demarcheStatus == EN_TRAITEMENT) {
-            statusChange.setDateNouvelEtat(newDemarche.getDateMiseEnTraitement().format(FORMATTER));
+            statusChange.setDateNouvelEtat(newDemarche.getDateMiseEnTraitement().toLocalDate());
             statusChange.setLibelleAction(newDemarche.getLibelleAction());
             statusChange.setUrlAction(newDemarche.getUrlAction());
             statusChange.setTypeAction(newDemarche.getTypeAction());
