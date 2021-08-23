@@ -20,7 +20,7 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
     - name: Build and analyze with Sonar
-      run: mvn -B verify sonar:sonar -Dsonar.projectKey=ch.ge.ael.enu:enu-mediation -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=etat-de-geneve-github
+      run: mvn -B -U verify sonar:sonar -Dsonar.host.url=https://sonarcloud.io -Dsonar.organization=espace-numerique-de-l-usager -Dsonar.projectKey=Espace-numerique-de-l-usager_enu-mediation
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_EDG }}
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
