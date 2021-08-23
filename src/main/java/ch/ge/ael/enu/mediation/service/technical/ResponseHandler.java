@@ -97,6 +97,8 @@ public class ResponseHandler {
             msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
             msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
             msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
+            msg.getMessageProperties().setContentType(REPLY);
+            msg.getMessageProperties().setContentEncoding("UTF-8");
             return msg;
         });
     }
