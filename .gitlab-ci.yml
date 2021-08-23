@@ -2,6 +2,10 @@ variables:
   # fix for old git version
   GIT_STRATEGY: clone
   GIT_SSL_NO_VERIFY: "true"
+  # Proxy OCSIN
+  HTTP_PROXY: 'http://***REMOVED***'
+  HTTPS_PROXY: 'http://***REMOVED***'
+  NO_PROXY: 'localhost,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,10.145.38.211,.***REMOVED***,***REMOVED***'
   # config Maven
   MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
   MAVEN_OPTS: "-Dmaven.repo.local=/cache/.m2/repository"
@@ -12,6 +16,7 @@ variables:
   CLM_MAVEN_GOAL: com.sonatype.clm:clm-maven-plugin:2.12.1:evaluate
   CLM_SERVER_ID: clm_server
   CLM_APPLICATION_ID: enu-mediation
+  #   DOCKER_IMAGE: ***REMOVED***/ch/ge/cti/build/alpine-maven-git-node:6
 
 default:
   tags:
@@ -25,6 +30,14 @@ stages:
 #  - build
   - deploy
   - release
+
+# Cache downloaded dependencies and plugins between builds.
+# To keep cache across branches add 'key: "$CI_JOB_NAME"'
+cache:
+  untracked: true
+  key: "$CI_PROJECT_ID"
+  paths:
+    - /cache/.m2/repository
 
 #build_and_analyse_sonarqube_master:
 #  stage: build
@@ -68,5 +81,8 @@ release_master:
     - git config --global user.email "$RUNNER_EMAIL"
     - git config --global user.name "$RUNNER_USERNAME"
     - git checkout $CI_COMMIT_REF_NAME
-    - mvn $MAVEN_CLI_OPTS release:prepare release:perform -Dresume=false -Dusername=$GITLAB_USER -Dpassword=$GITLAB_PASSWORD -Darguments="-DskipTests"
+    - mvn $MAVEN_CLI_OPTS release:prepare release:perform -DscmCommentPrefix='[skip ci] ' -Dresume=false -Darguments="-DskipTests -Dmaven.javadoc.skip=true" -DignoreSnapshots=true -Dusername=$GITLAB_USER -Dpassword=$GITLAB_PASSWORD
+  artifacts:
+    paths:
+      - target/*.war
   when: manual

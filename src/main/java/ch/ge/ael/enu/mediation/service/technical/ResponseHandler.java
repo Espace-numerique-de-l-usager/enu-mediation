@@ -95,6 +95,8 @@ public class ResponseHandler {
         template.convertAndSend(replyExchange, replyRoutingKey, jsonResponse, msg -> {
             msg.getMessageProperties().setHeader(CONTENT_TYPE, REPLY);
             msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
+            msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
+            msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
             return msg;
         });
     }

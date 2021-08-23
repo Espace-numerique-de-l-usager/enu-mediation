@@ -22,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class FileNameSanitizer {
 
-    private String sanitizationRegex;
+    private final String sanitizationRegex;
 
     public FileNameSanitizer(String sanitizationRegex) {
         if (StringUtils.isBlank(sanitizationRegex)) {
