@@ -27,7 +27,7 @@
     </distributionManagement>
 
     <properties>
-        <enu-interface-modele.version>0.21</enu-interface-modele.version>
+        <enu-interface-modele.version>0.22</enu-interface-modele.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.projectKey>enu-mediation</sonar.projectKey>
         <sonar.projectName>enu-mediation</sonar.projectName>
@@ -115,10 +115,12 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
+            <version>3.12.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.httpcomponents</groupId>
             <artifactId>httpmime</artifactId>
+            <version>4.5.12</version>
         </dependency>
         <dependency>
             <groupId>commons-beanutils</groupId>
@@ -151,6 +153,7 @@
         <dependency>
             <groupId>org.assertj</groupId>
             <artifactId>assertj-core</artifactId>
+            <version>3.20.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
