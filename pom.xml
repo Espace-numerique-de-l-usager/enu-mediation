@@ -27,7 +27,7 @@
     </distributionManagement>
 
     <properties>
-        <enu-interface-modele.version>0.20</enu-interface-modele.version>
+        <enu-interface-modele.version>0.21</enu-interface-modele.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.projectKey>enu-mediation</sonar.projectKey>
         <sonar.projectName>enu-mediation</sonar.projectName>
