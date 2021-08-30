@@ -4,7 +4,7 @@
 
     <groupId>ch.ge.ael.enu</groupId>
     <artifactId>enu-mediation</artifactId>
-    <version>2.17-SNAPSHOT</version>
+    <version>2.17</version>
     <packaging>war</packaging>
     <description>Médiation et transformation de données pour l'ENU</description>
 
@@ -12,7 +12,7 @@
         <connection>scm:git:${env.GITLAB_PROJECT_BASE_URL}/enu-mediation.git</connection>
         <developerConnection>scm:git:${env.GITLAB_PROJECT_BASE_URL}/enu-mediation.git</developerConnection>
         <url>${env.GITLAB_PROJECT_BASE_URL}/enu-mediation.git</url>
-        <tag>enu-mediation-2.4</tag>
+        <tag>enu-mediation-2.17</tag>
     </scm>
 
     <distributionManagement>
