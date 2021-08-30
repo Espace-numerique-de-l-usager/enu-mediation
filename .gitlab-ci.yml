@@ -3,8 +3,8 @@ variables:
   GIT_STRATEGY: clone
   GIT_SSL_NO_VERIFY: "true"
   # config Maven
-  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode"
-  MAVEN_OPTS: "-Dmaven.repo.local=/cache/.m2/repository"
+  MAVEN_CLI_OPTS: "-s .m2/settings.xml --batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
+  MAVEN_OPTS: "-Dhttps.protocols=TLSv1.2 -Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
   # config SonarQube
   SONAR_MAVEN_GOAL: org.sonarsource.scanner.maven:sonar-maven-plugin:3.7.0.1746:sonar
   SONAR_USER_HOME: /cache/sonar
@@ -28,7 +28,7 @@ cache:
   untracked: true
   key: "$CI_PROJECT_ID"
   paths:
-    - /cache/.m2/repository
+    - .m2/repository
 
 stages:
   - build
