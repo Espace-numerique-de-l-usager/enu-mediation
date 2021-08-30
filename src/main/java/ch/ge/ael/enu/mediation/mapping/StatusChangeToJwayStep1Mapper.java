@@ -72,7 +72,7 @@ public class StatusChangeToJwayStep1Mapper {
         if (isNewStatus(statusChange, TERMINEE)) {
             return statusChange.getUrlRenouvellementDemarche().toString();
         } else {
-            return statusChange.getUrlAction().toString();
+            return statusChange.getUrlAction() == null ? null : statusChange.getUrlAction().toString();
         }
     }
 
