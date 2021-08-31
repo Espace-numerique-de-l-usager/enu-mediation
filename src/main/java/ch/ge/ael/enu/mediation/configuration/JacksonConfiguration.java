@@ -18,6 +18,8 @@
  */
 package ch.ge.ael.enu.mediation.configuration;
 
+import ch.ge.ael.enu.mediation.serialization.IsoDateTimeDeserializer;
+import ch.ge.ael.enu.mediation.serialization.JwayDateDeserializer;
 import ch.ge.ael.enu.mediation.serialization.MillisOrLocalDateTimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -44,6 +46,8 @@ public class JacksonConfiguration {
         ObjectMapper jackson = new ObjectMapper();
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addDeserializer(LocalDateTime.class, new MillisOrLocalDateTimeDeserializer());
+        javaTimeModule.addDeserializer(LocalDateTime.class, new IsoDateTimeDeserializer());
+        javaTimeModule.addDeserializer(LocalDateTime.class, new JwayDateDeserializer());
         jackson.registerModule(javaTimeModule);
         jackson.setDateFormat(DateFormat.getDateInstance());
         jackson.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

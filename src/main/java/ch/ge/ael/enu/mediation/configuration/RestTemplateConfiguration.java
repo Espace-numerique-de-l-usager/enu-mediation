@@ -37,7 +37,7 @@ import javax.net.ssl.SSLContext;
 
 @Configuration
 @RequiredArgsConstructor
-public class ApplicationConfiguration {
+public class RestTemplateConfiguration {
 
     @Value("${app.formservices.ssl.trust-store.resource}")
     private String trustStorePath;
