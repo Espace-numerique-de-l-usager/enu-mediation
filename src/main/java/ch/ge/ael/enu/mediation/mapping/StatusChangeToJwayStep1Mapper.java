@@ -51,11 +51,9 @@ public class StatusChangeToJwayStep1Mapper {
         }
 
         if (statusChange.getTypeAction() != null) {
-            StringBuilder sb = new StringBuilder()
-                    .append(statusChange.getLibelleAction())
-                    .append("|")
-                    .append(statusChange.getTypeAction());
-            file.setStepDescription(sb.toString());
+            file.setStepDescription(statusChange.getLibelleAction() +
+                    "|" +
+                    statusChange.getTypeAction());
         }
 
         return file;

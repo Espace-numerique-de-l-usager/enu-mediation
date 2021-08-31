@@ -137,11 +137,9 @@ public class DemarcheService {
             throw new ValidationException(texts.toString());
         }
 
-
         // creation dans FormServices de la demarche a l'etat de pre-brouillon
         File file = newSuggestionToJwayMapper.map(newSuggestion);
-        ParameterizedTypeReference<File> typeReference = new ParameterizedTypeReference<File>() {};
-        File createdFile = formServices.post("alpha/file", file, newSuggestion.getIdUsager(), typeReference);
+        File createdFile = formServices.post("alpha/file", file, newSuggestion.getIdUsager(), new ParameterizedTypeReference<File>() {});
         log.info("Suggestion creee, uuid = [{}]", createdFile.getUuid());
     }
 

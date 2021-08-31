@@ -18,6 +18,9 @@
  */
 package ch.ge.ael.enu.mediation.service.technical;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
@@ -44,6 +47,7 @@ import static org.springframework.http.HttpMethod.PUT;
  */
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class FormServicesRestInvoker {
 
     public static final String ID_USAGER = "idUsager";
@@ -51,11 +55,9 @@ public class FormServicesRestInvoker {
     @Value("${app.formservices.url}")
     private String formServicesUrl;
 
-    @Resource
-    private RestTemplate restTemplate;
-
-    @Resource
-    private MessageLoggingService messageLoggingService;
+    private final ObjectMapper jackson;
+    private final RestTemplate restTemplate;
+    private final MessageLoggingService messageLoggingService;
 
     /**
      * Requete HEAD.
@@ -103,23 +105,32 @@ public class FormServicesRestInvoker {
 
         checkNotBlank(idUsager, ID_USAGER);
 
-        HttpEntity<S> sentEntity;
+        HttpEntity<String> sentEntity=new HttpEntity<>("");
         if (requestEntity == null) {
             HttpHeaders headers = new HttpHeaders();
             headers.add(REMOTE_USER, idUsager);
-            sentEntity = new HttpEntity<>(requestContents, headers);
+            try {
+                sentEntity = new HttpEntity<>(jackson.writeValueAsString(requestContents), headers);
+            } catch (JsonProcessingException e) {
+                log.error("Erreur de marshalling Jackson : " + e.getMessage());
+            }
         } else {
             HttpHeaders writableHeaders = createWritableHeadersFrom(requestEntity.getHeaders());
             writableHeaders.add(REMOTE_USER, idUsager);
-            sentEntity = new HttpEntity<>(requestEntity.getBody(), writableHeaders);
+            try {
+                sentEntity = new HttpEntity<>(jackson.writeValueAsString(requestEntity.getBody()), writableHeaders);
+            } catch (JsonProcessingException e) {
+                log.error("Erreur de marshalling Jackson : " + e.getMessage());
+            }
         }
-        messageLoggingService.logJsonSent(method, path, sentEntity.toString());
 
-        ResponseEntity<T> response = restTemplate.exchange(
-                formServicesUrl + "/" + path,
-                method,
-                sentEntity,
-                typeReference);
+        ResponseEntity<T> response = null;
+            messageLoggingService.logJsonSent(method, path, sentEntity.toString());
+            response = restTemplate.exchange(
+                    formServicesUrl + "/" + path,
+                    method,
+                    sentEntity,
+                    typeReference);
 
         HttpStatus status = response.getStatusCode();
         if (status.is2xxSuccessful()) {
