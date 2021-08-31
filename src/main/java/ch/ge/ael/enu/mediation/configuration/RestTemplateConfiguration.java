@@ -64,11 +64,13 @@ public class RestTemplateConfiguration {
         HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
         requestFactory.setHttpClient(client);
 
-        return new RestTemplateBuilder()
-                .additionalMessageConverters(new MappingJackson2HttpMessageConverter(jackson))
+        RestTemplate restTemplate = new RestTemplateBuilder()
                 .requestFactory(() -> requestFactory)
                 .errorHandler(new RestErrorHandler())
                 .build();
+
+        restTemplate.getMessageConverters().add(0,new MappingJackson2HttpMessageConverter(jackson));
+        return restTemplate;
     }
 
 }
