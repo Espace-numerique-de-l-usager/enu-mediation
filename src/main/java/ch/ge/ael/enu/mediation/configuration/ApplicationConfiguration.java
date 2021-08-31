@@ -33,6 +33,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
@@ -70,6 +71,9 @@ public class ApplicationConfiguration {
     @Resource
     private ResourceLoader resourceLoader;
 
+    @Resource
+    private ObjectMapper jackson;
+
     @Bean
     public RestTemplate restTemplate() throws Exception {
         SSLContext sslContext = SSLContextBuilder
@@ -87,6 +91,7 @@ public class ApplicationConfiguration {
         requestFactory.setHttpClient(client);
 
         return new RestTemplateBuilder()
+                .additionalMessageConverters(new MappingJackson2HttpMessageConverter(jackson))
                 .requestFactory(() -> requestFactory)
                 .errorHandler(new RestErrorHandler())
                 .build();

@@ -105,32 +105,23 @@ public class FormServicesRestInvoker {
 
         checkNotBlank(idUsager, ID_USAGER);
 
-        HttpEntity<String> sentEntity=new HttpEntity<>("");
+        HttpEntity<S> sentEntity;
         if (requestEntity == null) {
             HttpHeaders headers = new HttpHeaders();
             headers.add(REMOTE_USER, idUsager);
-            try {
-                sentEntity = new HttpEntity<>(jackson.writeValueAsString(requestContents), headers);
-            } catch (JsonProcessingException e) {
-                log.error("Erreur de marshalling Jackson : " + e.getMessage());
-            }
+            sentEntity = new HttpEntity<>(requestContents, headers);
         } else {
             HttpHeaders writableHeaders = createWritableHeadersFrom(requestEntity.getHeaders());
             writableHeaders.add(REMOTE_USER, idUsager);
-            try {
-                sentEntity = new HttpEntity<>(jackson.writeValueAsString(requestEntity.getBody()), writableHeaders);
-            } catch (JsonProcessingException e) {
-                log.error("Erreur de marshalling Jackson : " + e.getMessage());
-            }
+            sentEntity = new HttpEntity<>(requestEntity.getBody(), writableHeaders);
         }
+        messageLoggingService.logJsonSent(method, path, sentEntity.toString());
 
-        ResponseEntity<T> response = null;
-            messageLoggingService.logJsonSent(method, path, sentEntity.toString());
-            response = restTemplate.exchange(
-                    formServicesUrl + "/" + path,
-                    method,
-                    sentEntity,
-                    typeReference);
+        ResponseEntity<T> response = restTemplate.exchange(
+                formServicesUrl + "/" + path,
+                method,
+                sentEntity,
+                typeReference);
 
         HttpStatus status = response.getStatusCode();
         if (status.is2xxSuccessful()) {
