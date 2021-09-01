@@ -18,6 +18,6 @@ public class ServletInitializer extends SpringBootServletInitializer {
         log.info("ServletInitializer -> startup with tomcatHome = " + tomcatHome);
         return builder.sources(MediationApplication.class)
                 .properties("spring.config.name:enu-mediation")
-                .properties("spring.config.location:" + tomcatHome + "/conf/,classpath:/");
+                .properties("spring.config.location:classpath:/," + tomcatHome + "/conf/");
     }
 }
