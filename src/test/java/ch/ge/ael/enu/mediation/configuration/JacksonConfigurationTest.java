@@ -22,6 +22,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.JUnitException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -37,10 +38,27 @@ public class JacksonConfigurationTest {
         log.info("Spring Boot context OK");
     }
 
-    @Test
-    void marshallJwayDates(@Autowired ObjectMapper jackson) throws JsonProcessingException {
+//    @Test
+    void marshallJwayDatesAlt(@Autowired ObjectMapper jackson) throws JsonProcessingException {
         log.info("Jackson marshalling tests: java.time");
-        LocalDate testDate = jackson.readValue("\"2021-09-03T00:00:00.000+00:00\"", LocalDate.class);
+        LocalDate testDate = null;
+        testDate = jackson.readValue("\"2021-09-03T00:00:000+0000\"", LocalDate.class);
+        log.info("Test date alt = " + testDate);
+    }
+
+    @Test
+    void marshallJwayDate(@Autowired ObjectMapper jackson) throws JsonProcessingException {
+        log.info("Jackson marshalling alt tests: java.time");
+        LocalDate testDate = null;
+        testDate = jackson.readValue("\"2021-09-03T00:00:00.000+00:00\"", LocalDate.class);
         log.info("Test date = " + testDate);
+    }
+
+    @Test
+    void marshallJwayDateTime(@Autowired ObjectMapper jackson) throws JsonProcessingException {
+        log.info("Jackson marshalling alt tests: java.time");
+        LocalDateTime testDate = null;
+        testDate = jackson.readValue("\"2021-09-03T00:00:00.000+00:00\"", LocalDateTime.class);
+        log.info("Test datetime = " + testDate);
     }
 }

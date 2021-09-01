@@ -34,22 +34,17 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class JwayLocalDateTimeDeserializer extends LocalDateTimeDeserializer {
 
-    private static final DateTimeFormatter FORMAT_1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
-
-    private static final DateTimeFormatter FORMAT_2 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+00:00");
+    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+00:00");
+    private static final DateTimeFormatter FORMAT_ALT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
 
     public JwayLocalDateTimeDeserializer() {
-        super(FORMAT_2);
+        super(FORMAT);
     }
 
     @Override
     public LocalDateTime deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-        // on essaie avec un format, puis avec l'autre
-        try {
-          return LocalDateTime.parse(parser.getText(), FORMAT_1);
-        } catch (Exception e) {
-          return LocalDateTime.parse(parser.getText(), FORMAT_2);
-        }
+        System.out.println("Marshalling LocalDate: " + parser.getText());
+        return LocalDateTime.parse(parser.getText(), FORMAT);
     }
 
 }

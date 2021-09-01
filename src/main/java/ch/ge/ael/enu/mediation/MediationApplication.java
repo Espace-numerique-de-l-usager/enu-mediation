@@ -26,21 +26,9 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 
 @SpringBootApplication
 @Slf4j
-public class MediationApplication extends SpringBootServletInitializer {
-
-    private final String tomcatHome = System.getProperty("catalina.home");
-
+public class MediationApplication {
     public static void main(String[] args) {
-        System.setProperty("spring.config.name", "application,enu-mediation");
+        System.setProperty("spring.config.name", "enu-mediation");
         SpringApplication.run(MediationApplication.class, args);
     }
-
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
-        log.info("ServletInitializer -> startup with tomcatHome = " + tomcatHome);
-        return builder.sources(MediationApplication.class)
-                .properties("spring.config.name: application,enu-mediation")
-                .properties("spring.config.location: " + tomcatHome + "/conf/,classpath:/");
-    }
-
 }

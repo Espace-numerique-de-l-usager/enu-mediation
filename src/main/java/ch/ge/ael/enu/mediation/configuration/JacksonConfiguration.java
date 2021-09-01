@@ -18,9 +18,7 @@
  */
 package ch.ge.ael.enu.mediation.configuration;
 
-import ch.ge.ael.enu.mediation.serialization.JwayLocalDateDeserializer;
-import ch.ge.ael.enu.mediation.serialization.JwayLocalDateTimeDeserializer;
-import ch.ge.ael.enu.mediation.serialization.MillisOrLocalDateTimeDeserializer;
+import ch.ge.ael.enu.mediation.serialization.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
