@@ -22,13 +22,18 @@ import ch.ge.ael.enu.mediation.serialization.*;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
 /**
@@ -48,9 +53,10 @@ public class JacksonConfiguration {
         javaTimeModule.addDeserializer(LocalDateTime.class, new JwayLocalDateTimeDeserializer());
         javaTimeModule.addDeserializer(LocalDate.class, new JwayLocalDateDeserializer());
         jackson.registerModule(javaTimeModule);
-        jackson.setDateFormat(DateFormat.getDateInstance());
+        jackson.setDateFormat(new StdDateFormat());
         jackson.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         jackson.enable(DeserializationFeature.USE_JAVA_ARRAY_FOR_JSON_ARRAY);
+        jackson.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         jackson.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         jackson.setTimeZone(TimeZone.getDefault());
         return jackson;

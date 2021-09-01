@@ -21,8 +21,8 @@ package ch.ge.ael.enu.mediation.configuration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.JUnitException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -34,31 +34,39 @@ import java.time.LocalDateTime;
 public class JacksonConfigurationTest {
 
     @Test
+    @Order(1)
     void contextLoads() {
         log.info("Spring Boot context OK");
     }
 
-//    @Test
-    void marshallJwayDatesAlt(@Autowired ObjectMapper jackson) throws JsonProcessingException {
-        log.info("Jackson marshalling tests: java.time");
-        LocalDate testDate = null;
-        testDate = jackson.readValue("\"2021-09-03T00:00:000+0000\"", LocalDate.class);
-        log.info("Test date alt = " + testDate);
+    @Test
+    @Order(2)
+    void marshallIsoDate(@Autowired ObjectMapper jackson) throws JsonProcessingException {
+        log.info("Jackson marshalling alt tests: ISO Date");
+        LocalDate testDate = jackson.readValue("\"2021-09-01\"", LocalDate.class);
+        log.info("Test date ISO = " + testDate);
     }
 
     @Test
+    @Order(3)
     void marshallJwayDate(@Autowired ObjectMapper jackson) throws JsonProcessingException {
-        log.info("Jackson marshalling alt tests: java.time");
-        LocalDate testDate = null;
-        testDate = jackson.readValue("\"2021-09-03T00:00:00.000+00:00\"", LocalDate.class);
+        log.info("Jackson marshalling alt tests: LocalDate");
+        LocalDate testDate = jackson.readValue("\"2021-09-02T00:00:00.000+00:00\"", LocalDate.class);
         log.info("Test date = " + testDate);
     }
 
     @Test
+    @Order(4)
     void marshallJwayDateTime(@Autowired ObjectMapper jackson) throws JsonProcessingException {
-        log.info("Jackson marshalling alt tests: java.time");
-        LocalDateTime testDate = null;
-        testDate = jackson.readValue("\"2021-09-03T00:00:00.000+00:00\"", LocalDateTime.class);
+        log.info("Jackson marshalling alt tests: LocalDateTime");
+        LocalDateTime testDate = jackson.readValue("\"2021-09-03T00:00:00.000+00:00\"", LocalDateTime.class);
         log.info("Test datetime = " + testDate);
+    }
+
+    @Test
+    void marshallJwayDateAlt(@Autowired ObjectMapper jackson) throws JsonProcessingException {
+        log.info("Jackson marshalling tests: LocalDate ALT");
+        LocalDateTime testDate = jackson.readValue("\"2021-09-04T00:00:00+0000\"", LocalDateTime.class);
+        log.info("Test date alt = " + testDate);
     }
 }

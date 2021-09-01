@@ -26,6 +26,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
 
 /**
  * Transforme en LocalDate une date reçue de FormServices, comme "2020-11-25T15:42:05.445+0000" ou
@@ -34,8 +38,28 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class JwayLocalDateDeserializer extends LocalDateDeserializer {
 
-    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+00:00");
-    private static final DateTimeFormatter FORMAT_ALT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
+    private static final DateTimeFormatter ISO_LOCAL_DATE_TIME = new DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .append(ISO_LOCAL_DATE)
+            .optionalStart()
+                .appendLiteral('T')
+                .append(ISO_LOCAL_TIME)
+            .optionalEnd()
+                .toFormatter();
+
+    private static final DateTimeFormatter FORMAT = new DateTimeFormatterBuilder()
+            // date/time
+            .append(ISO_LOCAL_DATE_TIME)
+            // offset (hh:mm - "+00:00" when it's zero)
+            .optionalStart().appendOffset("+HH:MM", "+00:00").optionalEnd()
+            // offset (hh:mm - "+0000" when it's zero)
+            .optionalStart().appendOffset("+HH:MM", "+0000").optionalEnd()
+            // offset (hh - "+00" when it's zero)
+            .optionalStart().appendOffset("+HH", "+00").optionalEnd()
+            // offset (pattern "X" uses "Z" for zero offset)
+            .optionalStart().appendPattern("X").optionalEnd()
+            // create formatter
+            .toFormatter();
 
     public JwayLocalDateDeserializer() {
         super(FORMAT);
@@ -43,7 +67,6 @@ public class JwayLocalDateDeserializer extends LocalDateDeserializer {
 
     @Override
     public LocalDate deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-        System.out.println("Marshalling LocalDate: " + parser.getText());
         return LocalDate.parse(parser.getText(), FORMAT);
     }
 

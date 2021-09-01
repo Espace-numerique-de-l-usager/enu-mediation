@@ -26,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 
 /**
  * Transforme en LocalDateTime une date reçue de FormServices, comme "2020-11-25T15:42:05.445+0000" ou
@@ -34,8 +35,19 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class JwayLocalDateTimeDeserializer extends LocalDateTimeDeserializer {
 
-    private static final DateTimeFormatter FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+00:00");
-    private static final DateTimeFormatter FORMAT_ALT = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
+    private static final DateTimeFormatter FORMAT = new DateTimeFormatterBuilder()
+            // date/time
+            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            // offset (hh:mm - "+00:00" when it's zero)
+            .optionalStart().appendOffset("+HH:MM", "+00:00").optionalEnd()
+            // offset (hhmm - "+0000" when it's zero)
+            .optionalStart().appendOffset("+HH:MM", "+0000").optionalEnd()
+            // offset (hh - "+00" when it's zero)
+            .optionalStart().appendOffset("+HH", "+00").optionalEnd()
+            // offset (pattern "X" uses "Z" for zero offset)
+            .optionalStart().appendPattern("X").optionalEnd()
+            // create formatter
+            .toFormatter();
 
     public JwayLocalDateTimeDeserializer() {
         super(FORMAT);
@@ -43,7 +55,6 @@ public class JwayLocalDateTimeDeserializer extends LocalDateTimeDeserializer {
 
     @Override
     public LocalDateTime deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-        System.out.println("Marshalling LocalDate: " + parser.getText());
         return LocalDateTime.parse(parser.getText(), FORMAT);
     }
 
