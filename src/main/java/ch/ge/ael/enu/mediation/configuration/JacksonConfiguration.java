@@ -18,7 +18,8 @@
  */
 package ch.ge.ael.enu.mediation.configuration;
 
-import ch.ge.ael.enu.mediation.serialization.JwayDateDeserializer;
+import ch.ge.ael.enu.mediation.serialization.JwayLocalDateDeserializer;
+import ch.ge.ael.enu.mediation.serialization.JwayLocalDateTimeDeserializer;
 import ch.ge.ael.enu.mediation.serialization.MillisOrLocalDateTimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -28,6 +29,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.text.DateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
 
@@ -45,7 +47,8 @@ public class JacksonConfiguration {
         ObjectMapper jackson = new ObjectMapper();
         JavaTimeModule javaTimeModule = new JavaTimeModule();
         javaTimeModule.addDeserializer(LocalDateTime.class, new MillisOrLocalDateTimeDeserializer());
-        javaTimeModule.addDeserializer(LocalDateTime.class, new JwayDateDeserializer());
+        javaTimeModule.addDeserializer(LocalDateTime.class, new JwayLocalDateTimeDeserializer());
+        javaTimeModule.addDeserializer(LocalDate.class, new JwayLocalDateDeserializer());
         jackson.registerModule(javaTimeModule);
         jackson.setDateFormat(DateFormat.getDateInstance());
         jackson.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);

@@ -21,6 +21,7 @@ package ch.ge.ael.enu.mediation.serialization;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -30,13 +31,14 @@ import java.time.format.DateTimeFormatter;
  * Transforme en LocalDateTime une date reçue de FormServices, comme "2020-11-25T15:42:05.445+0000" ou
  * "2020-11-25T15:42:05.445+00:00".
  */
-public class JwayDateDeserializer extends LocalDateTimeDeserializer {
+@Slf4j
+public class JwayLocalDateTimeDeserializer extends LocalDateTimeDeserializer {
 
     private static final DateTimeFormatter FORMAT_1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+0000");
 
     private static final DateTimeFormatter FORMAT_2 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS+00:00");
 
-    public JwayDateDeserializer() {
+    public JwayLocalDateTimeDeserializer() {
         super(FORMAT_2);
     }
 

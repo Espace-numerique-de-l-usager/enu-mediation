@@ -18,7 +18,7 @@
  */
 package ch.ge.ael.enu.mediation.jway.model;
 
-import ch.ge.ael.enu.mediation.serialization.JwayDateDeserializer;
+import ch.ge.ael.enu.mediation.serialization.JwayLocalDateTimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
@@ -51,12 +51,12 @@ public class File {
 
     private String stepDescription = null;
 
-    @JsonDeserialize(using = JwayDateDeserializer.class)
+    @JsonDeserialize(using = JwayLocalDateTimeDeserializer.class)
     private LocalDateTime stepDate = null;
 
     private Boolean validated = null;
 
-    @JsonDeserialize(using = JwayDateDeserializer.class)
+    @JsonDeserialize(using = JwayLocalDateTimeDeserializer.class)
     private LocalDateTime fromDate = null;
 
     /**
@@ -68,6 +68,6 @@ public class File {
 
     private String redirectUrl = null;
 
-    @JsonDeserialize(using = JwayDateDeserializer.class)
+    @JsonDeserialize(using = JwayLocalDateTimeDeserializer.class)
     private LocalDateTime lastUpdate = null;
 }
