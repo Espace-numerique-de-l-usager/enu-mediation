@@ -22,8 +22,6 @@ import ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus;
 import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
 import ch.ge.ael.enu.business.domain.v1_0.StatusChange;
 
-import java.time.format.DateTimeFormatter;
-
 import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.EN_TRAITEMENT;
 
@@ -35,8 +33,6 @@ public class NewDemarcheToStatusChangeMapper {
 
     private final DemarcheStatus demarcheStatus;
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
     public NewDemarcheToStatusChangeMapper(DemarcheStatus demarcheStatus) {
         this.demarcheStatus = demarcheStatus;
     }
@@ -46,7 +42,7 @@ public class NewDemarcheToStatusChangeMapper {
         statusChange.setIdPrestation(newDemarche.getIdPrestation());
         statusChange.setIdUsager(newDemarche.getIdUsager());
         statusChange.setIdDemarcheSiMetier(newDemarche.getIdDemarcheSiMetier());
-        statusChange.setNouvelEtat(demarcheStatus.name());
+        statusChange.setNouvelEtat(demarcheStatus);
         if (demarcheStatus == DEPOSEE) {
             statusChange.setDateNouvelEtat(newDemarche.getDateDepot().toLocalDate());
         } else if (demarcheStatus == EN_TRAITEMENT) {

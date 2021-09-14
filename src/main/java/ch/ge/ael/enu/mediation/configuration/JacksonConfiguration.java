@@ -18,22 +18,20 @@
  */
 package ch.ge.ael.enu.mediation.configuration;
 
-import ch.ge.ael.enu.mediation.serialization.*;
+import ch.ge.ael.enu.mediation.serialization.JwayLocalDateDeserializer;
+import ch.ge.ael.enu.mediation.serialization.JwayLocalDateTimeDeserializer;
+import ch.ge.ael.enu.mediation.serialization.MillisOrLocalDateTimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
 /**

@@ -33,7 +33,7 @@ public class StatusChangeToJwayStep2Mapper {
 
         file.setName(statusChange.getIdDemarcheSiMetier());
 
-        file.setWorkflowStatus(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
+        file.setWorkflowStatus(new StatusMapper().mapEnumToJway(statusChange.getNouvelEtat()).toString());
 
         if (statusChange.getTypeAction() != null) {
             file.setStepDescription(statusChange.getLibelleAction() +

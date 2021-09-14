@@ -43,7 +43,7 @@ public class NewDemarcheToJwayMapper {
         application.setName(newDemarche.getIdPrestation());
         file.setApplication(application);
 
-        String jwayStatus = new StatusMapper().mapEnumToJway(DemarcheStatus.valueOf(newDemarche.getEtat())).toString();
+        String jwayStatus = new StatusMapper().mapEnumToJway(newDemarche.getEtat()).toString();
         file.setWorkflowStatus(jwayStatus);
         file.setStatus(jwayStatus);
 
@@ -68,7 +68,7 @@ public class NewDemarcheToJwayMapper {
     }
 
     private boolean isBrouillon(NewDemarche newDemarche) {
-        return newDemarche.getEtat().equals(DemarcheStatus.BROUILLON.toString());
+        return newDemarche.getEtat().equals(DemarcheStatus.BROUILLON);
     }
 
 }

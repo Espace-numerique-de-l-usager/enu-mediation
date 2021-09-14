@@ -93,7 +93,7 @@ public class DemarcheService {
             throw new ValidationException(texts.toString());
         }
 
-        DemarcheStatus status = DemarcheStatus.valueOf(newDemarche.getEtat());
+        DemarcheStatus status = newDemarche.getEtat();
 
         // creation dans FormServices de la demarche a l'etat de brouillon
         NewDemarche newDemarcheBrouillon = reducer.reduce(newDemarche);

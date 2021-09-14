@@ -23,7 +23,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 
-import java.util.Arrays;
 import java.util.Collections;
 
 @Slf4j

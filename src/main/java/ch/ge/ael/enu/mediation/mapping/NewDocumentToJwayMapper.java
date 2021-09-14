@@ -93,7 +93,7 @@ public class NewDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
     }
 
     private boolean isJustificatif(NewDocument newDocument) {
-        return DocumentType.valueOf(newDocument.getTypeDocument()) == DocumentType.JUSTIFICATIF;
+        return newDocument.getTypeDocument().equals(DocumentType.JUSTIFICATIF);
     }
 
 }

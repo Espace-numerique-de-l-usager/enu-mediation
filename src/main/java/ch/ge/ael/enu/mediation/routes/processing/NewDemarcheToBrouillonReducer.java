@@ -34,11 +34,11 @@ public class NewDemarcheToBrouillonReducer {
     public NewDemarche reduce(NewDemarche newDemarche) {
         NewDemarche draft = new NewDemarche();
 
-        draft.setEtat(BROUILLON.toString());
+        draft.setEtat(BROUILLON);
         draft.setIdPrestation(newDemarche.getIdPrestation());
         draft.setIdUsager(newDemarche.getIdUsager());
 
-        if (newDemarche.getEtat().equals(BROUILLON.toString())) {
+        if (newDemarche.getEtat().equals(BROUILLON)) {
             // hack : si la demarche est un brouillon, on ajoute "DRAFT" au nom de la demarche.
             // Sans cette distinction, lors de la creation d'une demarche a l'etat "Deposee", l'application enu-backend
             // enverra coup sur coup 2 courriels a l'usager :

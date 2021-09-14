@@ -30,5 +30,4 @@ public class FileForWorkflow {
     private String stepDescription;
 
     private String toDate;
-
 }

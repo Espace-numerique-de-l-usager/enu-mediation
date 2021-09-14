@@ -36,7 +36,7 @@ public class StatusChangeToJwayStep1Mapper {
     public FileForStep map(StatusChange statusChange) {
         FileForStep file = new FileForStep();
 
-        file.setStep(new StatusMapper().mapStringToJway(statusChange.getNouvelEtat()));
+        file.setStep(new StatusMapper().mapEnumToJway(statusChange.getNouvelEtat()).toString());
 
         file.setLastUpdate(statusChange.getDateNouvelEtat().format(FORMATTER));
 
@@ -60,7 +60,7 @@ public class StatusChangeToJwayStep1Mapper {
     }
 
     private boolean isNewStatus(StatusChange statusChange, DemarcheStatus status) {
-        return DemarcheStatus.valueOf(statusChange.getNouvelEtat()) == status;
+        return statusChange.getNouvelEtat().equals(status);
     }
 
     /**
