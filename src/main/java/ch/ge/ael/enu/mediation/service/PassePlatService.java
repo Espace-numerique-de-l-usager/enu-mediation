@@ -22,6 +22,7 @@ import ch.ge.ael.enu.mediation.exception.TechnicalException;
 import ch.ge.ael.enu.mediation.service.technical.SecurityService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
@@ -37,16 +38,12 @@ import java.util.Map;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class PassePlatService {
 
-    @Resource
-    private AmqpTemplate template;
-
-    @Resource
-    private ObjectMapper mapper;
-
-    @Resource
-    private SecurityService securityService;
+    private final AmqpTemplate template;
+    private final ObjectMapper mapper;
+    private final SecurityService securityService;
 
     @Value("${app.rabbitmq.inverse.exchange}")
     private String inverseExchange;

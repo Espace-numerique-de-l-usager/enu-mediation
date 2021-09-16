@@ -45,6 +45,7 @@ public class JacksonConfigurationTest {
         log.info("Jackson marshalling alt tests: ISO Date");
         LocalDate testDate = jackson.readValue("\"2021-09-01\"", LocalDate.class);
         log.info("Test date ISO = " + testDate);
+        assert testDate.isEqual(LocalDate.of(2021,9,1));
     }
 
     @Test
@@ -53,6 +54,7 @@ public class JacksonConfigurationTest {
         log.info("Jackson marshalling alt tests: LocalDate");
         LocalDate testDate = jackson.readValue("\"2021-09-02T00:00:00.000+00:00\"", LocalDate.class);
         log.info("Test date = " + testDate);
+        assert testDate.isEqual(LocalDate.of(2021,9,2));
     }
 
     @Test
@@ -61,6 +63,7 @@ public class JacksonConfigurationTest {
         log.info("Jackson marshalling alt tests: LocalDateTime");
         LocalDateTime testDate = jackson.readValue("\"2021-09-03T00:00:00.000+00:00\"", LocalDateTime.class);
         log.info("Test datetime = " + testDate);
+        assert testDate.isEqual(LocalDateTime.of(2021,9,3,0,0,0));
     }
 
     @Test
@@ -68,5 +71,6 @@ public class JacksonConfigurationTest {
         log.info("Jackson marshalling tests: LocalDate ALT");
         LocalDateTime testDate = jackson.readValue("\"2021-09-04T00:00:00+0000\"", LocalDateTime.class);
         log.info("Test date alt = " + testDate);
+        assert testDate.isEqual(LocalDateTime.of(2021,9,4,0,0,0));
     }
 }

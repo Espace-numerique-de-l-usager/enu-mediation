@@ -19,17 +19,15 @@
 package ch.ge.ael.enu.mediation.routes.processing;
 
 import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.BROUILLON;
 
 /**
  * Pour une NewDemarche dans n'importe quel etat, cree une NewDemarche a l'etat de brouillon.
  */
+@Slf4j
 public class NewDemarcheToBrouillonReducer {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NewDemarcheToBrouillonReducer.class);
 
     public NewDemarche reduce(NewDemarche newDemarche) {
         NewDemarche draft = new NewDemarche();
@@ -50,7 +48,7 @@ public class NewDemarcheToBrouillonReducer {
             draft.setIdDemarcheSiMetier(newDemarche.getIdDemarcheSiMetier());
         }
 
-        LOGGER.info("Reduction a l'etat de brouillon OK");
+        log.info("Reduction a l'etat de brouillon OK");
         return draft;
     }
 

@@ -45,7 +45,6 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.DEPOSEE;
@@ -65,17 +64,16 @@ import static java.lang.String.format;
 public class DemarcheService {
 
     private final DeserializationService deserializationService;
-    private final FormServicesRestInvoker formServices;
+    private final FormServicesApi formServicesApi;
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
 
-    private final NewDemarcheToBrouillonReducer reducer = new NewDemarcheToBrouillonReducer();
+    private final NewDemarcheToBrouillonReducer brouillonReducer = new NewDemarcheToBrouillonReducer();
     private final NewDemarcheToJwayMapper newDemarcheToJwayMapper = new NewDemarcheToJwayMapper();
     private final StatusChangeToJwayStep1Mapper statusChangeToJwayStep1Mapper = new StatusChangeToJwayStep1Mapper();
     private final StatusChangeToJwayStep2Mapper statusChangeToJwayStep2Mapper = new StatusChangeToJwayStep2Mapper();
     private final NewSuggestionToJwayMapper newSuggestionToJwayMapper = new NewSuggestionToJwayMapper();
-
 
 
     public void handleNewDemarche(Message message) {
@@ -93,13 +91,18 @@ public class DemarcheService {
             throw new ValidationException(texts.toString());
         }
 
+        handleNewDemarche(newDemarche);
+    }
+
+    public void handleNewDemarche(NewDemarche newDemarche) {
         DemarcheStatus status = newDemarche.getEtat();
 
         // creation dans FormServices de la demarche a l'etat de brouillon
-        NewDemarche newDemarcheBrouillon = reducer.reduce(newDemarche);
-        File file = newDemarcheToJwayMapper.map(newDemarcheBrouillon);
-        File createdFile = formServices.post("alpha/file", file, newDemarche.getIdUsager(), new ParameterizedTypeReference<File>() {});
-        log.info("Demarche creee, uuid = [{}]", createdFile.getUuid());
+        NewDemarche newDemarcheBrouillon = brouillonReducer.reduce(newDemarche);
+        File brouillon = formServicesApi.postFile(
+                newDemarcheToJwayMapper.map(newDemarcheBrouillon),
+                newDemarche.getIdUsager());
+        log.info("Demarche créée, uuid = [{}]", brouillon.getUuid());
 
         // passage dans FormServices a l'etat "deposee" (si pertinent)
         if (status == DEPOSEE || status == EN_TRAITEMENT) {
@@ -139,26 +142,26 @@ public class DemarcheService {
 
         // creation dans FormServices de la demarche a l'etat de pre-brouillon
         File file = newSuggestionToJwayMapper.map(newSuggestion);
-        File createdFile = formServices.post("alpha/file", file, newSuggestion.getIdUsager(), new ParameterizedTypeReference<File>() {});
+        File createdFile = formServicesApi.postFile(file, newSuggestion.getIdUsager());
         log.info("Suggestion creee, uuid = [{}]", createdFile.getUuid());
     }
 
-    public File getDemarche(String demarcheId, String userId) {
-        final String SEARCH_PATH = "file/mine?name=%s&max=1&order=id&reverse=true";
-        String path = format(SEARCH_PATH, demarcheId);
-        List<File> demarches = formServices.get(path, userId,  new ParameterizedTypeReference<List<File>>(){});
-        if (demarches.isEmpty()) {
-            // si on ne trouve pas de demarche, on cherche avec le prefixe "DRAFT"
-            path = format(SEARCH_PATH, "(DRAFT)" + demarcheId);
-            demarches = formServices.get(path, userId,  new ParameterizedTypeReference<List<File>>(){});
-            if (demarches.isEmpty()) {
-                throw new ValidationException("Pas trouve la demarche \"" + demarcheId + "\"");
-            }
-        }
-        return demarches.get(0);
-    }
+//    public File getDemarche(String demarcheId, String userId) {
+//        final String SEARCH_PATH = "file/mine?name=%s&max=1&order=id&reverse=true";
+//        String path = format(SEARCH_PATH, demarcheId);
+//        List<File> demarches = formServices.get(path, userId,  new ParameterizedTypeReference<List<File>>(){});
+//        if (demarches.isEmpty()) {
+//            // si on ne trouve pas de demarche, on cherche avec le prefixe "DRAFT"
+//            path = format(SEARCH_PATH, "(DRAFT)" + demarcheId);
+//            demarches = formServices.get(path, userId,  new ParameterizedTypeReference<List<File>>(){});
+//            if (demarches.isEmpty()) {
+//                throw new ValidationException("Pas trouve la demarche \"" + demarcheId + "\"");
+//            }
+//        }
+//        return demarches.get(0);
+//    }
 
-    private void changeStatus(StatusChange statusChange) {
+    public void changeStatus(StatusChange statusChange) {
         // validation metier du message
         Set<ConstraintViolation<StatusChange>> errors = validator.validate(statusChange);
         if(!errors.isEmpty()) {
@@ -171,20 +174,22 @@ public class DemarcheService {
         String idUsager = statusChange.getIdUsager();
 
         // recuperation de l'uuid de la demarche dans FormServices
-        File demarche = getDemarche(statusChange.getIdDemarcheSiMetier(), statusChange.getIdUsager());
+        File demarche = formServicesApi.getFile(statusChange.getIdDemarcheSiMetier(), statusChange.getIdUsager());
         String demarcheUuid = demarche.getUuid().toString();
         log.info("UUID demarche = [{}]", demarcheUuid);
 
         // etape 1 : changement du step dans FormServices
-        FileForStep fileForStep = statusChangeToJwayStep1Mapper.map(statusChange);
-        String path = format("alpha/file/%s/step", demarcheUuid);
-        ParameterizedTypeReference<File> typeReference = new ParameterizedTypeReference<File>() {};
-        formServices.post(path, fileForStep, idUsager, typeReference);
+        formServicesApi.postFileStep(
+                statusChangeToJwayStep1Mapper.map(statusChange),
+                idUsager,
+                demarche.getUuid()
+        );
 
         // etape 2 : changement du workflow dans FormServices
-        FileForWorkflow fileForWorkflow = statusChangeToJwayStep2Mapper.map(statusChange);
-        path = format("alpha/file/%s", demarcheUuid);
-        formServices.put(path, fileForWorkflow, idUsager, typeReference);
+        formServicesApi.postFileWorkflow(
+                statusChangeToJwayStep2Mapper.map(statusChange),
+                idUsager,
+                demarche.getUuid()
+        );
     }
-
 }

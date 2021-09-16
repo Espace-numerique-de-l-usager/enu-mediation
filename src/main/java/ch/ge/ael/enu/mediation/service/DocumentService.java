@@ -20,7 +20,6 @@ package ch.ge.ael.enu.mediation.service;
 
 import ch.ge.ael.enu.business.domain.v1_0.NewCourrier;
 import ch.ge.ael.enu.business.domain.v1_0.NewCourrierDocument;
-import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
 import ch.ge.ael.enu.business.domain.v1_0.NewDocument;
 import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import ch.ge.ael.enu.mediation.jway.model.Document;
@@ -31,6 +30,7 @@ import ch.ge.ael.enu.mediation.routes.processing.NewCourrierSplitter;
 import ch.ge.ael.enu.mediation.service.technical.DeserializationService;
 import ch.ge.ael.enu.mediation.service.technical.FormServicesRestInvoker;
 import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,8 +40,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -65,6 +63,7 @@ import static java.lang.String.format;
  * possede les donnees du courrier, ce qui permet d'identifier les documents constituant un meme courrier.
  */
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class DocumentService {
 
@@ -79,33 +78,19 @@ public class DocumentService {
     @Value("${app.file.name.sanitization-regex}")
     private String fileNameSanitizationRegex;
 
-    @Resource
-    private DeserializationService deserializationService;
+    private final DeserializationService deserializationService;
+    private final DemarcheService demarcheService;
+    private final MessageLoggingService messageLoggingService;
+    private final FormServicesRestInvoker formServices;
+    private final FormServicesApi formServicesApi;
 
-    @Resource
-    private DemarcheService demarcheService;
 
-    @Resource
-    private MessageLoggingService messageLoggingService;
-
-    @Resource
-    private FormServicesRestInvoker formServices;
-
-    private NewCourrierSplitter splitter;
-
-    private NewDocumentToJwayMapper newDocumentToJwayMapper;
-
-    private NewCourrierDocumentToJwayMapper newCourrierDocumentToJwayMapper;
+    private final NewCourrierSplitter splitter = new NewCourrierSplitter();;
+    private final NewDocumentToJwayMapper newDocumentToJwayMapper = new NewDocumentToJwayMapper(fileNameSanitizationRegex);;
+    private final NewCourrierDocumentToJwayMapper newCourrierDocumentToJwayMapper = new NewCourrierDocumentToJwayMapper(fileNameSanitizationRegex);
 
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
-
-    @PostConstruct
-    private void init() {
-        splitter = new NewCourrierSplitter();
-        newDocumentToJwayMapper = new NewDocumentToJwayMapper(fileNameSanitizationRegex);
-        newCourrierDocumentToJwayMapper = new NewCourrierDocumentToJwayMapper(fileNameSanitizationRegex);
-    }
 
     public void handleNewDocument(Message message) {
         // deserialisation du message
@@ -125,7 +110,7 @@ public class DocumentService {
         String idUsager = newDocument.getIdUsager();
 
         // recuperation dans FormServices de l'uuid de la demarche
-        File demarche = demarcheService.getDemarche(idDemarcheSiMetier, idUsager);
+        File demarche = formServicesApi.getFile(idDemarcheSiMetier, idUsager);
         String demarcheUuid = demarche.getUuid().toString();
         log.info("UUID demarche = [{}]", demarcheUuid);
 
@@ -171,7 +156,7 @@ public class DocumentService {
         // recuperation dans FormServices de l'uuid de la demarche
         String demarcheUuid = null;
         if (newCourrier.getIdDemarcheSiMetier() != null) {
-            File demarche = demarcheService.getDemarche(newCourrier.getIdDemarcheSiMetier(), newCourrier.getIdUsager());
+            File demarche = formServicesApi.getFile(newCourrier.getIdDemarcheSiMetier(), newCourrier.getIdUsager());
             demarcheUuid = demarche.getUuid().toString();
             log.info("UUID demarche = [{}]", demarcheUuid);
         }
