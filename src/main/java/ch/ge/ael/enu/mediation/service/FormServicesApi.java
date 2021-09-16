@@ -86,7 +86,7 @@ public class FormServicesApi {
      * API Jway Formsolutions GET /file
      */
     public File getFile(String demarcheId, String userId) {
-        final String SEARCH_PATH = "file/mine?name=%s&max=1&order=id&reverse=true";
+        final String SEARCH_PATH = "/file/mine?name=%s&max=1&order=id&reverse=true";
         String path = format(SEARCH_PATH, demarcheId);
 
         List<File> demarches = getFileList(path,userId);
@@ -116,25 +116,25 @@ public class FormServicesApi {
     }
 
     /**
-     * API Jway Formsolutions POST /file
+     * API Jway Formsolutions POST /alpha/file
      */
     public File postFile(File file, String userId) {
-        return postFileData("alpha/file", file, userId);
+        return postFileData("/alpha/file", file, userId);
     }
 
     /**
-     * API Jway Formsolutions POST /file/{uid}/step
+     * API Jway Formsolutions POST /alpha/file/{uid}/step
      */
     public File postFileStep(FileForStep file, String userId, UUID demarcheUuid) {
-        String path = format("alpha/file/%s/step", demarcheUuid);
+        String path = format("/alpha/file/%s/step", demarcheUuid);
         return postFileData(path, file, userId);
     }
 
     /**
-     * API Jway Formsolutions POST /file/{uid} for workflow
+     * API Jway Formsolutions POST /alpha/file/{uid} for workflow
      */
     public File postFileWorkflow(FileForWorkflow file, String userId, UUID demarcheUuid) {
-        String path = format("alpha/file/%s", demarcheUuid);
+        String path = format("/alpha/file/%s", demarcheUuid);
         return postFileData(path, file, userId);
     }
 
@@ -144,7 +144,6 @@ public class FormServicesApi {
             createdFile = formServicesWebClient.post()
                     .uri(path)
                     .header(REMOTE_USER,userId)
-                    .header(CONTENT_TYPE,APPLICATION_JSON)
                     .bodyValue(jackson.writeValueAsString(file))
                     .retrieve()
                     .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
