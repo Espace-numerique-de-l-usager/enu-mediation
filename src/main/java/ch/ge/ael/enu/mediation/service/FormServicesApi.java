@@ -135,10 +135,11 @@ public class FormServicesApi {
      */
     public File postFileWorkflow(FileForWorkflow file, String userId, UUID demarcheUuid) {
         String path = format("/alpha/file/%s", demarcheUuid);
-        return postFileData(path, file, userId);
+        return putFileData(path, file, userId);
     }
 
     private File postFileData(String path, Object file, String userId) {
+        log.info("Jway API: POST " + path);
         File createdFile;
         try {
             createdFile = formServicesWebClient.post()
@@ -151,7 +152,26 @@ public class FormServicesApi {
                     .bodyToMono(new ParameterizedTypeReference<File>(){}).block();
         } catch (JsonProcessingException e) {
             log.error("JSON marshalling error for file : " + file + " - Jackson error: " + e.getMessage());
-            throw new TechnicalException("Erreur interne mediation");
+            throw new TechnicalException("Erreur interne mediation - JSON marshalling");
+        }
+        return createdFile;
+    }
+
+    private File putFileData(String path, Object file, String userId) {
+        log.info("Jway API: PUT " + path);
+        File createdFile;
+        try {
+            createdFile = formServicesWebClient.put()
+                    .uri(path)
+                    .header(REMOTE_USER,userId)
+                    .bodyValue(jackson.writeValueAsString(file))
+                    .retrieve()
+                    .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                    .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
+                    .bodyToMono(new ParameterizedTypeReference<File>(){}).block();
+        } catch (JsonProcessingException e) {
+            log.error("JSON marshalling error for file : " + file + " - Jackson error: " + e.getMessage());
+            throw new TechnicalException("Erreur interne mediation - JSON marshalling");
         }
         return createdFile;
     }
