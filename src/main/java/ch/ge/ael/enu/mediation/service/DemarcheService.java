@@ -24,8 +24,6 @@ import ch.ge.ael.enu.business.domain.v1_0.NewSuggestion;
 import ch.ge.ael.enu.business.domain.v1_0.StatusChange;
 import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import ch.ge.ael.enu.mediation.jway.model.File;
-import ch.ge.ael.enu.mediation.jway.model.FileForStep;
-import ch.ge.ael.enu.mediation.jway.model.FileForWorkflow;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
 import ch.ge.ael.enu.mediation.mapping.NewSuggestionToJwayMapper;
@@ -33,11 +31,9 @@ import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
 import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
 import ch.ge.ael.enu.mediation.routes.processing.NewDemarcheToBrouillonReducer;
 import ch.ge.ael.enu.mediation.service.technical.DeserializationService;
-import ch.ge.ael.enu.mediation.service.technical.FormServicesRestInvoker;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
@@ -49,7 +45,6 @@ import java.util.Set;
 
 import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.DEPOSEE;
 import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.EN_TRAITEMENT;
-import static java.lang.String.format;
 
 /**
  * Service de gestion des demarches :

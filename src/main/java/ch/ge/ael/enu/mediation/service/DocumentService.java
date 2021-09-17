@@ -22,22 +22,16 @@ import ch.ge.ael.enu.business.domain.v1_0.NewCourrier;
 import ch.ge.ael.enu.business.domain.v1_0.NewCourrierDocument;
 import ch.ge.ael.enu.business.domain.v1_0.NewDocument;
 import ch.ge.ael.enu.mediation.business.exception.ValidationException;
-import ch.ge.ael.enu.mediation.jway.model.Document;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.NewCourrierDocumentToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapper;
 import ch.ge.ael.enu.mediation.routes.processing.NewCourrierSplitter;
 import ch.ge.ael.enu.mediation.service.technical.DeserializationService;
-import ch.ge.ael.enu.mediation.service.technical.FormServicesRestInvoker;
 import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.validation.ConstraintViolation;
@@ -48,9 +42,6 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
-import static ch.ge.ael.enu.mediation.routes.communication.Header.X_CSRF_TOKEN;
-import static java.lang.String.format;
 
 /**
  * Service de gestion des documents :
@@ -81,7 +72,7 @@ public class DocumentService {
     private final DeserializationService deserializationService;
     private final DemarcheService demarcheService;
     private final MessageLoggingService messageLoggingService;
-    private final FormServicesRestInvoker formServices;
+//    private final FormServicesRestInvoker formServices;
     private final FormServicesApi formServicesApi;
 
 
@@ -115,25 +106,27 @@ public class DocumentService {
         log.info("UUID demarche = [{}]", demarcheUuid);
 
         // requete HEAD pour recuperer un jeton CSRF. Sans cette phase, on obtient une erreur 403 plus bas
-        String path = format("document/ds/%s/attachment", demarcheUuid);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add(X_CSRF_TOKEN, "fetch");
-        HttpEntity<Void> entity = new HttpEntity<>(null, headers);
-        ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {};
-//        messageLogger.logJsonSent(path, entity.toString());
-        ResponseEntity<String> response = formServices.headEntity(path, entity, idUsager, typeReference);
-        String token = response.getHeaders().get(X_CSRF_TOKEN).get(0);
-        log.info("Jeton CSRF obtenu = [{}]", token);
+        formServicesApi.postDocument(newDocument, demarcheUuid, idUsager);
 
-        // requete proprement dite d'envoi a FormServices
-        String path2 = format("document/ds/%s/attachment", demarcheUuid);
-        HttpEntity entity2 = newDocumentToJwayMapper.map(newDocument, demarcheUuid);
-        HttpHeaders writableHeaders = FormServicesRestInvoker.createWritableHeadersFrom(entity2.getHeaders());
-        writableHeaders.add(X_CSRF_TOKEN, token);
-        entity2 = new HttpEntity<>(entity2.getBody(), writableHeaders);
-        ParameterizedTypeReference<Document> typeReference2 = new ParameterizedTypeReference<Document>() {};
-        formServices.postEntity(path2, entity2, idUsager, typeReference2);
-        log.info("Document cree");
+//        String path = format("document/ds/%s/attachment", demarcheUuid);
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add(X_CSRF_TOKEN, "fetch");
+//        HttpEntity<Void> entity = new HttpEntity<>(null, headers);
+//        ParameterizedTypeReference<String> typeReference = new ParameterizedTypeReference<String>() {};
+////        messageLogger.logJsonSent(path, entity.toString());
+//        ResponseEntity<String> response = formServices.headEntity(path, entity, idUsager, typeReference);
+//        String token = response.getHeaders().get(X_CSRF_TOKEN).get(0);
+//        log.info("Jeton CSRF obtenu = [{}]", token);
+//
+//        // requete proprement dite d'envoi a FormServices
+//        String path2 = format("document/ds/%s/attachment", demarcheUuid);
+//        HttpEntity entity2 = newDocumentToJwayMapper.map(newDocument, demarcheUuid);
+//        HttpHeaders writableHeaders = FormServicesRestInvoker.createWritableHeadersFrom(entity2.getHeaders());
+//        writableHeaders.add(X_CSRF_TOKEN, token);
+//        entity2 = new HttpEntity<>(entity2.getBody(), writableHeaders);
+//        ParameterizedTypeReference<Document> typeReference2 = new ParameterizedTypeReference<Document>() {};
+//        formServices.postEntity(path2, entity2, idUsager, typeReference2);
+//        log.info("Document cree");
     }
 
     public void handleNewCourrier(Message message) {
@@ -167,12 +160,10 @@ public class DocumentService {
 
         // pour chacun des "n" documents, creation du document dans FormServices
         documents.stream()
-                .map(courrierDoc -> addDummyContents(courrierDoc))
+                .map(this::addDummyContents)
                 .map(courrierDoc -> newCourrierDocumentToJwayMapper.map(courrierDoc, demarcheUuidCopy))
-                .forEach(entity -> {
-                    String path = "alpha/document";
-                    ParameterizedTypeReference<Document> typeReference = new ParameterizedTypeReference<Document>() {};
-                    formServices.postEntity(path, entity, newCourrier.getIdUsager(), typeReference);
+                .forEach(doc -> {
+                    formServicesApi.postDocument(doc, newCourrier.getIdUsager());
                     log.info("Document de courrier cree");
                 });
     }

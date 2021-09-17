@@ -19,32 +19,35 @@
 package ch.ge.ael.enu.mediation.service;
 
 import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
+import ch.ge.ael.enu.business.domain.v1_0.NewDocument;
 import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import ch.ge.ael.enu.mediation.exception.TechnicalException;
+import ch.ge.ael.enu.mediation.jway.model.Document;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.jway.model.FileForStep;
 import ch.ge.ael.enu.mediation.jway.model.FileForWorkflow;
 import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
+import ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapper;
 import ch.ge.ael.enu.mediation.routes.processing.NewDemarcheToBrouillonReducer;
 import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
-import static ch.ge.ael.enu.mediation.routes.communication.Header.REMOTE_USER;
-
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Function;
 
+import static ch.ge.ael.enu.mediation.routes.communication.Header.*;
 import static io.netty.handler.codec.http.HttpHeaders.Values.APPLICATION_JSON;
 import static java.lang.String.format;
 
@@ -56,11 +59,15 @@ import static java.lang.String.format;
 @Slf4j
 public class FormServicesApi {
 
+    @Value("${app.file.name.sanitization-regex}")
+    private String fileNameSanitizationRegex;
+
     private final ObjectMapper jackson;
     private final WebClient formServicesWebClient;
     private final MessageLoggingService messageLoggingService;
     private final NewDemarcheToBrouillonReducer brouillonReducer = new NewDemarcheToBrouillonReducer();
     private final NewDemarcheToJwayMapper newDemarcheToJwayMapper = new NewDemarcheToJwayMapper();
+    private final NewDocumentToJwayMapper newDocumentToJwayMapper = new NewDocumentToJwayMapper(fileNameSanitizationRegex);;
 
     /**
      * Pour Spring WebClient: erreurs 4xx
@@ -176,4 +183,53 @@ public class FormServicesApi {
         return createdFile;
     }
 
+    public void postDocument(NewDocument newDocument, String demarcheUuid, String userId) {
+        String path = format("document/ds/%s/attachment", demarcheUuid);
+        log.info("Jway API: POST " + path);
+        String csrfToken = formServicesWebClient.head()
+                .uri(path)
+                .header(X_CSRF_TOKEN, "fetch")
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
+                .bodyToMono(String.class).block();
+        log.info("Jeton CSRF obtenu = [{}]", csrfToken);
+        HttpEntity entity2 = newDocumentToJwayMapper.map(newDocument, demarcheUuid);
+
+        Document result = formServicesWebClient.post()
+                .uri(path)
+                .header(X_CSRF_TOKEN, csrfToken)
+                .header(REMOTE_USER,userId)
+                .bodyValue(entity2)
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
+                .bodyToMono(new ParameterizedTypeReference<Document>(){}).block();
+
+        if (result != null) {
+            log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
+        } else {
+            log.warn("Échec de créationd de document pour la démarche " + demarcheUuid + ".");
+        }
+    }
+
+    public void postDocument(HttpEntity doc, String userId) {
+        String path = "alpha/document";
+        log.info("Jway API: POST " + path);
+
+        Document result = formServicesWebClient.post()
+                .uri(path)
+                .header(REMOTE_USER,userId)
+                .bodyValue(doc)
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
+                .bodyToMono(new ParameterizedTypeReference<Document>(){}).block();
+
+        if (result != null) {
+            log.info("Document seul " + result.getUuid() + " créé.");
+        } else {
+            log.warn("Échec de créationd de document.");
+        }
+    }
 }
