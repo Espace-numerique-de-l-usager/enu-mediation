@@ -70,10 +70,7 @@ public class DocumentService {
     private String fileNameSanitizationRegex;
 
     private final DeserializationService deserializationService;
-    private final DemarcheService demarcheService;
-    private final MessageLoggingService messageLoggingService;
     private final FormServicesApi formServicesApi;
-
 
     private final NewCourrierSplitter splitter = new NewCourrierSplitter();;
     private final NewDocumentToJwayMapper newDocumentToJwayMapper = new NewDocumentToJwayMapper(fileNameSanitizationRegex);;
