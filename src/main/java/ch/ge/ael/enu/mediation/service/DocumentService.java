@@ -27,13 +27,13 @@ import ch.ge.ael.enu.mediation.mapping.NewCourrierDocumentToJwayMapper;
 import ch.ge.ael.enu.mediation.mapping.NewDocumentToJwayMapper;
 import ch.ge.ael.enu.mediation.routes.processing.NewCourrierSplitter;
 import ch.ge.ael.enu.mediation.service.technical.DeserializationService;
-import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -72,12 +72,19 @@ public class DocumentService {
     private final DeserializationService deserializationService;
     private final FormServicesApi formServicesApi;
 
-    private final NewCourrierSplitter splitter = new NewCourrierSplitter();;
-    private final NewDocumentToJwayMapper newDocumentToJwayMapper = new NewDocumentToJwayMapper(fileNameSanitizationRegex);;
-    private final NewCourrierDocumentToJwayMapper newCourrierDocumentToJwayMapper = new NewCourrierDocumentToJwayMapper(fileNameSanitizationRegex);
-
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
+
+    private NewCourrierDocumentToJwayMapper newCourrierDocumentToJwayMapper;
+    private NewCourrierSplitter splitter;
+    private NewDocumentToJwayMapper newDocumentToJwayMapper;
+
+    @PostConstruct
+    public void postConstruct() {
+        newCourrierDocumentToJwayMapper = new NewCourrierDocumentToJwayMapper(fileNameSanitizationRegex);
+        splitter = new NewCourrierSplitter();
+        newDocumentToJwayMapper = new NewDocumentToJwayMapper(fileNameSanitizationRegex);
+    }
 
     public void handleNewDocument(Message message) {
         // deserialisation du message
@@ -127,7 +134,10 @@ public class DocumentService {
     public void handleNewCourrier(Message message) {
         // deserialisation du message
         NewCourrier newCourrier = deserializationService.deserialize(message.getBody(), NewCourrier.class);
+        handleNewCourrier(newCourrier);
+    }
 
+    public void handleNewCourrier(NewCourrier newCourrier) {
         // validation metier du message
         Set<ConstraintViolation<NewCourrier>> errors = validator.validate(newCourrier);
         if(!errors.isEmpty()) {

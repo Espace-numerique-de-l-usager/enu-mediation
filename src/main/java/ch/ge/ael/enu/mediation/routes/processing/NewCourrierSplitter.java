@@ -22,8 +22,7 @@ import ch.ge.ael.enu.business.domain.v1_0.GedData;
 import ch.ge.ael.enu.business.domain.v1_0.NewCourrier;
 import ch.ge.ael.enu.business.domain.v1_0.NewCourrierDocument;
 import ch.ge.ael.enu.business.domain.v1_0.NewDocument;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,9 +30,8 @@ import java.util.List;
 /**
  * Scinde un courrier en "n" documents.
  */
+@Slf4j
 public class NewCourrierSplitter {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(NewCourrierSplitter.class);
 
     public List<NewCourrierDocument> splitCourrier(NewCourrier newCourrier) {
         List<NewCourrierDocument> courriersDocs = new ArrayList<>();
@@ -68,7 +66,7 @@ public class NewCourrierSplitter {
             courriersDocs.add(courrierDoc);
         }
 
-        LOGGER.info("Scission du courrier OK. Nombre de documents = {}", courriersDocs.size());
+        log.info("Scission du courrier OK. Nombre de documents = {}", courriersDocs.size());
         return courriersDocs;
     }
 
