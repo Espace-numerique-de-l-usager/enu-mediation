@@ -196,7 +196,7 @@ public class FormServicesApi {
      * API Jway Formsolutions POST new document attached to existing File
      */
     public void postDocument(NewDocument newDocument, String demarcheUuid, String userId) {
-        String path = format("document/ds/%s/attachment", demarcheUuid);
+        String path = format("/document/ds/%s/attachment", demarcheUuid);
         log.info("Jway API: POST " + path);
         String csrfToken = formServicesWebClient.head()
                 .uri(path)
@@ -231,7 +231,7 @@ public class FormServicesApi {
      * API Jway Formsolutions POST new independant document
      */
     public void postDocument(MultiValueMap<String, Object> doc, String userId) {
-        String path = "alpha/document";
+        String path = "/alpha/document";
         log.info("Jway API: POST " + path);
 
         Document result = formServicesWebClient.post()
