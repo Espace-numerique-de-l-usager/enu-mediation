@@ -39,7 +39,7 @@ public class NewCourrierDocumentToJwayMapper extends AbstractDocumentToJwayMappe
         super(fileNameSanitizationRegex);
     }
 
-    public HttpEntity map(NewCourrierDocument courrierDoc, String demarcheId) {
+    public MultiValueMap<String, Object> map(NewCourrierDocument courrierDoc, String demarcheId) {
         String categorie = courrierDoc.getIdPrestation();
 
         // preparation des donnees : bytes du contenu
@@ -96,9 +96,9 @@ public class NewCourrierDocumentToJwayMapper extends AbstractDocumentToJwayMappe
             body.add("files", partEntity);
         }
 
-        HttpHeaders headers = createHeaders(courrierDoc.getIdUsager());
+//        HttpHeaders headers = createHeaders(courrierDoc.getIdUsager());
 
-        return new HttpEntity(body, headers);
+        return body;
     }
 
 }

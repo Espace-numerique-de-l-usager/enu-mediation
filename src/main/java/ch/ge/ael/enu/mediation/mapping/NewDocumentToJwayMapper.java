@@ -28,6 +28,7 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
@@ -42,6 +43,51 @@ public class NewDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
 
     public NewDocumentToJwayMapper(String fileNameSanitizationRegex) {
         super(fileNameSanitizationRegex);
+    }
+
+    public MultiValueMap<String, HttpEntity<?>> map(NewDocument newDocument) {
+        // preparation des donnees : bytes du contenu
+        byte[] decodedContentAsBytes = null;
+        if (newDocument.getContenu() != null) {
+            // cas d'un document a mettre en GED
+            decodedContentAsBytes = Base64.getDecoder().decode(newDocument.getContenu());
+        }
+
+        // preparation des donnees : name
+        String name = newDocument.getLibelleDocument()
+                + "|" + newDocument.getIdDocumentSiMetier();
+        if (newDocument.getGed() != null) {
+            // cas d'un document deja en GED
+            name = name
+                    + "|" + newDocument.getGed().getFournisseur()
+                    + "|" + newDocument.getGed().getVersion()
+                    + "|" + newDocument.getGed().getIdDocument()
+                    + "|" + newDocument.getGed().getAlgorithmeHash()
+                    + "|" + newDocument.getGed().getHash();
+        }
+        JwayDocumentType type = isJustificatif(newDocument) ? JwayDocumentType.ATTACHMENT : JwayDocumentType.REPORT;
+
+        // preparation des donnees : fileName
+        String fileName = newDocument.getLibelleDocument() + "." + MimeUtils.getFileExtension(newDocument.getMime());
+        fileName = "\"" + new FileNameSanitizer(fileNameSanitizationRegex).sanitize(fileName) + "\"";
+
+        // preparation des donnees : type
+        log.info("fileName apres assainissement = [{}]", fileName);
+
+        MultipartBodyBuilder builder = new MultipartBodyBuilder();
+        builder.part("name", name, MediaType.TEXT_PLAIN);
+        builder.part("type", type, MediaType.TEXT_PLAIN);
+
+        if (newDocument.getContenu() != null) {
+            // cas d'un document a mettre en GED
+            HttpHeaders partHeaders = new HttpHeaders();
+            partHeaders.setContentType(MediaType.TEXT_PLAIN);
+            ByteArrayResource byteArrayResource = new NewCourrierDocumentToJwayMapper.CustomByteArrayResource(decodedContentAsBytes, fileName);
+            HttpEntity<ByteArrayResource> partEntity = new HttpEntity<>(byteArrayResource, partHeaders);
+            builder.part("files", partEntity, MediaType.TEXT_PLAIN);
+        }
+
+        return builder.build();
     }
 
     public HttpEntity map(NewDocument newDocument, String demarcheId) {

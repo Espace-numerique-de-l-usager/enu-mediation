@@ -38,7 +38,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -145,6 +148,9 @@ public class FormServicesApi {
         return putFileData(path, file, userId);
     }
 
+    /**
+     * API Jway Formsolutions POST new File
+     */
     private File postFileData(String path, Object file, String userId) {
         log.info("Jway API: POST " + path);
         File createdFile;
@@ -164,6 +170,9 @@ public class FormServicesApi {
         return createdFile;
     }
 
+    /**
+     * API Jway Formsolutions PUT new date into existing File
+     */
     private File putFileData(String path, Object file, String userId) {
         log.info("Jway API: PUT " + path);
         File createdFile;
@@ -183,6 +192,9 @@ public class FormServicesApi {
         return createdFile;
     }
 
+    /**
+     * API Jway Formsolutions POST new document attached to existing File
+     */
     public void postDocument(NewDocument newDocument, String demarcheUuid, String userId) {
         String path = format("document/ds/%s/attachment", demarcheUuid);
         log.info("Jway API: POST " + path);
@@ -194,13 +206,15 @@ public class FormServicesApi {
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .bodyToMono(String.class).block();
         log.info("Jeton CSRF obtenu = [{}]", csrfToken);
-        HttpEntity entity2 = newDocumentToJwayMapper.map(newDocument, demarcheUuid);
+
+        MultiValueMap<String, HttpEntity<?>> formData = newDocumentToJwayMapper.map(newDocument);
 
         Document result = formServicesWebClient.post()
                 .uri(path)
                 .header(X_CSRF_TOKEN, csrfToken)
                 .header(REMOTE_USER,userId)
-                .bodyValue(entity2)
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(BodyInserters.fromMultipartData(formData))
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
@@ -209,18 +223,21 @@ public class FormServicesApi {
         if (result != null) {
             log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
         } else {
-            log.warn("Échec de créationd de document pour la démarche " + demarcheUuid + ".");
+            log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
         }
     }
 
-    public void postDocument(HttpEntity doc, String userId) {
+    /**
+     * API Jway Formsolutions POST new independant document
+     */
+    public void postDocument(MultiValueMap<String, Object> doc, String userId) {
         String path = "alpha/document";
         log.info("Jway API: POST " + path);
 
         Document result = formServicesWebClient.post()
                 .uri(path)
                 .header(REMOTE_USER,userId)
-                .bodyValue(doc)
+                .body(BodyInserters.fromMultipartData(doc))
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)

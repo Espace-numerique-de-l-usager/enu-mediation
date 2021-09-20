@@ -72,7 +72,6 @@ public class DocumentService {
     private final DeserializationService deserializationService;
     private final DemarcheService demarcheService;
     private final MessageLoggingService messageLoggingService;
-//    private final FormServicesRestInvoker formServices;
     private final FormServicesApi formServicesApi;
 
 
@@ -95,7 +94,6 @@ public class DocumentService {
             errors.forEach(error -> texts.add(error.getPropertyPath() + ": " + error.getMessage() + ". Valeur passée: (" + error.getInvalidValue() + ")" ));
             throw new ValidationException(texts.toString());
         }
-
 
         String idDemarcheSiMetier = newDocument.getIdDemarcheSiMetier();
         String idUsager = newDocument.getIdUsager();
