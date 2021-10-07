@@ -18,17 +18,32 @@
  */
 package ch.ge.ael.enu.mediation;
 
+import ch.ge.ael.enu.business.domain.v1_0.*;
+import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import ch.ge.ael.enu.mediation.exception.IllegalMessageException;
+import ch.ge.ael.enu.mediation.exception.NotFoundException;
+import ch.ge.ael.enu.mediation.exception.UnsupportedMediaTypeException;
 import ch.ge.ael.enu.mediation.service.DemarcheService;
 import ch.ge.ael.enu.mediation.service.DocumentService;
+import ch.ge.ael.enu.mediation.service.SuggestionService;
 import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import ch.ge.ael.enu.mediation.service.technical.ResponseHandler;
 import ch.ge.ael.enu.mediation.service.technical.SecurityService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Set;
 
 import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.*;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
@@ -41,9 +56,15 @@ import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
 @RequiredArgsConstructor
 public class MainRouter {
 
+    private final ObjectMapper mapper;
+    private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator = factory.getValidator();
+
     private final MessageLoggingService messageLoggingService;
 
     private final DemarcheService demarcheService;
+
+    private final SuggestionService suggestionService;
 
     private final DocumentService courrierService;
 
@@ -59,7 +80,6 @@ public class MainRouter {
         messageLoggingService.logMessage(message, true);
 
         try {
-            securityService.checkAuthorizedPrestation(message);
             route(message);
             log.info("Traitement OK");
         } catch (Exception e) {
@@ -67,29 +87,87 @@ public class MainRouter {
         }
     }
 
-    private void route(Message message) {
+    private void route(Message message) throws UnsupportedMediaTypeException, ValidationException, NotFoundException {
         String contentType = message.getMessageProperties().getHeader(CONTENT_TYPE);
-        switch (contentType==null ? "" : contentType) {
-            case "":
-                throw new IllegalMessageException("L'en-tete \"" + CONTENT_TYPE + "\" manque dans le message");
-            case NEW_DEMARCHE:
-                demarcheService.handleNewDemarche(message);
+        if(contentType == null || contentType.isEmpty()) {
+            throw new UnsupportedMediaTypeException("L'en-tête \"" + CONTENT_TYPE + "\" manque dans le message ou est vide.");
+        }
+        TypeReference<?> typeReference = typeReferenceMap.get(contentType);
+        if(typeReference == null) {
+            throw new UnsupportedMediaTypeException(
+                    "La valeur \"" + contentType + "\" de l'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
+        }
+        Object object;
+        try {
+            object = mapper.readValue(message.getBody(), typeReference);
+        } catch (IOException e) {
+            log.warn("Erreur lors de la deserialisation en un {} : {}", typeReference.getType().getTypeName(), e.getMessage());
+            throw new IllegalMessageException("Erreur lors de la deserialisation du message JSON : " + e.getMessage());
+        }
+
+        log.info("{} = {}", typeReference.getType().getTypeName(), object);
+
+        // validation metier du message
+        Set<ConstraintViolation<Object>> errors = validator.validate(object);
+        if(!errors.isEmpty()) {
+            // Gestion des erreurs de validation
+            ArrayList<String> texts = new ArrayList<>();
+            errors.forEach(error -> texts.add(error.getPropertyPath() + ": " + error.getMessage() + ". Valeur passée: (" + error.getInvalidValue() + ")" ));
+            throw new ValidationException(texts.toString());
+        }
+
+        switch (contentType) {
+            case BROUILLON_ABANDON:
+                log.warn(BROUILLON_ABANDON + ": message non implémenté");
                 break;
-            case STATUS_CHANGE:
-                demarcheService.handleStatusChange(message);
+            case BROUILLON_DEMARCHE:
+                demarcheService.handleDemarcheBrouillon((BrouillonDemarche) object);
                 break;
-            case NEW_SUGGESTION:
-                demarcheService.handleNewSuggestion(message);
+            case COURRIER:
+                courrierService.handleNewCourrier((Courrier) object);
                 break;
-            case NEW_DOCUMENT:
-                courrierService.handleNewDocument(message);
+            case COURRIER_BINAIRE:
+                courrierService.handleNewCourrier((CourrierBinaire) object);
                 break;
-            case NEW_COURRIER:
-                courrierService.handleNewCourrier(message);
+            case COURRIER_HORS_DEMARCHE:
+                courrierService.handleNewCourrier((CourrierHorsDemarche) object);
                 break;
-            default:
-                throw new IllegalMessageException(
-                        "La valeur \"" + contentType + "\" de l'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
+            case COURRIER_HORS_DEMARCHE_BINAIRE:E:
+                courrierService.handleNewCourrier((CourrierHorsDemarcheBinaire) object);
+                break;
+            case DEMARCHE_ABANDONNEE:
+                log.warn(DEMARCHE_ABANDONNEE + ": message non implémenté");
+                break;
+            case DEMARCHE_ACTION_REQUISE:
+                demarcheService.handleDemarcheActionRequise((DemarcheActionRequise) object);
+                break;
+            case DEMARCHE_DEPOSEE:
+                demarcheService.handleDemarcheDeposee((DemarcheDeposee) object);
+                break;
+            case DEMARCHE_EN_TRAITEMENT:
+                demarcheService.handleDemarcheEnTraitement((DemarcheEnTraitement) object);
+                break;
+            case DEMARCHE_TERMINEE:
+                demarcheService.handleDemarcheTerminee((DemarcheTerminee) object);
+                break;
+            case DOCUMENT_ACCES:
+                log.warn(DOCUMENT_ACCES + ": message non implémenté");
+                break;
+            case DOCUMENT:
+                courrierService.handleDocument((DocumentUsager) object);
+                break;
+            case DOCUMENT_BINAIRE:
+                courrierService.handleDocument((DocumentUsagerBinaire) object);
+                break;
+            case SEQUENCE_MESSAGES:
+                log.warn(SEQUENCE_MESSAGES + ": message non implémenté");
+                break;
+            case SUGGESTION_ABANDON:
+                log.warn(SUGGESTION_ABANDON + ": message non implémenté");
+                break;
+            case SUGGESTION:
+                suggestionService.handleNewSuggestion((Suggestion) object);
+                break;
         }
         responseHandler.handleOk(message);
     }

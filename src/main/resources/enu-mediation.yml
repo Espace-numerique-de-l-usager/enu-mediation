@@ -1,0 +1,53 @@
+app:
+  formservices:
+    url: ${FORMSERVICES_BASEURL}/rest
+    ssl:
+      trust-store:
+        resource: classpath:security/gina.20191003.jks
+        password: ${SSL_TRUSTSTORE_PASS}
+  logging:
+    max-file-content-size: '100'
+  document:
+    mime-types: application/pdf
+  prestation:
+    simetier: '{"permisPeche": "simetier2", "changementAdresse": "simetier2", "delaiSuccession": "simetier2", "declarationImpots": "simetier3"}'
+  file:
+    name:
+      sanitization-regex: '[^a-zA-Z0-9âàçéèêôùÂÀÉÈ\\.]'
+  rabbitmq:
+    dlq:
+      exchange: enu-dlq # echange ou on ecrit les messages en erreur technique
+      routing-key: enu-dlq-q
+    reply:
+      exchange: enu-to-all-reply # echange ou on ecrit les messages de reponse aux SI metier
+    backend-to-mediation:
+      queue: backend-to-mediation-q # flux inverse : queue ou on lit les messages de enu-backend
+    main:
+      queue: all-to-enu-main-q # queue ou on lit les messages des SI metier
+    inverse:
+      exchange: enu-to-all-main # flux inverse : echange ou on ecrit en passe-plat les messages venus de enu-backend
+
+spring:
+  http:
+    log-request-details: 'true'
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: '5672'
+    virtual-host: aelenu
+    username: ${RABBITMQ_USER}
+    password: ${RABBITMQ_PASS}
+    ssl:
+      verify-hostname: 'false'
+      trust-store: classpath:security/gina.20191003.jks
+      trust-store-password: ${SSL_TRUSTSTORE_PASS}
+      enabled: 'true'
+    listener:
+      direct:
+        acknowledge-mode: auto
+
+logging:
+  level:
+    root: INFO
+    org.apache.camel: INFO
+    org.springframework: ERROR
+    org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE

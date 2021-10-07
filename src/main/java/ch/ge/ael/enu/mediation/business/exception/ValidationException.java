@@ -22,7 +22,7 @@ package ch.ge.ael.enu.mediation.business.exception;
  * Exception lancee quand un message contient des donnees invalides, par exemple manquantes,
  * mal formatees ou incoherentes.
  */
-public class ValidationException extends RuntimeException {
+public class ValidationException extends Exception {
 
     public ValidationException(String msg) {
         super(msg);

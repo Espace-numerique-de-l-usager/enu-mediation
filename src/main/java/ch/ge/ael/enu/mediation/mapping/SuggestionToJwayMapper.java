@@ -18,12 +18,12 @@
  */
 package ch.ge.ael.enu.mediation.mapping;
 
+import ch.ge.ael.enu.business.domain.v1_0.Suggestion;
 import ch.ge.ael.enu.mediation.jway.model.Application;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.jway.model.Form;
 import ch.ge.ael.enu.mediation.jway.model.FormUrl;
 import ch.ge.ael.enu.mediation.jway.model.User;
-import ch.ge.ael.enu.business.domain.v1_0.NewSuggestion;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.ZonedDateTime;
@@ -32,9 +32,9 @@ import java.util.ArrayList;
 import static ch.ge.ael.enu.mediation.jway.model.Status.BLANK;
 
 @Configuration
-public class NewSuggestionToJwayMapper {
+public class SuggestionToJwayMapper {
 
-    public File map(NewSuggestion newSuggestion) {
+    public File map(Suggestion newSuggestion) {
         File file = new File();
 
         file.setName("suggestion-" + newSuggestion.getIdPrestation() + "-" + ZonedDateTime.now().toEpochSecond());

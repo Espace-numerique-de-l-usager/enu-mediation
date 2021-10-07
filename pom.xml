@@ -27,12 +27,13 @@
     </distributionManagement>
 
     <properties>
-        <enu-interface-modele.version>0.26</enu-interface-modele.version>
+        <enu-interface-modele.version>0.33</enu-interface-modele.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.projectKey>enu-mediation</sonar.projectKey>
         <sonar.projectName>enu-mediation</sonar.projectName>
         <java.version>8</java.version>
-        <spring-boot.version>2.5.3</spring-boot.version>
+        <camel.version>3.11.1</camel.version>
+        <spring-boot.version>2.5.5</spring-boot.version>
         <lombok.version>1.18.20</lombok.version>
         <jackson.version>2.11.1</jackson.version>
     </properties>
@@ -44,6 +45,15 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
                 <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <!-- Camel BOM -->
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-boot-dependencies</artifactId>
+                <version>${camel.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -104,6 +114,16 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+
+        <!-- Camel components -->
+        <dependency>
+            <groupId>org.apache.camel.springboot</groupId>
+            <artifactId>camel-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel.springboot</groupId>
+            <artifactId>camel-spring-rabbitmq-starter</artifactId>
         </dependency>
 
         <!-- Other dependencies -->

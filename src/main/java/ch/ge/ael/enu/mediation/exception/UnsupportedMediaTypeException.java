@@ -16,16 +16,14 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.util.invocation;
+package ch.ge.ael.enu.mediation.exception;
 
-import org.apache.commons.lang3.StringUtils;
-
-public class Precondition {
-
-    public static void checkNotBlank(String value, String name) {
-        if (StringUtils.isBlank(value)) {
-            throw new IllegalArgumentException("Argument \"" + name + "\" is blank");
-        }
+/**
+ * ENU only supports a specific list of media types.
+ * @see ch.ge.ael.enu.mediation.routes.communication.EnuMediaType for supported media types.
+ */
+public class UnsupportedMediaTypeException extends Exception {
+    public UnsupportedMediaTypeException(String message) {
+        super(message);
     }
-
 }

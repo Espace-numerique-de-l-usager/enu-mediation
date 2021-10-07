@@ -18,7 +18,8 @@
  */
 package ch.ge.ael.enu.mediation.mapping;
 
-import ch.ge.ael.enu.business.domain.v1_0.NewCourrierDocument;
+import ch.ge.ael.enu.business.domain.v1_0.CourrierDocument;
+import ch.ge.ael.enu.business.domain.v1_0.CourrierDocumentBinaire;
 import ch.ge.ael.enu.mediation.jway.model.JwayDocumentType;
 import ch.ge.ael.enu.mediation.util.file.FileNameSanitizer;
 import ch.ge.ael.enu.mediation.util.mime.MimeUtils;
@@ -39,66 +40,97 @@ public class NewCourrierDocumentToJwayMapper extends AbstractDocumentToJwayMappe
         super(fileNameSanitizationRegex);
     }
 
-    public MultiValueMap<String, Object> map(NewCourrierDocument courrierDoc, String demarcheId) {
-        String categorie = courrierDoc.getIdPrestation();
+    public MultiValueMap<String, Object> map(CourrierDocument courrierDoc, String demarcheId) {
+//        String categorie = courrierDoc.getIdPrestation();
+//
+//        // preparation des donnees : name
+//        String name = courrierDoc.getLibelleDocument()
+//                + "|" + courrierDoc.getIdDocumentSiMetier()
+//                + "|" + courrierDoc.getIndex()
+//                + "|" + courrierDoc.getNbDocuments()
+//                + "|" + courrierDoc.getGed().getFournisseur()
+//                + "|" + courrierDoc.getGed().getIdDocument()
+//                + "|" + courrierDoc.getGed().getAlgorithmeHash()
+//                + "|" + courrierDoc.getGed().getHash();
+//
+//        // preparation des donnees : fileName
+//        String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());
+//        fileName = "\"" + new FileNameSanitizer(fileNameSanitizationRegex).sanitize(fileName) + "\"";
+//        // note : l'upload va supprimer les caracteres accentues
+//        log.info("fileName apres assainissement = [{}]", fileName);
+//
+//        // pour les champs contenant du texte, il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
+////        ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
+//
+//        // construction de la requete multipart
+//        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+//        body.add("source", courrierDoc.getClefCourrier());
+//        body.add("name", name);
+//        body.add("type", JwayDocumentType.OTHER.name());
+//        if (demarcheId == null) {
+//            // courrier non lie a une demarche
+//            body.add("tag", categorie);
+//        } else {
+//            // courrier lie a une demarche
+//            body.add("fileUuid", demarcheId);
+//        }
+//        body.add("subtype", courrierDoc.getLibelleCourrier());
+//
+//        return body;
+//    }
+//
+//    public MultiValueMap<String, Object> map(CourrierDocumentBinaire courrierDoc, String demarcheId) {
+//        String categorie = courrierDoc.getIdPrestation();
+//
+//        // preparation des donnees : bytes du contenu
+//        byte[] decodedContentAsBytes = null;
+//        if (courrierDoc.getContenu() != null) {
+//            // cas d'un document a mettre en GED
+//            decodedContentAsBytes = Base64.getDecoder().decode(courrierDoc.getContenu());
+//        }
+//
+//        // preparation des donnees : name
+//        String name = courrierDoc.getLibelleDocument()
+//                + "|" + courrierDoc.getIdDocumentSiMetier()
+//                + "|" + courrierDoc.getIndex()
+//                + "|" + courrierDoc.getNbDocuments();
+//
+//        // preparation des donnees : fileName
+//        String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());
+//        fileName = "\"" + new FileNameSanitizer(fileNameSanitizationRegex).sanitize(fileName) + "\"";
+//        // note : l'upload va supprimer les caracteres accentues
+//        log.info("fileName apres assainissement = [{}]", fileName);
+//
+//        // pour les champs contenant du texte, il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
+////        ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
+//
+//        // construction de la requete multipart
+//        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
+//        body.add("source", courrierDoc.getClefCourrier());
+//        body.add("name", name);
+//        body.add("type", JwayDocumentType.OTHER.name());
+//        if (demarcheId == null) {
+//            // courrier non lie a une demarche
+//            body.add("tag", categorie);
+//        } else {
+//            // courrier lie a une demarche
+//            body.add("fileUuid", demarcheId);
+//        }
+//        body.add("subtype", courrierDoc.getLibelleCourrier());
+//
+//        if (courrierDoc.getContenu() != null) {
+//            // cas d'un document a mettre en GED
+//            HttpHeaders partHeaders = new HttpHeaders();
+//            partHeaders.setContentType(MediaType.TEXT_PLAIN);
+//            ByteArrayResource byteArrayResource = new CustomByteArrayResource(decodedContentAsBytes, fileName);
+//            HttpEntity<ByteArrayResource> partEntity = new HttpEntity<>(byteArrayResource, partHeaders);
+//            body.add("files", partEntity);
+//        }
+//
+////        HttpHeaders headers = createHeaders(courrierDoc.getIdUsager());
 
-        // preparation des donnees : bytes du contenu
-        byte[] decodedContentAsBytes = null;
-        if (courrierDoc.getContenu() != null) {
-            // cas d'un document a mettre en GED
-            decodedContentAsBytes = Base64.getDecoder().decode(courrierDoc.getContenu());
-        }
-
-        // preparation des donnees : name
-        String name = courrierDoc.getLibelleDocument()
-                + "|" + courrierDoc.getIdDocumentSiMetier()
-                + "|" + courrierDoc.getIndex()
-                + "|" + courrierDoc.getNbDocuments();
-        if (courrierDoc.getGed() != null) {
-            // cas d'un document deja en GED
-            name = name
-                    + "|" + courrierDoc.getGed().getFournisseur()
-                    + "|" + courrierDoc.getGed().getVersion()
-                    + "|" + courrierDoc.getGed().getIdDocument()
-                    + "|" + courrierDoc.getGed().getAlgorithmeHash()
-                    + "|" + courrierDoc.getGed().getHash();
-        }
-
-        // preparation des donnees : fileName
-        String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());
-        fileName = "\"" + new FileNameSanitizer(fileNameSanitizationRegex).sanitize(fileName) + "\"";
-        // note : l'upload va supprimer les caracteres accentues
-        log.info("fileName apres assainissement = [{}]", fileName);
-
-        // pour les champs contenant du texte, il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
-//        ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
-
-        // construction de la requete multipart
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("source", courrierDoc.getClefCourrier());
-        body.add("name", name);
-        body.add("type", JwayDocumentType.OTHER.name());
-        if (demarcheId == null) {
-            // courrier non lie a une demarche
-            body.add("tag", categorie);
-        } else {
-            // courrier lie a une demarche
-            body.add("fileUuid", demarcheId);
-        }
-        body.add("subtype", courrierDoc.getLibelleCourrier());
-
-        if (courrierDoc.getContenu() != null) {
-            // cas d'un document a mettre en GED
-            HttpHeaders partHeaders = new HttpHeaders();
-            partHeaders.setContentType(MediaType.TEXT_PLAIN);
-            ByteArrayResource byteArrayResource = new CustomByteArrayResource(decodedContentAsBytes, fileName);
-            HttpEntity<ByteArrayResource> partEntity = new HttpEntity<>(byteArrayResource, partHeaders);
-            body.add("files", partEntity);
-        }
-
-//        HttpHeaders headers = createHeaders(courrierDoc.getIdUsager());
-
-        return body;
+//        return body;
+        return null;
     }
 
 }

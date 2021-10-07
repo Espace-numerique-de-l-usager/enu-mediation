@@ -33,7 +33,7 @@ import javax.annotation.Resource;
 
 import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.KO;
 import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.OK;
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.REPLY;
+import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.RESPONSE;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.CORRELATION_ID;
 import static ch.ge.ael.enu.mediation.routes.communication.Header.SI_METIER;
@@ -93,11 +93,11 @@ public class ResponseHandler {
         }
         String replyRoutingKey = originalMessage.getMessageProperties().getHeader(SI_METIER);
         template.convertAndSend(replyExchange, replyRoutingKey, jsonResponse, msg -> {
-            msg.getMessageProperties().setHeader(CONTENT_TYPE, REPLY);
+            msg.getMessageProperties().setHeader(CONTENT_TYPE, RESPONSE);
             msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
             msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
             msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
-            msg.getMessageProperties().setContentType(REPLY);
+            msg.getMessageProperties().setContentType(RESPONSE);
             msg.getMessageProperties().setContentEncoding("UTF-8");
             return msg;
         });

@@ -18,25 +18,54 @@
  */
 package ch.ge.ael.enu.mediation.routes.communication;
 
+import ch.ge.ael.enu.business.domain.v1_0.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.util.HashMap;
+
 public class EnuMediaType {
 
-    public static final String NEW_DEMARCHE = "application/new-demarche-v1.0+json";
-
-    public static final String NEW_SUGGESTION = "application/new-suggestion-v1.0+json";
-
-    public static final String STATUS_CHANGE = "application/status-change-v1.0+json";
-
-    public static final String NEW_DOCUMENT = "application/new-document-v1.0+json";
-
-    public static final String NEW_COURRIER = "application/new-courrier-v1.0+json";
-
-    public static final String REPLY = "application/reply-v1.0+json";
-
-    public static final String BROUILLON_DELETION = "application/brouillon-deletion-v1.0+json";
-
-    public static final String DOCUMENT_ACCESS = "application/document-access-v1.0+json";
-
+    public static final String BROUILLON_ABANDON = "application/brouillon-abandon-v1.0+json";
+    public static final String BROUILLON_DEMARCHE = "application/brouillon-de-demarche-v1.0+json";
+    public static final String COURRIER = "application/courrier-v1.0+json";
+    public static final String COURRIER_BINAIRE = "application/courrier-binaire-v1.0+json";
+    public static final String COURRIER_HORS_DEMARCHE = "application/courrier-hors-demarche-v1.0+json";
+    public static final String COURRIER_HORS_DEMARCHE_BINAIRE = "application/courrier-hors-demarche-binaire-v1.0+json";
+    public static final String DEMARCHE_ABANDONNEE = "application/demarche-abandonnee-v1.0+json";
+    public static final String DEMARCHE_ACTION_REQUISE = "application/demarche-action-requise-v1.0+json";
+    public static final String DEMARCHE_DEPOSEE = "application/demarche-deposee-v1.0+json";
+    public static final String DEMARCHE_EN_TRAITEMENT = "application/demarche-en-traitement-v1.0+json";
+    public static final String DEMARCHE_TERMINEE = "application/demarche-terminee-v1.0+json";
+    public static final String DOCUMENT_ACCES = "application/document-acces-v1.0+json";
+    public static final String DOCUMENT = "application/document-v1.0+json";
+    public static final String DOCUMENT_BINAIRE = "application/document-binaire-v1.0+json";
     public static final String DOCUMENT_RECEPTION_MODE = "application/document-reception-mode-v1.0+json";
+    public static final String RESPONSE = "application/response-v1.0+json";
+    public static final String SEQUENCE_MESSAGES = "application/sequence-enu-v1.0+json";
+    public static final String SUGGESTION_ABANDON = "application/suggestion-abandon-v1.0+json";
+    public static final String SUGGESTION = "application/suggestion-v1.0+json";
+
+    public static final HashMap<String, TypeReference<?>> typeReferenceMap = new HashMap<String, TypeReference<?>>() {{
+        put(BROUILLON_ABANDON, new TypeReference<BrouillonAbandon>(){});
+        put(BROUILLON_DEMARCHE, new TypeReference<BrouillonDemarche>(){});
+        put(COURRIER, new TypeReference<Courrier>(){});
+        put(COURRIER_BINAIRE, new TypeReference<CourrierBinaire>(){});
+        put(COURRIER_HORS_DEMARCHE, new TypeReference<CourrierHorsDemarche>(){});
+        put(COURRIER_HORS_DEMARCHE_BINAIRE, new TypeReference<CourrierHorsDemarcheBinaire>(){});
+        put(DEMARCHE_ABANDONNEE, new TypeReference<DemarcheAbandonnee>(){});
+        put(DEMARCHE_ACTION_REQUISE, new TypeReference<DemarcheActionRequise>(){});
+        put(DEMARCHE_DEPOSEE, new TypeReference<DemarcheDeposee>(){});
+        put(DEMARCHE_EN_TRAITEMENT, new TypeReference<DemarcheEnTraitement>(){});
+        put(DEMARCHE_TERMINEE, new TypeReference<DemarcheTerminee>(){});
+        put(DOCUMENT_ACCES, new TypeReference<DocumentAcces>(){});
+        put(DOCUMENT, new TypeReference<DocumentUsager>(){});
+        put(DOCUMENT_BINAIRE, new TypeReference<DocumentUsagerBinaire>(){});
+        put(DOCUMENT_RECEPTION_MODE, new TypeReference<ModeReceptionDocuments>(){});
+        put(RESPONSE, new TypeReference<Response>(){});
+        put(SEQUENCE_MESSAGES, new TypeReference<SequenceMessages>(){});
+        put(SUGGESTION_ABANDON, new TypeReference<SuggestionAbandon>(){});
+        put(SUGGESTION, new TypeReference<Suggestion>(){});
+    }};
 
     private EnuMediaType() {
     }

@@ -18,10 +18,9 @@
  */
 package ch.ge.ael.enu.mediation.routes.processing;
 
+import ch.ge.ael.enu.business.domain.v1_0.Courrier;
+import ch.ge.ael.enu.business.domain.v1_0.CourrierDocument;
 import ch.ge.ael.enu.business.domain.v1_0.GedData;
-import ch.ge.ael.enu.business.domain.v1_0.NewCourrier;
-import ch.ge.ael.enu.business.domain.v1_0.NewCourrierDocument;
-import ch.ge.ael.enu.business.domain.v1_0.NewDocument;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -33,36 +32,35 @@ import java.util.List;
 @Slf4j
 public class NewCourrierSplitter {
 
-    public List<NewCourrierDocument> splitCourrier(NewCourrier newCourrier) {
-        List<NewCourrierDocument> courriersDocs = new ArrayList<>();
+    public List<CourrierDocument> splitCourrier(Courrier newCourrier) {
+        List<CourrierDocument> courriersDocs = new ArrayList<>();
 
         int index = 0;
 
         // une boucle "for" pre-Java 8, car on a besoin de l'indice du document
-        for (NewDocument doc : newCourrier.getDocuments()) {
-            NewCourrierDocument courrierDoc = new NewCourrierDocument();
-            courrierDoc.setIdPrestation(newCourrier.getIdPrestation());
-            courrierDoc.setIdUsager(newCourrier.getIdUsager());
-            courrierDoc.setIdDemarcheSiMetier(newCourrier.getIdDemarcheSiMetier());
-            courrierDoc.setLibelleCourrier(newCourrier.getLibelleCourrier());
-            courrierDoc.setClefCourrier(newCourrier.getClef());
+        for (CourrierDocument doc : newCourrier.getDocuments()) {
+            CourrierDocument courrierDoc = new CourrierDocument();
+//            courrierDoc.setIdPrestation(newCourrier.getIdPrestation());
+//            courrierDoc.setIdUsager(newCourrier.getIdUsager());
+//            courrierDoc.setIdDemarcheSiMetier(newCourrier.getIdDemarcheSiMetier());
+//            courrierDoc.setLibelleCourrier(newCourrier.getLibelleCourrier());
+//            courrierDoc.setClefCourrier(newCourrier.getClef());
             courrierDoc.setLibelleDocument(doc.getLibelleDocument());
             courrierDoc.setIdDocumentSiMetier(doc.getIdDocumentSiMetier());
             courrierDoc.setMime(doc.getMime());
-            courrierDoc.setContenu(doc.getContenu());
+//            courrierDoc.setContenu(doc.getContenu());
 
             if (doc.getGed() != null) {
                 GedData ged = new GedData();
                 ged.setFournisseur(doc.getGed().getFournisseur());
-                ged.setVersion(doc.getGed().getVersion());
                 ged.setIdDocument(doc.getGed().getIdDocument());
                 ged.setAlgorithmeHash(doc.getGed().getAlgorithmeHash());
                 ged.setHash(doc.getGed().getHash());
                 courrierDoc.setGed(ged);
             }
 
-            courrierDoc.setIndex(index++);
-            courrierDoc.setNbDocuments(newCourrier.getDocuments().size());
+//            courrierDoc.setIndex(index++);
+//            courrierDoc.setNbDocuments(newCourrier.getDocuments().size());
             courriersDocs.add(courrierDoc);
         }
 

@@ -21,35 +21,32 @@
 
 package ch.ge.ael.enu.mediation.service.technical;
 
-import ch.ge.ael.enu.business.domain.v1_0.Prestation;
-import ch.ge.ael.enu.mediation.business.exception.ValidationException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.Map;
-
-import static ch.ge.ael.enu.mediation.routes.communication.Header.SI_METIER;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityService {
 
-    private final DeserializationService deserializationService;
-
     @Value("${app.prestation.simetier}")
     private String simetierByPrestationJson;
+
+    private final ObjectMapper objectMapper;
 
     private Map<String, String> simetierByPrestation = null;
 
     @PostConstruct
-    public void init() {
-        simetierByPrestation = deserializationService.deserialize(simetierByPrestationJson.getBytes(), new TypeReference<Map<String,String>>() {});
+    public void init() throws IOException {
+        simetierByPrestation = objectMapper.readValue(simetierByPrestationJson.getBytes(), new TypeReference<Map<String,String>>() {});
         log.info("Table prestation -> SI metier : {}", simetierByPrestation);
     }
 
@@ -58,35 +55,6 @@ public class SecurityService {
      */
     public String getSimetier(String idPrestation) {
         return simetierByPrestation.get(idPrestation);
-    }
-
-    /**
-     * Verifie que le SI metier a l'origine du message a bien le droit d'utiliser la prestation indiquee
-     * dans le message.
-     */
-    public void checkAuthorizedPrestation(Message message) {
-        String idPrestation = deserializationService.deserialize(message.getBody(), Prestation.class).getIdPrestation();
-        String siMetier = message.getMessageProperties().getHeader(SI_METIER);
-
-        if (idPrestation == null) {
-            log.info("Erreur metier : le champ [idPrestation] manque");
-            throw new ValidationException("Le champ \"idPrestation\" manque");
-        } else if (! simetierByPrestation.containsKey(idPrestation)) {
-            log.info("Prestation [{}] inconnue", idPrestation);
-            throw new ValidationException(getPrestationErrorMessage(idPrestation));
-        } else if (! simetierByPrestation.get(idPrestation).equals(siMetier)) {
-            log.warn("SECURITE : l'application [{}] tente de poster un message portant sur la prestation [{}] pour laquelle elle n'a pas de droit d'acces",
-                    siMetier, idPrestation);
-            throw new ValidationException(getPrestationErrorMessage(idPrestation));
-        }
-    }
-
-    /**
-     * On veille a fournir au producteur un message identique, que la prestation n'existe pas ou qu'elle existe mais
-     * que le producteur n'y ait pas acces.
-     */
-    private String getPrestationErrorMessage(String idPrestation) {
-        return String.format("La prestation \"%s\" n'existe pas ou alors vous n'y pas acces", idPrestation);
     }
 
 }

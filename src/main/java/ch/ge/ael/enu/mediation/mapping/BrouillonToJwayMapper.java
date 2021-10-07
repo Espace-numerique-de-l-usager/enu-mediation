@@ -18,22 +18,24 @@
  */
 package ch.ge.ael.enu.mediation.mapping;
 
+import ch.ge.ael.enu.business.domain.v1_0.BrouillonDemarche;
+import ch.ge.ael.enu.business.domain.v1_0.DemarcheDeposee;
 import ch.ge.ael.enu.mediation.jway.model.Application;
 import ch.ge.ael.enu.mediation.jway.model.File;
-import ch.ge.ael.enu.mediation.jway.model.Form;
-import ch.ge.ael.enu.mediation.jway.model.FormUrl;
+import ch.ge.ael.enu.mediation.jway.model.Status;
 import ch.ge.ael.enu.mediation.jway.model.User;
-import ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus;
-import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
 
-import java.util.ArrayList;
+public class BrouillonToJwayMapper {
 
-public class NewDemarcheToJwayMapper {
-
-    public File map(NewDemarche newDemarche) {
+    public File map(BrouillonDemarche newDemarche) {
         File file = new File();
 
-        file.setName(newDemarche.getIdDemarcheSiMetier());
+        // hack : si la demarche est un brouillon, on ajoute "DRAFT" au nom de la demarche.
+        // Sans cette distinction, lors de la creation d'une demarche a l'etat "Deposee", l'application enu-backend
+        // enverra coup sur coup 2 courriels a l'usager :
+        // - un courriel (inutile) indiquant qu'un brouillon a ete cree
+        // - un courriel (approprie) indiquant qu'une demarche a ete deposee
+        file.setName("(DRAFT)" + newDemarche.getIdDemarcheSiMetier());
 
         User owner = new User();
         owner.setName(newDemarche.getIdUsager());
@@ -43,32 +45,10 @@ public class NewDemarcheToJwayMapper {
         application.setName(newDemarche.getIdPrestation());
         file.setApplication(application);
 
-        String jwayStatus = new StatusMapper().mapEnumToJway(newDemarche.getEtat()).toString();
+        String jwayStatus = Status.START.toString();
         file.setWorkflowStatus(jwayStatus);
         file.setStatus(jwayStatus);
 
-        if (isBrouillon(newDemarche)) {
-            if (newDemarche.getLibelleAction() != null) {
-                file.setStepDescription("|" + newDemarche.getLibelleAction());
-            }
-
-            file.setToDate(newDemarche.getDateEcheanceAction());
-
-            if (newDemarche.getUrlAction() != null) {
-                Form form = new Form();
-                file.setForm(form);
-                form.setUrls(new ArrayList<>());
-                FormUrl formUrl = new FormUrl();
-                form.getUrls().add(formUrl);
-                formUrl.setBaseUrl(newDemarche.getUrlAction().toString());
-            }
-        }
-
         return file;
     }
-
-    private boolean isBrouillon(NewDemarche newDemarche) {
-        return newDemarche.getEtat().equals(DemarcheStatus.BROUILLON);
-    }
-
 }

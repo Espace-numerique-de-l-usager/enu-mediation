@@ -18,33 +18,20 @@
  */
 package ch.ge.ael.enu.mediation.service;
 
-import ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus;
-import ch.ge.ael.enu.business.domain.v1_0.NewDemarche;
-import ch.ge.ael.enu.business.domain.v1_0.NewSuggestion;
-import ch.ge.ael.enu.business.domain.v1_0.StatusChange;
-import ch.ge.ael.enu.mediation.business.exception.ValidationException;
-import ch.ge.ael.enu.mediation.jway.model.File;
-import ch.ge.ael.enu.mediation.mapping.NewDemarcheToJwayMapper;
-import ch.ge.ael.enu.mediation.mapping.NewDemarcheToStatusChangeMapper;
-import ch.ge.ael.enu.mediation.mapping.NewSuggestionToJwayMapper;
-import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep1Mapper;
-import ch.ge.ael.enu.mediation.mapping.StatusChangeToJwayStep2Mapper;
-import ch.ge.ael.enu.mediation.routes.processing.NewDemarcheToBrouillonReducer;
-import ch.ge.ael.enu.mediation.service.technical.DeserializationService;
+import ch.ge.ael.enu.business.domain.v1_0.*;
+import ch.ge.ael.enu.mediation.exception.NotFoundException;
+import ch.ge.ael.enu.mediation.jway.model.*;
+import ch.ge.ael.enu.mediation.mapping.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
 import org.springframework.stereotype.Service;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Set;
+import java.util.UUID;
 
-import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.DEPOSEE;
-import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.EN_TRAITEMENT;
 
 /**
  * Service de gestion des demarches :
@@ -58,87 +45,130 @@ import static ch.ge.ael.enu.business.domain.v1_0.DemarcheStatus.EN_TRAITEMENT;
 @RequiredArgsConstructor
 public class DemarcheService {
 
-    private final DeserializationService deserializationService;
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     private final FormServicesApi formServicesApi;
+    private final BrouillonToJwayMapper brouillonToJwayMapper = new BrouillonToJwayMapper();
+    private final DemarcheDeposeeToJwayMapper demarcheDeposeeToJwayMapper = new DemarcheDeposeeToJwayMapper();
 
-    private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-    private final Validator validator = factory.getValidator();
-
-    private final NewDemarcheToBrouillonReducer brouillonReducer = new NewDemarcheToBrouillonReducer();
-    private final NewDemarcheToJwayMapper newDemarcheToJwayMapper = new NewDemarcheToJwayMapper();
-    private final StatusChangeToJwayStep1Mapper statusChangeToJwayStep1Mapper = new StatusChangeToJwayStep1Mapper();
-    private final StatusChangeToJwayStep2Mapper statusChangeToJwayStep2Mapper = new StatusChangeToJwayStep2Mapper();
-    private final NewSuggestionToJwayMapper newSuggestionToJwayMapper = new NewSuggestionToJwayMapper();
-
-
-    public void handleNewDemarche(Message message) {
-        // deserialisation du message
-        NewDemarche newDemarche = deserializationService.deserialize(message.getBody(), NewDemarche.class);
-        log.info("newDemarche = {}", newDemarche);
-
-        // validation metier du message
-        Set<ConstraintViolation<NewDemarche>> errors = validator.validate(newDemarche);
-
-        if(!errors.isEmpty()) {
-            // Gestion des erreurs de validation
-            ArrayList<String> texts = new ArrayList<>();
-            errors.forEach(error -> texts.add(error.getPropertyPath() + ": " + error.getMessage() + ". Valeur passée: (" + error.getInvalidValue() + ")" ));
-            throw new ValidationException(texts.toString());
-        }
-
-        handleNewDemarche(newDemarche);
-    }
-
-    public void handleNewDemarche(NewDemarche newDemarche) {
-        DemarcheStatus status = newDemarche.getEtat();
-
-        // creation dans FormServices de la demarche a l'etat de brouillon
-        NewDemarche newDemarcheBrouillon = brouillonReducer.reduce(newDemarche);
-        File brouillon = formServicesApi.postFile(
-                newDemarcheToJwayMapper.map(newDemarcheBrouillon),
-                newDemarche.getIdUsager());
-        log.info("Demarche créée, uuid = [{}]", brouillon.getUuid());
-
-        // passage dans FormServices a l'etat "deposee" (si pertinent)
-        if (status == DEPOSEE || status == EN_TRAITEMENT) {
-            StatusChange statusChange = new NewDemarcheToStatusChangeMapper(DEPOSEE).map(newDemarche);
-            changeStatus(statusChange);
-        }
-
-        // passage dans FormServices a l'etat "en traitememt" (si pertinent)
-        if (status == EN_TRAITEMENT) {
-            StatusChange statusChange = new NewDemarcheToStatusChangeMapper(EN_TRAITEMENT).map(newDemarche);
-            changeStatus(statusChange);
+    public void handleDemarcheBrouillon(BrouillonDemarche brouillonDemarche) {
+        File demarcheExistante;
+        try {
+            demarcheExistante = formServicesApi.getFile(brouillonDemarche.getIdDemarcheSiMetier(), brouillonDemarche.getIdUsager());
+            log.warn("ECHEC création brouillon: existe déjà: {} pour idSimetier = {}", demarcheExistante.getUuid(), demarcheExistante.getName());
+        } catch (NotFoundException e) {
+            demarcheExistante = formServicesApi.postFile(
+                    brouillonToJwayMapper.map(brouillonDemarche),
+                    brouillonDemarche.getIdUsager());
+            log.info("Demarche Deposee - Creation: {}", demarcheExistante);
         }
     }
 
-    public void handleStatusChange(Message message) {
-        // deserialisation du message
-        StatusChange statusChange = deserializationService.deserialize(message.getBody(), StatusChange.class);
-        log.info("statusChange = {}", statusChange);
+    private void updateDemarcheStatus(String idDemarcheSiMetier,
+                                      String idUsager,
+                                      UUID fileUuid,
+                                      LocalDateTime statusDate,
+                                      Status newStatus,
+                                      Form form,
+                                      String stepDescription,
+                                      LocalDate toDate) {
+        FileForStep fileForStep = new FileForStep();
+        fileForStep.setStep(newStatus.toString());
+        fileForStep.setLastUpdate(statusDate.format(FORMATTER));
+        if(form != null) {
+            fileForStep.setForm(form);
+        }
+        if(stepDescription != null) {
+            fileForStep.setStepDescription(stepDescription);
+        }
+        formServicesApi.postFileStep(fileForStep, idUsager, fileUuid);
 
-        // execution
-        changeStatus(statusChange);
+        FileForWorkflow fileForWorkflow = new FileForWorkflow();
+        fileForWorkflow.setName(idDemarcheSiMetier);
+        fileForWorkflow.setWorkflowStatus(newStatus.toString());
+        if(stepDescription != null) {
+            fileForWorkflow.setStepDescription(stepDescription);
+        }
+        if(toDate != null) {
+            fileForWorkflow.setToDate(toDate.format(FORMATTER));
+        }
+        formServicesApi.putFileWorkflow(fileForWorkflow, idUsager, fileUuid);
     }
 
-    public void handleNewSuggestion(Message message) {
-        // deserialisation du message
-        NewSuggestion newSuggestion = deserializationService.deserialize(message.getBody(), NewSuggestion.class);
-        log.info("newSuggestion = {}", newSuggestion);
-
-        // validation metier du message
-        Set<ConstraintViolation<NewSuggestion>> errors = validator.validate(newSuggestion);
-        if(!errors.isEmpty()) {
-            // Gestion des erreurs de validation
-            ArrayList<String> texts = new ArrayList<>();
-            errors.forEach(error -> texts.add(error.getPropertyPath() + ": " + error.getMessage() + ". Valeur passée: (" + error.getInvalidValue() + ")" ));
-            throw new ValidationException(texts.toString());
+    public void handleDemarcheDeposee(DemarcheDeposee demarcheDeposee) {
+        File demarcheExistante;
+        try {
+            demarcheExistante = formServicesApi.getFile(demarcheDeposee.getIdDemarcheSiMetier(), demarcheDeposee.getIdUsager());
+        } catch (NotFoundException e) {
+            demarcheExistante = formServicesApi.postFile(
+                    demarcheDeposeeToJwayMapper.map(demarcheDeposee),
+                    demarcheDeposee.getIdUsager());
+            log.info("Demarche Deposee - Creation: {}", demarcheExistante);
         }
+        if(demarcheExistante.getStatus().equals(Status.START.toString())) {
+            updateDemarcheStatus(demarcheDeposee.getIdDemarcheSiMetier(),
+                    demarcheDeposee.getIdUsager(),
+                    demarcheExistante.getUuid(),
+                    demarcheDeposee.getDateDepot(),
+                    Status.VALIDATION, null, null, null);
+        }
+    }
 
-        // creation dans FormServices de la demarche a l'etat de pre-brouillon
-        File file = newSuggestionToJwayMapper.map(newSuggestion);
-        File createdFile = formServicesApi.postFile(file, newSuggestion.getIdUsager());
-        log.info("Suggestion creee, uuid = [{}]", createdFile.getUuid());
+    public void handleDemarcheEnTraitement(DemarcheEnTraitement demarcheEnTraitement) throws NotFoundException {
+        File demarcheExistante;
+        demarcheExistante = formServicesApi.getFile(demarcheEnTraitement.getIdDemarcheSiMetier(), demarcheEnTraitement.getIdUsager());
+        if(demarcheExistante.getStatus().equals(Status.VALIDATION.toString()) || demarcheExistante.getStatus().equals(Status.CORRECTION.toString())) {
+            updateDemarcheStatus(demarcheEnTraitement.getIdDemarcheSiMetier(),
+                    demarcheEnTraitement.getIdUsager(),
+                    demarcheExistante.getUuid(),
+                    demarcheEnTraitement.getDateTraitement(),
+                    Status.CORRECTION, null, null, null);
+        } else {
+            log.warn("ECHEC passage demarche en traitement: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getStatus());
+        }
+    }
+
+    public void handleDemarcheActionRequise(DemarcheActionRequise demarcheActionRequise) throws NotFoundException {
+        File demarcheExistante;
+        demarcheExistante = formServicesApi.getFile(demarcheActionRequise.getIdDemarcheSiMetier(), demarcheActionRequise.getIdUsager());
+        if(demarcheExistante.getStatus().equals(Status.VALIDATION.toString()) || demarcheExistante.getStatus().equals(Status.CORRECTION.toString())) {
+            FormUrl formUrl = new FormUrl();
+            formUrl.setBaseUrl(demarcheActionRequise.getUrlAction().toString());
+            Form form = new Form();
+            form.setUrls(new ArrayList<>());
+            form.getUrls().add(formUrl);
+
+            updateDemarcheStatus(demarcheActionRequise.getIdDemarcheSiMetier(),
+                    demarcheActionRequise.getIdUsager(),
+                    demarcheExistante.getUuid(),
+                    demarcheActionRequise.getDateActionRequise(),
+                    Status.CORRECTION,
+                    form,
+                    demarcheActionRequise.getLibelleAction() +
+                            "|" +
+                            demarcheActionRequise.getTypeAction(),
+                    demarcheActionRequise.getDateEcheanceAction());
+        } else {
+            log.warn("ECHEC passage demarche en traitement: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getStatus());
+        }
+    }
+
+    public void handleDemarcheTerminee(DemarcheTerminee demarcheTerminee) throws NotFoundException {
+        File demarcheExistante;
+        demarcheExistante = formServicesApi.getFile(demarcheTerminee.getIdDemarcheSiMetier(), demarcheTerminee.getIdUsager());
+        if(demarcheExistante.getStatus().equals(Status.CORRECTION.toString())) {
+            FileForStep file = new FileForStep();
+            file.setStep(Status.DONE.toString());
+            file.setLastUpdate(demarcheTerminee.getDateCloture().format(FORMATTER));
+            formServicesApi.postFileStep(file, demarcheTerminee.getIdUsager(), demarcheExistante.getUuid());
+
+            FileForWorkflow fileForWorkflow = new FileForWorkflow();
+            fileForWorkflow.setName(demarcheTerminee.getIdDemarcheSiMetier());
+            fileForWorkflow.setWorkflowStatus(Status.VALIDATION.toString());
+            formServicesApi.putFileWorkflow(fileForWorkflow, demarcheTerminee.getIdUsager(), demarcheExistante.getUuid());
+        } else {
+            log.warn("ECHEC passage demarche terminée: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getStatus());
+        }
     }
 
 //    public File getDemarche(String demarcheId, String userId) {
@@ -156,35 +186,26 @@ public class DemarcheService {
 //        return demarches.get(0);
 //    }
 
-    public void changeStatus(StatusChange statusChange) {
-        // validation metier du message
-        Set<ConstraintViolation<StatusChange>> errors = validator.validate(statusChange);
-        if(!errors.isEmpty()) {
-            // Gestion des erreurs de validation
-            ArrayList<String> texts = new ArrayList<>();
-            errors.forEach(error -> texts.add(error.getPropertyPath() + ": " + error.getMessage() + ". Valeur passée: (" + error.getInvalidValue() + ")" ));
-            throw new ValidationException(texts.toString());
-        }
-
-        String idUsager = statusChange.getIdUsager();
-
-        // recuperation de l'uuid de la demarche dans FormServices
-        File demarche = formServicesApi.getFile(statusChange.getIdDemarcheSiMetier(), statusChange.getIdUsager());
-        String demarcheUuid = demarche.getUuid().toString();
-        log.info("UUID demarche = [{}]", demarcheUuid);
-
-        // etape 1 : changement du step dans FormServices
-        formServicesApi.postFileStep(
-                statusChangeToJwayStep1Mapper.map(statusChange),
-                idUsager,
-                demarche.getUuid()
-        );
-
-        // etape 2 : changement du workflow dans FormServices
-        formServicesApi.postFileWorkflow(
-                statusChangeToJwayStep2Mapper.map(statusChange),
-                idUsager,
-                demarche.getUuid()
-        );
-    }
+//    public void changeStatus(StatusChange statusChange) {
+//        String idUsager = statusChange.getIdUsager();
+//
+//        // recuperation de l'uuid de la demarche dans FormServices
+//        File demarche = formServicesApi.getFile(statusChange.getIdDemarcheSiMetier(), statusChange.getIdUsager());
+//        String demarcheUuid = demarche.getUuid().toString();
+//        log.info("UUID demarche = [{}]", demarcheUuid);
+//
+//        // etape 1 : changement du step dans FormServices
+//        formServicesApi.postFileStep(
+//                statusChangeToJwayStep1Mapper.map(statusChange),
+//                idUsager,
+//                demarche.getUuid()
+//        );
+//
+//        // etape 2 : changement du workflow dans FormServices
+//        formServicesApi.putFileWorkflow(
+//                statusChangeToJwayStep2Mapper.map(statusChange),
+//                idUsager,
+//                demarche.getUuid()
+//        );
+//    }
 }
