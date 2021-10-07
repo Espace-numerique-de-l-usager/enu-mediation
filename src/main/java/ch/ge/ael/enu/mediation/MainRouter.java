@@ -28,7 +28,6 @@ import ch.ge.ael.enu.mediation.service.DocumentService;
 import ch.ge.ael.enu.mediation.service.SuggestionService;
 import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import ch.ge.ael.enu.mediation.service.technical.ResponseHandler;
-import ch.ge.ael.enu.mediation.service.technical.SecurityService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -67,8 +66,6 @@ public class MainRouter {
     private final SuggestionService suggestionService;
 
     private final DocumentService courrierService;
-
-    private final SecurityService securityService;
 
     private final ResponseHandler responseHandler;
 
@@ -132,7 +129,7 @@ public class MainRouter {
             case COURRIER_HORS_DEMARCHE:
                 courrierService.handleNewCourrier((CourrierHorsDemarche) object);
                 break;
-            case COURRIER_HORS_DEMARCHE_BINAIRE:E:
+            case COURRIER_HORS_DEMARCHE_BINAIRE:
                 courrierService.handleNewCourrier((CourrierHorsDemarcheBinaire) object);
                 break;
             case DEMARCHE_ABANDONNEE:

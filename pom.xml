@@ -9,8 +9,11 @@
     <description>Médiation et transformation de données pour l'ENU</description>
 
     <scm>
+        <!--suppress UnresolvedMavenProperty -->
         <connection>scm:git:${env.GITLAB_PROJECT_BASE_URL}/enu-mediation.git</connection>
+        <!--suppress UnresolvedMavenProperty -->
         <developerConnection>scm:git:${env.GITLAB_PROJECT_BASE_URL}/enu-mediation.git</developerConnection>
+        <!--suppress UnresolvedMavenProperty -->
         <url>${env.GITLAB_PROJECT_BASE_URL}/enu-mediation.git</url>
         <tag>enu-mediation-2.4</tag>
     </scm>

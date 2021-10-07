@@ -105,7 +105,7 @@ public class DemarcheService {
                     demarcheDeposee.getIdUsager());
             log.info("Demarche Deposee - Creation: {}", demarcheExistante);
         }
-        if(demarcheExistante.getStatus().equals(Status.START.toString())) {
+        if(demarcheExistante.getWorkflowStatus().equals(Status.START.toString())) {
             updateDemarcheStatus(demarcheDeposee.getIdDemarcheSiMetier(),
                     demarcheDeposee.getIdUsager(),
                     demarcheExistante.getUuid(),
@@ -117,21 +117,21 @@ public class DemarcheService {
     public void handleDemarcheEnTraitement(DemarcheEnTraitement demarcheEnTraitement) throws NotFoundException {
         File demarcheExistante;
         demarcheExistante = formServicesApi.getFile(demarcheEnTraitement.getIdDemarcheSiMetier(), demarcheEnTraitement.getIdUsager());
-        if(demarcheExistante.getStatus().equals(Status.VALIDATION.toString()) || demarcheExistante.getStatus().equals(Status.CORRECTION.toString())) {
+        if(demarcheExistante.getWorkflowStatus().equals(Status.VALIDATION.toString()) || demarcheExistante.getWorkflowStatus().equals(Status.CORRECTION.toString())) {
             updateDemarcheStatus(demarcheEnTraitement.getIdDemarcheSiMetier(),
                     demarcheEnTraitement.getIdUsager(),
                     demarcheExistante.getUuid(),
                     demarcheEnTraitement.getDateTraitement(),
                     Status.CORRECTION, null, null, null);
         } else {
-            log.warn("ECHEC passage demarche en traitement: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getStatus());
+            log.warn("ECHEC passage demarche en traitement: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getWorkflowStatus());
         }
     }
 
     public void handleDemarcheActionRequise(DemarcheActionRequise demarcheActionRequise) throws NotFoundException {
         File demarcheExistante;
         demarcheExistante = formServicesApi.getFile(demarcheActionRequise.getIdDemarcheSiMetier(), demarcheActionRequise.getIdUsager());
-        if(demarcheExistante.getStatus().equals(Status.VALIDATION.toString()) || demarcheExistante.getStatus().equals(Status.CORRECTION.toString())) {
+        if(demarcheExistante.getWorkflowStatus().equals(Status.VALIDATION.toString()) || demarcheExistante.getWorkflowStatus().equals(Status.CORRECTION.toString())) {
             FormUrl formUrl = new FormUrl();
             formUrl.setBaseUrl(demarcheActionRequise.getUrlAction().toString());
             Form form = new Form();
@@ -149,14 +149,14 @@ public class DemarcheService {
                             demarcheActionRequise.getTypeAction(),
                     demarcheActionRequise.getDateEcheanceAction());
         } else {
-            log.warn("ECHEC passage demarche en traitement: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getStatus());
+            log.warn("ECHEC passage demarche en traitement: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getWorkflowStatus());
         }
     }
 
     public void handleDemarcheTerminee(DemarcheTerminee demarcheTerminee) throws NotFoundException {
         File demarcheExistante;
         demarcheExistante = formServicesApi.getFile(demarcheTerminee.getIdDemarcheSiMetier(), demarcheTerminee.getIdUsager());
-        if(demarcheExistante.getStatus().equals(Status.CORRECTION.toString())) {
+        if(demarcheExistante.getWorkflowStatus().equals(Status.CORRECTION.toString())) {
             FileForStep file = new FileForStep();
             file.setStep(Status.DONE.toString());
             file.setLastUpdate(demarcheTerminee.getDateCloture().format(FORMATTER));
@@ -167,7 +167,7 @@ public class DemarcheService {
             fileForWorkflow.setWorkflowStatus(Status.VALIDATION.toString());
             formServicesApi.putFileWorkflow(fileForWorkflow, demarcheTerminee.getIdUsager(), demarcheExistante.getUuid());
         } else {
-            log.warn("ECHEC passage demarche terminée: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getStatus());
+            log.warn("ECHEC passage demarche terminée: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getWorkflowStatus());
         }
     }
 

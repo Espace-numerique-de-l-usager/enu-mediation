@@ -18,15 +18,20 @@
  */
 package ch.ge.ael.enu.mediation.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
+import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.util.ResourceUtils;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
@@ -39,6 +44,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 
 @Configuration
+@RequiredArgsConstructor
 public class FormServicesConfiguration {
 
     @Value("${app.formservices.ssl.trust-store.resource}")
@@ -49,6 +55,8 @@ public class FormServicesConfiguration {
 
     @Value("${app.formservices.url}")
     private String formServicesUrl;
+
+    private final ObjectMapper objectMapper;
 
     @Bean
     public WebClient formServicesWebClient() throws IOException, KeyStoreException, CertificateException, NoSuchAlgorithmException {
@@ -65,10 +73,18 @@ public class FormServicesConfiguration {
 
         HttpClient httpClient= HttpClient.create().secure(t -> t.sslContext(sslContext));
 
+        ExchangeStrategies strategies = ExchangeStrategies
+                .builder()
+                .codecs(clientDefaultCodecsConfigurer -> {
+                    clientDefaultCodecsConfigurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper, MediaType.APPLICATION_JSON));
+                    clientDefaultCodecsConfigurer.defaultCodecs().jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
+                }).build();
+
         return WebClient.builder()
                 .clientConnector(new ReactorClientHttpConnector(httpClient))
                 .baseUrl(formServicesUrl)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .exchangeStrategies(strategies)
                 .build();
     }
 

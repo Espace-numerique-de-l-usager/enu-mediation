@@ -37,6 +37,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -45,6 +46,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
@@ -65,7 +67,7 @@ public class FormServicesApi {
 
     private final ObjectMapper jackson;
     private final WebClient formServicesWebClient;
-    private final DocumentToJwayMapper newDocumentToJwayMapper = new DocumentToJwayMapper(fileNameSanitizationRegex);;
+    private final DocumentToJwayMapper newDocumentToJwayMapper = new DocumentToJwayMapper(fileNameSanitizationRegex);
 
     /**
      * Pour Spring WebClient: erreurs 4xx
@@ -100,7 +102,7 @@ public class FormServicesApi {
             // si on ne trouve pas de demarche, on cherche avec le prefixe "DRAFT"
             path = format(SEARCH_PATH, "(DRAFT)" + demarcheId);
             demarches = getFileList(path,userId);
-            if (demarches == null || demarches.isEmpty()) {
+            if (demarches == null || demarches.isEmpty() || demarches.get(0) == null) {
                 throw new NotFoundException("Démarche introuvable: \"" + demarcheId + "\"");
             }
         }
@@ -193,13 +195,14 @@ public class FormServicesApi {
     public void postDocument(DocumentUsager newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
         log.info("Jway API: POST " + path);
-        String csrfToken = formServicesWebClient.head()
+        ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(path)
                 .header(X_CSRF_TOKEN, "fetch")
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
-                .bodyToMono(String.class).block();
+                .toBodilessEntity().block();
+        String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
         log.info("Jeton CSRF obtenu = [{}]", csrfToken);
 
         MultiValueMap<String, HttpEntity<?>> formData = newDocumentToJwayMapper.map(newDocument);
@@ -225,13 +228,14 @@ public class FormServicesApi {
     public void postDocument(DocumentUsagerBinaire newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
         log.info("Jway API: POST " + path);
-        String csrfToken = formServicesWebClient.head()
+        ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(path)
                 .header(X_CSRF_TOKEN, "fetch")
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
-                .bodyToMono(String.class).block();
+                .toBodilessEntity().block();
+        String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
         log.info("Jeton CSRF obtenu = [{}]", csrfToken);
 
         MultiValueMap<String, HttpEntity<?>> formData = newDocumentToJwayMapper.map(newDocument);
