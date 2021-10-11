@@ -47,10 +47,12 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
     public MultiValueMap<String, HttpEntity<?>> map(Courrier courrier, CourrierDocument courrierDoc, String demarcheId) {
         String categorie = courrier.getIdPrestation();
 
+        // attendu par FormSolution:  provider|version|idDocument|hashAlgorithm|hash
         // preparation des donnees : name
         String name = courrierDoc.getLibelleDocument()
                 + "|" + courrierDoc.getIdDocumentSiMetier()
                 + "|" + courrierDoc.getGed().getFournisseur()
+                + "|" + courrierDoc.getGed().getVersion()
                 + "|" + courrierDoc.getGed().getIdDocument()
                 + "|" + courrierDoc.getGed().getAlgorithmeHash()
                 + "|" + courrierDoc.getGed().getHash();

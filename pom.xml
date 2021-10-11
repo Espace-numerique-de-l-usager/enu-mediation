@@ -30,7 +30,7 @@
     </distributionManagement>
 
     <properties>
-        <enu-interface-modele.version>0.33</enu-interface-modele.version>
+        <enu-interface-modele.version>0.34</enu-interface-modele.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.projectKey>enu-mediation</sonar.projectKey>
         <sonar.projectName>enu-mediation</sonar.projectName>
