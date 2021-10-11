@@ -113,6 +113,7 @@ public class FormServicesApi {
      * Call API Formsolutions
      */
     private List<File> getFileList(String path, String userId) {
+        log.info("Jway GET File List: " + path);
         return formServicesWebClient.get()
                 .uri(path)
                 .header(REMOTE_USER, userId)
@@ -190,7 +191,7 @@ public class FormServicesApi {
     }
 
     /**
-     * API Jway Formsolutions POST new document attached to existing File
+     * API Jway Formsolutions POST new GED document attached to existing File
      */
     public void postDocument(DocumentUsager newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
@@ -212,7 +213,8 @@ public class FormServicesApi {
                 .header(X_CSRF_TOKEN, csrfToken)
                 .header(REMOTE_USER,userId)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(formData))
+                .bodyValue(formData)
+                //.body(BodyInserters.fromMultipartData(formData))
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
@@ -225,6 +227,9 @@ public class FormServicesApi {
         }
     }
 
+    /**
+     * API Jway Formsolutions POST new binary document attached to existing File
+     */
     public void postDocument(DocumentUsagerBinaire newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
         log.info("Jway API: POST " + path);
@@ -245,7 +250,8 @@ public class FormServicesApi {
                 .header(X_CSRF_TOKEN, csrfToken)
                 .header(REMOTE_USER,userId)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
-                .body(BodyInserters.fromMultipartData(formData))
+                .bodyValue(formData)
+                //.body(BodyInserters.fromMultipartData(formData))
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
@@ -261,14 +267,16 @@ public class FormServicesApi {
     /**
      * API Jway Formsolutions POST new independant document
      */
-    public void postDocument(MultiValueMap<String, Object> doc, String userId) {
+    public void postDocument(MultiValueMap<String, HttpEntity<?>> doc, String userId) {
         String path = "/alpha/document";
         log.info("Jway API: POST " + path);
 
         Document result = formServicesWebClient.post()
                 .uri(path)
                 .header(REMOTE_USER,userId)
-                .body(BodyInserters.fromMultipartData(doc))
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .bodyValue(doc)
+                //.body(BodyInserters.fromMultipartData(doc))
                 .retrieve()
                 .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)

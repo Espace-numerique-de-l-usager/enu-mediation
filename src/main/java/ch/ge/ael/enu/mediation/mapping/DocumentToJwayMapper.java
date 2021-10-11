@@ -92,7 +92,7 @@ public class DocumentToJwayMapper extends AbstractDocumentToJwayMapper {
 
         HttpHeaders partHeaders = new HttpHeaders();
         partHeaders.setContentType(MediaType.TEXT_PLAIN);
-        ByteArrayResource byteArrayResource = new NewCourrierDocumentToJwayMapper.CustomByteArrayResource(decodedContentAsBytes, fileName);
+        ByteArrayResource byteArrayResource = new CourrierDocumentToJwayMapper.CustomByteArrayResource(decodedContentAsBytes, fileName);
         HttpEntity<ByteArrayResource> partEntity = new HttpEntity<>(byteArrayResource, partHeaders);
         builder.part("files", partEntity, MediaType.TEXT_PLAIN);
 

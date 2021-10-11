@@ -21,7 +21,7 @@ package ch.ge.ael.enu.mediation.service;
 import ch.ge.ael.enu.business.domain.v1_0.*;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
 import ch.ge.ael.enu.mediation.jway.model.File;
-import ch.ge.ael.enu.mediation.mapping.NewCourrierDocumentToJwayMapper;
+import ch.ge.ael.enu.mediation.mapping.CourrierDocumentToJwayMapper;
 import ch.ge.ael.enu.mediation.routes.processing.NewCourrierSplitter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -60,12 +60,12 @@ public class DocumentService {
 
     private final FormServicesApi formServicesApi;
 
-    private NewCourrierDocumentToJwayMapper newCourrierDocumentToJwayMapper;
+    private CourrierDocumentToJwayMapper courrierDocumentToJwayMapper;
     private NewCourrierSplitter splitter;
 
     @PostConstruct
     public void postConstruct() {
-        newCourrierDocumentToJwayMapper = new NewCourrierDocumentToJwayMapper(fileNameSanitizationRegex);
+        courrierDocumentToJwayMapper = new CourrierDocumentToJwayMapper(fileNameSanitizationRegex);
         splitter = new NewCourrierSplitter();
     }
 
@@ -95,30 +95,26 @@ public class DocumentService {
         formServicesApi.postDocument(newDocument, demarcheUuid, idUsager);
     }
 
-    public void handleNewCourrier(Courrier newCourrier) throws NotFoundException {
+    public void handleNewCourrier(Courrier courrier) throws NotFoundException {
         // ajout au courrier d'une clef technique. Cette clef sera affectee a chaque document constituant le
         // courrier et permettra donc de regrouper les documents du courrier
-        newCourrier.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
+        courrier.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
 
         // recuperation dans FormServices de l'uuid de la demarche
-        String demarcheUuid = null;
-        if (newCourrier.getIdDemarcheSiMetier() != null) {
-            File demarche = formServicesApi.getFile(newCourrier.getIdDemarcheSiMetier(), newCourrier.getIdUsager());
-            demarcheUuid = demarche.getUuid().toString();
-            log.info("UUID demarche = [{}]", demarcheUuid);
-        }
-        final String demarcheUuidCopy = demarcheUuid;   // pour eviter une erreur de compilation plus bas
+        File demarche = formServicesApi.getFile(courrier.getIdDemarcheSiMetier(), courrier.getIdUsager());
+        final String demarcheUuidCopy = demarche.getUuid().toString();   // pour eviter une erreur de compilation plus bas
+        log.info("UUID demarche = [{}]", demarcheUuidCopy);
 
         // scission du courrier en "n" documents
-        List<CourrierDocument> documents = splitter.splitCourrier(newCourrier);
+        List<CourrierDocument> courrierDocuments = splitter.splitCourrier(courrier);
 
         // pour chacun des "n" documents, creation du document dans FormServices
-        documents.stream()
+        courrierDocuments.stream()
                 .map(this::addDummyContents)
-                .map(courrierDoc -> newCourrierDocumentToJwayMapper.map(courrierDoc, demarcheUuidCopy))
+                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuidCopy))
                 .forEach(doc -> {
-                    formServicesApi.postDocument(doc, newCourrier.getIdUsager());
-                    log.info("Document de courrier cree");
+                    formServicesApi.postDocument(doc, courrier.getIdUsager());
+                    log.info("Document de courrier créé");
                 });
     }
 
