@@ -121,16 +121,16 @@ public class MainRouter {
                 demarcheService.handleDemarcheBrouillon((BrouillonDemarche) object);
                 break;
             case COURRIER:
-                courrierService.handleNewCourrier((Courrier) object);
+                courrierService.handleCourrier((Courrier) object);
                 break;
             case COURRIER_BINAIRE:
-                courrierService.handleNewCourrier((CourrierBinaire) object);
+                courrierService.handleCourrier((CourrierBinaire) object);
                 break;
             case COURRIER_HORS_DEMARCHE:
-                courrierService.handleNewCourrier((CourrierHorsDemarche) object);
+                courrierService.handleCourrier((CourrierHorsDemarche) object);
                 break;
             case COURRIER_HORS_DEMARCHE_BINAIRE:
-                courrierService.handleNewCourrier((CourrierHorsDemarcheBinaire) object);
+                courrierService.handleCourrier((CourrierHorsDemarcheBinaire) object);
                 break;
             case DEMARCHE_ABANDONNEE:
                 log.warn(DEMARCHE_ABANDONNEE + ": message non implémenté");

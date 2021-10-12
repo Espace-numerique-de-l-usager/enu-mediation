@@ -30,7 +30,7 @@ import java.util.List;
  * Scinde un courrier en "n" documents.
  */
 @Slf4j
-public class NewCourrierSplitter {
+public class CourrierSplitter {
 
     public List<CourrierDocument> splitCourrier(Courrier newCourrier) {
         List<CourrierDocument> courriersDocs = new ArrayList<>();
@@ -54,6 +54,7 @@ public class NewCourrierSplitter {
                 GedData ged = new GedData();
                 ged.setFournisseur(doc.getGed().getFournisseur());
                 ged.setIdDocument(doc.getGed().getIdDocument());
+                ged.setVersion(doc.getGed().getVersion());
                 ged.setAlgorithmeHash(doc.getGed().getAlgorithmeHash());
                 ged.setHash(doc.getGed().getHash());
                 courrierDoc.setGed(ged);

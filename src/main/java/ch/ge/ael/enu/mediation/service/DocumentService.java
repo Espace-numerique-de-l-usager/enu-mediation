@@ -22,7 +22,7 @@ import ch.ge.ael.enu.business.domain.v1_0.*;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
 import ch.ge.ael.enu.mediation.jway.model.File;
 import ch.ge.ael.enu.mediation.mapping.CourrierDocumentToJwayMapper;
-import ch.ge.ael.enu.mediation.routes.processing.NewCourrierSplitter;
+import ch.ge.ael.enu.mediation.routes.processing.CourrierSplitter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,12 +61,12 @@ public class DocumentService {
     private final FormServicesApi formServicesApi;
 
     private CourrierDocumentToJwayMapper courrierDocumentToJwayMapper;
-    private NewCourrierSplitter splitter;
+    private CourrierSplitter splitter;
 
     @PostConstruct
     public void postConstruct() {
         courrierDocumentToJwayMapper = new CourrierDocumentToJwayMapper(fileNameSanitizationRegex);
-        splitter = new NewCourrierSplitter();
+        splitter = new CourrierSplitter();
     }
 
     public void handleDocument(DocumentUsager newDocument) throws NotFoundException {
@@ -95,7 +95,7 @@ public class DocumentService {
         formServicesApi.postDocument(newDocument, demarcheUuid, idUsager);
     }
 
-    public void handleNewCourrier(Courrier courrier) throws NotFoundException {
+    public void handleCourrier(Courrier courrier) throws NotFoundException {
         // ajout au courrier d'une clef technique. Cette clef sera affectee a chaque document constituant le
         // courrier et permettra donc de regrouper les documents du courrier
         courrier.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
@@ -106,10 +106,10 @@ public class DocumentService {
         log.info("UUID demarche = [{}]", demarcheUuidCopy);
 
         // scission du courrier en "n" documents
-        List<CourrierDocument> courrierDocuments = splitter.splitCourrier(courrier);
+//        List<CourrierDocument> courrierDocuments = splitter.splitCourrier(courrier);
 
         // pour chacun des "n" documents, creation du document dans FormServices
-        courrierDocuments.stream()
+        courrier.documents.stream()
                 .map(this::addDummyContents)
                 .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuidCopy))
                 .forEach(doc -> {
@@ -131,15 +131,15 @@ public class DocumentService {
         return courrierDoc;
     }
 
-    public void handleNewCourrier(CourrierBinaire courrierBinaire) {
+    public void handleCourrier(CourrierBinaire courrierBinaire) {
 
     }
 
-    public void handleNewCourrier(CourrierHorsDemarche courrierHorsDemarche) {
+    public void handleCourrier(CourrierHorsDemarche courrierHorsDemarche) {
 
     }
 
-    public void handleNewCourrier(CourrierHorsDemarcheBinaire object) {
+    public void handleCourrier(CourrierHorsDemarcheBinaire object) {
 
     }
 }

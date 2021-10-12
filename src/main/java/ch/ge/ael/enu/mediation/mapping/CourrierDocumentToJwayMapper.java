@@ -57,6 +57,8 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
                 + "|" + courrierDoc.getGed().getAlgorithmeHash()
                 + "|" + courrierDoc.getGed().getHash();
 
+        log.info("Document name = [{}]", name);
+
         // preparation des donnees : fileName
         String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());
         fileName = "\"" + new FileNameSanitizer(fileNameSanitizationRegex).sanitize(fileName) + "\"";
