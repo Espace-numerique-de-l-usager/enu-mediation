@@ -164,7 +164,7 @@ public class DemarcheService {
 
             FileForWorkflow fileForWorkflow = new FileForWorkflow();
             fileForWorkflow.setName(demarcheTerminee.getIdDemarcheSiMetier());
-            fileForWorkflow.setWorkflowStatus(Status.VALIDATION.toString());
+            fileForWorkflow.setWorkflowStatus(Status.DONE.toString());
             formServicesApi.putFileWorkflow(fileForWorkflow, demarcheTerminee.getIdUsager(), demarcheExistante.getUuid());
         } else {
             log.warn("ECHEC passage demarche terminée: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getWorkflowStatus());
