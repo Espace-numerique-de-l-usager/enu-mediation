@@ -271,8 +271,19 @@ public class FormServicesApi {
         String path = "/alpha/document";
         log.info("Jway API: POST " + path);
 
+        ResponseEntity<Void> response = formServicesWebClient.head()
+                .uri(path)
+                .header(X_CSRF_TOKEN, "fetch")
+                .retrieve()
+                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
+                .toBodilessEntity().block();
+        String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
+        log.info("Jeton CSRF obtenu = [{}]", csrfToken);
+
         Document result = formServicesWebClient.post()
                 .uri(path)
+                .header(X_CSRF_TOKEN, csrfToken)
                 .header(REMOTE_USER,userId)
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .bodyValue(doc)
