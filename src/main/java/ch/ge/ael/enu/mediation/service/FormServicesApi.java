@@ -195,7 +195,7 @@ public class FormServicesApi {
      */
     public void postDocument(DocumentUsager newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
-        log.info("Jway API: POST " + path);
+        log.info("Jway API: POST {} for user [{}]", path, userId);
         ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(path)
                 .header(X_CSRF_TOKEN, "fetch")
@@ -232,7 +232,7 @@ public class FormServicesApi {
      */
     public void postDocument(DocumentUsagerBinaire newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
-        log.info("Jway API: POST " + path);
+        log.info("Jway API: POST {} for user [{}]", path, userId);
         ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(path)
                 .header(X_CSRF_TOKEN, "fetch")
@@ -269,7 +269,7 @@ public class FormServicesApi {
      */
     public void postDocument(MultiValueMap<String, HttpEntity<?>> doc, String userId) {
         String path = "/alpha/document";
-        log.info("Jway API: POST " + path);
+        log.info("Jway API: POST {} for user [{}]", path, userId);
 
         ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(path)
@@ -296,7 +296,7 @@ public class FormServicesApi {
         if (result != null) {
             log.info("Document seul " + result.getUuid() + " créé.");
         } else {
-            log.warn("Échec de créationd de document.");
+            log.warn("Échec de création de document.");
         }
     }
 }
