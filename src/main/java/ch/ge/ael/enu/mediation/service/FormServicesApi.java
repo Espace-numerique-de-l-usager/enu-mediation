@@ -267,8 +267,9 @@ public class FormServicesApi {
     /**
      * API Jway Formsolutions POST new independant document
      */
-    public void postDocument(MultiValueMap<String, HttpEntity<?>> doc, String userId) {
-        String path = "/alpha/document";
+    public void postDocument(MultiValueMap<String, HttpEntity<?>> doc, String demarcheUuid, String userId) {
+        String path = format("/document/ds/%s/attachment", demarcheUuid);
+//        String path = "/alpha/document";
         log.info("Jway API: POST {} for user [{}]", path, userId);
 
         ResponseEntity<Void> response = formServicesWebClient.head()
@@ -294,9 +295,15 @@ public class FormServicesApi {
                 .bodyToMono(new ParameterizedTypeReference<Document>(){}).block();
 
         if (result != null) {
-            log.info("Document seul " + result.getUuid() + " créé.");
+            log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
         } else {
-            log.warn("Échec de création de document.");
+            log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
         }
+
+//        if (result != null) {
+//            log.info("Document seul " + result.getUuid() + " créé.");
+//        } else {
+//            log.warn("Échec de création de document.");
+//        }
     }
 }

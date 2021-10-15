@@ -113,7 +113,7 @@ public class DocumentService {
                 .map(this::addDummyContents)
                 .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuidCopy))
                 .forEach(doc -> {
-                    formServicesApi.postDocument(doc, courrier.getIdUsager());
+                    formServicesApi.postDocument(doc, demarcheUuidCopy, courrier.getIdUsager());
                     log.info("Document de courrier créé");
                 });
     }
