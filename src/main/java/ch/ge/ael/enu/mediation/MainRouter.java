@@ -19,7 +19,7 @@
 package ch.ge.ael.enu.mediation;
 
 import ch.ge.ael.enu.business.domain.v1_0.*;
-import ch.ge.ael.enu.mediation.business.exception.ValidationException;
+import ch.ge.ael.enu.mediation.model.exception.ValidationException;
 import ch.ge.ael.enu.mediation.exception.IllegalMessageException;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
 import ch.ge.ael.enu.mediation.exception.UnsupportedMediaTypeException;
@@ -44,8 +44,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.*;
-import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
+import static ch.ge.ael.enu.mediation.model.EnuMediaType.*;
+import static ch.ge.ael.enu.mediation.model.Header.CONTENT_TYPE;
 
 /**
  * Traitement des messages RabbitMQ du flux principal SI metier -> ENU.

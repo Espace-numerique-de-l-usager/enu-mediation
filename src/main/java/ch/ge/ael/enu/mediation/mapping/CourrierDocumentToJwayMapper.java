@@ -21,7 +21,7 @@ package ch.ge.ael.enu.mediation.mapping;
 import ch.ge.ael.enu.business.domain.v1_0.Courrier;
 import ch.ge.ael.enu.business.domain.v1_0.CourrierDocument;
 import ch.ge.ael.enu.business.domain.v1_0.CourrierDocumentBinaire;
-import ch.ge.ael.enu.mediation.jway.model.JwayDocumentType;
+import ch.ge.ael.enu.mediation.model.jway.JwayDocumentType;
 import ch.ge.ael.enu.mediation.util.file.FileNameSanitizer;
 import ch.ge.ael.enu.mediation.util.mime.MimeUtils;
 import lombok.extern.slf4j.Slf4j;

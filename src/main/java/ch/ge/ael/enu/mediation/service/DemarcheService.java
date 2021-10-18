@@ -20,7 +20,7 @@ package ch.ge.ael.enu.mediation.service;
 
 import ch.ge.ael.enu.business.domain.v1_0.*;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
-import ch.ge.ael.enu.mediation.jway.model.*;
+import ch.ge.ael.enu.mediation.model.jway.*;
 import ch.ge.ael.enu.mediation.mapping.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

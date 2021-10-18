@@ -16,19 +16,29 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.jway.model;
+package ch.ge.ael.enu.mediation.model.jway;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
-public class FileForStep {
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Application {
 
-    private String step = null;
+    private Integer id;
 
-    private Form form = null;
+    private String name;
 
-    private String lastUpdate = null;
+    private Text nameLabel;
 
-    private String stepDescription;
+    private Text descriptionLabel;
+
+    private List<Tag> tags;
 
 }

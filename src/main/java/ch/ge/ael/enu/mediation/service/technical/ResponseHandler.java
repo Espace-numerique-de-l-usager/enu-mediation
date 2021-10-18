@@ -20,7 +20,7 @@ package ch.ge.ael.enu.mediation.service.technical;
 
 import ch.ge.ael.enu.business.domain.v1_0.Response;
 import ch.ge.ael.enu.business.domain.v1_0.ResponseType;
-import ch.ge.ael.enu.mediation.business.exception.ValidationException;
+import ch.ge.ael.enu.mediation.model.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +33,11 @@ import javax.annotation.Resource;
 
 import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.KO;
 import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.OK;
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.RESPONSE;
-import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
-import static ch.ge.ael.enu.mediation.routes.communication.Header.CORRELATION_ID;
-import static ch.ge.ael.enu.mediation.routes.communication.Header.SI_METIER;
-import static ch.ge.ael.enu.mediation.routes.communication.Header.TECHNICAL_ERROR;
+import static ch.ge.ael.enu.mediation.model.EnuMediaType.RESPONSE;
+import static ch.ge.ael.enu.mediation.model.Header.CONTENT_TYPE;
+import static ch.ge.ael.enu.mediation.model.Header.CORRELATION_ID;
+import static ch.ge.ael.enu.mediation.model.Header.SI_METIER;
+import static ch.ge.ael.enu.mediation.model.Header.TECHNICAL_ERROR;
 
 /**
  * Gestionnaire d'erreurs du consommateur enu-mediation.

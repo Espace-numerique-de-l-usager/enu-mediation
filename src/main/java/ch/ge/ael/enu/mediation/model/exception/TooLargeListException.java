@@ -16,19 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.jway.model;
+package ch.ge.ael.enu.mediation.model.exception;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+/**
+ * Exception lancee quand une liste comporte plus d'elements qu'autorise.
+ */
+public class TooLargeListException extends ValidationException {
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class FormUrl {
-
-    private String baseUrl;
+    public TooLargeListException(String fieldName, int size, int maxSize) {
+        super("La taille (" + size + ") de la liste \"" + fieldName + "\" excede la taille maximale autorisee ("
+                + maxSize + ")");
+    }
 
 }

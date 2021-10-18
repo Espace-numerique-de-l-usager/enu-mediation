@@ -16,18 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.jway.model;
+package ch.ge.ael.enu.mediation.model.jway;
 
-import lombok.Data;
+public enum JwayDocumentType {
 
-@Data
-public class FileForWorkflow {
+    ATTACHMENT,
 
-    private String name;
+    REPORT,
 
-    private String workflowStatus;
+    /**
+     * Pour l'ENU : un courrier.
+     */
+    OTHER,
 
-    private String stepDescription;
-
-    private String toDate;
 }

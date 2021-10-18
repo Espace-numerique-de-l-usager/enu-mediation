@@ -16,9 +16,9 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.jway.model;
+package ch.ge.ael.enu.mediation.model.jway;
 
-import ch.ge.ael.enu.mediation.serialization.JwayLocalDateTimeDeserializer;
+import ch.ge.ael.enu.mediation.configuration.serialization.JwayLocalDateTimeDeserializer;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;

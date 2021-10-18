@@ -16,16 +16,18 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.business.exception;
+package ch.ge.ael.enu.mediation.model.jway;
 
-/**
- * Exception lancee quand une liste comporte plus d'elements qu'autorise.
- */
-public class TooLargeListException extends ValidationException {
+import lombok.Data;
 
-    public TooLargeListException(String fieldName, int size, int maxSize) {
-        super("La taille (" + size + ") de la liste \"" + fieldName + "\" excede la taille maximale autorisee ("
-                + maxSize + ")");
-    }
+@Data
+public class FileForWorkflow {
 
+    private String name;
+
+    private String workflowStatus;
+
+    private String stepDescription;
+
+    private String toDate;
 }

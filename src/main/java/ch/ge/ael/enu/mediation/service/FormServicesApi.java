@@ -20,13 +20,13 @@ package ch.ge.ael.enu.mediation.service;
 
 import ch.ge.ael.enu.business.domain.v1_0.DocumentUsager;
 import ch.ge.ael.enu.business.domain.v1_0.DocumentUsagerBinaire;
-import ch.ge.ael.enu.mediation.business.exception.ValidationException;
+import ch.ge.ael.enu.mediation.model.exception.ValidationException;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
 import ch.ge.ael.enu.mediation.exception.TechnicalException;
-import ch.ge.ael.enu.mediation.jway.model.Document;
-import ch.ge.ael.enu.mediation.jway.model.File;
-import ch.ge.ael.enu.mediation.jway.model.FileForStep;
-import ch.ge.ael.enu.mediation.jway.model.FileForWorkflow;
+import ch.ge.ael.enu.mediation.model.jway.Document;
+import ch.ge.ael.enu.mediation.model.jway.File;
+import ch.ge.ael.enu.mediation.model.jway.FileForStep;
+import ch.ge.ael.enu.mediation.model.jway.FileForWorkflow;
 import ch.ge.ael.enu.mediation.mapping.DocumentToJwayMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -49,8 +49,8 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 
-import static ch.ge.ael.enu.mediation.routes.communication.Header.REMOTE_USER;
-import static ch.ge.ael.enu.mediation.routes.communication.Header.X_CSRF_TOKEN;
+import static ch.ge.ael.enu.mediation.model.Header.REMOTE_USER;
+import static ch.ge.ael.enu.mediation.model.Header.X_CSRF_TOKEN;
 import static java.lang.String.format;
 
 /**

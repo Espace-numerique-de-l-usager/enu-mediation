@@ -16,21 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.jway.model;
+package ch.ge.ael.enu.mediation.model.jway;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.HashMap;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Text {
+public class FileForStep {
 
-    private String label;
+    private String step = null;
 
-    private HashMap<String,String> texts;
+    private Form form = null;
+
+    private String lastUpdate = null;
+
+    private String stepDescription;
 
 }

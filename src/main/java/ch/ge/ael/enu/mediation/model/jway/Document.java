@@ -16,18 +16,17 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.business.exception;
+package ch.ge.ael.enu.mediation.model.jway;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.Data;
 
-/**
- * Exception lancee quand une valeur n'appartient pas a une enum donnee.
- */
-public class IllegalEnumValueException extends ValidationException {
+import java.util.UUID;
 
-    public IllegalEnumValueException(String value, List allowedValues, String fieldName) {
-        super("La valeur \"" + value + "\" du champ \"" + fieldName + "\" est incorrecte."
-                + " Les valeurs possibles sont : " + allowedValues);
-    }
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Document {
+
+    private UUID uuid = null;
 
 }

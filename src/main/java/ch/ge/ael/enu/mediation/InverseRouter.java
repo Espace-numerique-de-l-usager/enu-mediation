@@ -32,10 +32,10 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.BROUILLON_ABANDON;
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.DOCUMENT_ACCES;
-import static ch.ge.ael.enu.mediation.routes.communication.EnuMediaType.DOCUMENT_RECEPTION_MODE;
-import static ch.ge.ael.enu.mediation.routes.communication.Header.CONTENT_TYPE;
+import static ch.ge.ael.enu.mediation.model.EnuMediaType.BROUILLON_ABANDON;
+import static ch.ge.ael.enu.mediation.model.EnuMediaType.DOCUMENT_ACCES;
+import static ch.ge.ael.enu.mediation.model.EnuMediaType.DOCUMENT_RECEPTION_MODE;
+import static ch.ge.ael.enu.mediation.model.Header.CONTENT_TYPE;
 
 /**
  * Traitement des messages RabbitMQ du flux inverse ENU -> SI metier.

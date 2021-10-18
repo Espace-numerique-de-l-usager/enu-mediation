@@ -16,33 +16,27 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.jway.model;
+package ch.ge.ael.enu.mediation.model.jway;
 
-public enum Status {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    /**
-     * Suggestion de demarche.
-     */
-    BLANK,
+import java.util.List;
 
-    /**
-     * Brouillon.
-     */
-    START,
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class Form {
 
-    /**
-     * Deposee.
-     */
-    VALIDATION,
+    private String name;
 
-    /**
-     * En traitement.
-     */
-    CORRECTION,
+    private Text nameLabel;
 
-    /**
-     * Terminee.
-     */
-    DONE
+    private Text descriptionLabel;
+
+    private List<FormUrl> urls;
 
 }

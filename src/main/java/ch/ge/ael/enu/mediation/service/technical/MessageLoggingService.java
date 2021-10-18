@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
-import static ch.ge.ael.enu.mediation.routes.communication.Header.CORRELATION_ID;
+import static ch.ge.ael.enu.mediation.model.Header.CORRELATION_ID;
 
 /**
  * Genere une trace du contenu d'un message recu de RabbitMQ.

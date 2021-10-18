@@ -16,31 +16,43 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.serialization;
+package ch.ge.ael.enu.mediation.configuration.serialization;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_TIME;
+
 /**
- * Transforme en LocalDateTime une date reçue de FormServices, comme "2020-11-25T15:42:05.445+0000" ou
+ * Transforme en LocalDate une date reçue de FormServices, comme "2020-11-25T15:42:05.445+0000" ou
  * "2020-11-25T15:42:05.445+00:00".
  */
 @Slf4j
-public class JwayLocalDateTimeDeserializer extends LocalDateTimeDeserializer {
+public class JwayLocalDateDeserializer extends LocalDateDeserializer {
+
+    private static final DateTimeFormatter ISO_LOCAL_DATE_TIME = new DateTimeFormatterBuilder()
+                .parseCaseInsensitive()
+                .append(ISO_LOCAL_DATE)
+            .optionalStart()
+                .appendLiteral('T')
+                .append(ISO_LOCAL_TIME)
+            .optionalEnd()
+                .toFormatter();
 
     private static final DateTimeFormatter FORMAT = new DateTimeFormatterBuilder()
             // date/time
-            .append(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            .append(ISO_LOCAL_DATE_TIME)
             // offset (hh:mm - "+00:00" when it's zero)
             .optionalStart().appendOffset("+HH:MM", "+00:00").optionalEnd()
-            // offset (hhmm - "+0000" when it's zero)
+            // offset (hh:mm - "+0000" when it's zero)
             .optionalStart().appendOffset("+HH:MM", "+0000").optionalEnd()
             // offset (hh - "+00" when it's zero)
             .optionalStart().appendOffset("+HH", "+00").optionalEnd()
@@ -49,13 +61,13 @@ public class JwayLocalDateTimeDeserializer extends LocalDateTimeDeserializer {
             // create formatter
             .toFormatter();
 
-    public JwayLocalDateTimeDeserializer() {
+    public JwayLocalDateDeserializer() {
         super(FORMAT);
     }
 
     @Override
-    public LocalDateTime deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-        return LocalDateTime.parse(parser.getText(), FORMAT);
+    public LocalDate deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
+        return LocalDate.parse(parser.getText(), FORMAT);
     }
 
 }

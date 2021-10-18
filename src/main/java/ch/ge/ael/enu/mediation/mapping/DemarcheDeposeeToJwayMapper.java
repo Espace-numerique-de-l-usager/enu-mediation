@@ -19,10 +19,10 @@
 package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.business.domain.v1_0.DemarcheDeposee;
-import ch.ge.ael.enu.mediation.jway.model.Application;
-import ch.ge.ael.enu.mediation.jway.model.File;
-import ch.ge.ael.enu.mediation.jway.model.Status;
-import ch.ge.ael.enu.mediation.jway.model.User;
+import ch.ge.ael.enu.mediation.model.jway.Application;
+import ch.ge.ael.enu.mediation.model.jway.File;
+import ch.ge.ael.enu.mediation.model.jway.Status;
+import ch.ge.ael.enu.mediation.model.jway.User;
 
 public class DemarcheDeposeeToJwayMapper {
 

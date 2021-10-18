@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.routes.communication;
+package ch.ge.ael.enu.mediation.model;
 
 import ch.ge.ael.enu.business.domain.v1_0.*;
 import com.fasterxml.jackson.core.type.TypeReference;

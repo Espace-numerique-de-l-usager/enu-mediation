@@ -20,9 +20,8 @@ package ch.ge.ael.enu.mediation.service;
 
 import ch.ge.ael.enu.business.domain.v1_0.*;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
-import ch.ge.ael.enu.mediation.jway.model.File;
+import ch.ge.ael.enu.mediation.model.jway.File;
 import ch.ge.ael.enu.mediation.mapping.CourrierDocumentToJwayMapper;
-import ch.ge.ael.enu.mediation.routes.processing.CourrierSplitter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -61,35 +60,31 @@ public class DocumentService {
     private final FormServicesApi formServicesApi;
 
     private CourrierDocumentToJwayMapper courrierDocumentToJwayMapper;
-    private CourrierSplitter splitter;
 
     @PostConstruct
     public void postConstruct() {
         courrierDocumentToJwayMapper = new CourrierDocumentToJwayMapper(fileNameSanitizationRegex);
-        splitter = new CourrierSplitter();
     }
 
-    public void handleDocument(DocumentUsager newDocument) throws NotFoundException {
-        String idDemarcheSiMetier = newDocument.getIdDemarcheSiMetier();
-        String idUsager = newDocument.getIdUsager();
-
+    private String getDemarcheUuid(String idDemarcheSiMetier, String idUsager) throws NotFoundException {
         // recuperation dans FormServices de l'uuid de la demarche
         File demarche = formServicesApi.getFile(idDemarcheSiMetier, idUsager);
         String demarcheUuid = demarche.getUuid().toString();
         log.info("UUID demarche = [{}]", demarcheUuid);
+        return demarcheUuid;
+    }
+
+    public void handleDocument(DocumentUsager newDocument) throws NotFoundException {
+        String idUsager = newDocument.getIdUsager();
+        String demarcheUuid = getDemarcheUuid(newDocument.getIdDemarcheSiMetier(),idUsager);
 
         // requete HEAD pour recuperer un jeton CSRF. Sans cette phase, on obtient une erreur 403 plus bas
         formServicesApi.postDocument(newDocument, demarcheUuid, idUsager);
     }
 
     public void handleDocument(DocumentUsagerBinaire newDocument) throws NotFoundException {
-        String idDemarcheSiMetier = newDocument.getIdDemarcheSiMetier();
         String idUsager = newDocument.getIdUsager();
-
-        // recuperation dans FormServices de l'uuid de la demarche
-        File demarche = formServicesApi.getFile(idDemarcheSiMetier, idUsager);
-        String demarcheUuid = demarche.getUuid().toString();
-        log.info("UUID demarche = [{}]", demarcheUuid);
+        String demarcheUuid = getDemarcheUuid(newDocument.getIdDemarcheSiMetier(),idUsager);
 
         // requete HEAD pour recuperer un jeton CSRF. Sans cette phase, on obtient une erreur 403 plus bas
         formServicesApi.postDocument(newDocument, demarcheUuid, idUsager);
@@ -100,20 +95,14 @@ public class DocumentService {
         // courrier et permettra donc de regrouper les documents du courrier
         courrier.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
 
-        // recuperation dans FormServices de l'uuid de la demarche
-        File demarche = formServicesApi.getFile(courrier.getIdDemarcheSiMetier(), courrier.getIdUsager());
-        final String demarcheUuidCopy = demarche.getUuid().toString();   // pour eviter une erreur de compilation plus bas
-        log.info("UUID demarche = [{}]", demarcheUuidCopy);
-
-        // scission du courrier en "n" documents
-//        List<CourrierDocument> courrierDocuments = splitter.splitCourrier(courrier);
+        final String demarcheUuid = getDemarcheUuid(courrier.getIdDemarcheSiMetier(),courrier.getIdUsager());
 
         // pour chacun des "n" documents, creation du document dans FormServices
         courrier.documents.stream()
                 .map(this::addDummyContents)
-                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuidCopy))
+                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuid))
                 .forEach(doc -> {
-                    formServicesApi.postDocument(doc, demarcheUuidCopy, courrier.getIdUsager());
+                    formServicesApi.postDocument(doc, demarcheUuid, courrier.getIdUsager());
                     log.info("Document de courrier créé");
                 });
     }

@@ -16,7 +16,7 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.business.exception;
+package ch.ge.ael.enu.mediation.model.exception;
 
 /**
  * Exception lancee quand une chaine de caracteres est trop courte ou trop longue.

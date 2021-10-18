@@ -16,16 +16,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.business.exception;
+package ch.ge.ael.enu.mediation.model.exception;
 
 /**
- * Exception lancee quand un message contient des donnees invalides, par exemple manquantes,
- * mal formatees ou incoherentes.
+ * Exception lancee quand un champ obligatoire est absent dans un message.
  */
-public class ValidationException extends Exception {
+public class MissingFieldException extends ValidationException {
 
-    public ValidationException(String msg) {
-        super(msg);
+    public MissingFieldException(String fieldName) {
+      super("Le champ \"" + fieldName + "\" manque");
+    }
+
+    public MissingFieldException(String fieldName, String complement) {
+      super("Le champ \"" + fieldName + "\" manque. " + complement);
     }
 
 }

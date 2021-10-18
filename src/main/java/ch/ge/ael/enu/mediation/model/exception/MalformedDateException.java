@@ -16,15 +16,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ch.ge.ael.enu.mediation.business.exception;
+package ch.ge.ael.enu.mediation.model.exception;
 
 /**
- * Exception lancee quand une liste est vide.
+ * Exception lancee quand une chaine de caracteres ne contient pas une date, ou ne contient pas une date au
+ * format attendu.
  */
-public class EmptyListException extends ValidationException {
+public class MalformedDateException extends ValidationException {
 
-    public EmptyListException(String fieldName) {
-        super("La liste \"" + fieldName + "\" ne peut pas etre vide");
+    public MalformedDateException(String value, String fieldName) {
+        super("La valeur \"" + value + "\" du champ \"" + fieldName + "\" est incorrecte. Le format attendu est \"yyyy-MM-dd\"");
     }
 
 }

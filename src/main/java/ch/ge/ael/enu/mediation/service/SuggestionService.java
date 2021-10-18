@@ -1,7 +1,7 @@
 package ch.ge.ael.enu.mediation.service;
 
 import ch.ge.ael.enu.business.domain.v1_0.Suggestion;
-import ch.ge.ael.enu.mediation.jway.model.File;
+import ch.ge.ael.enu.mediation.model.jway.File;
 import ch.ge.ael.enu.mediation.mapping.SuggestionToJwayMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

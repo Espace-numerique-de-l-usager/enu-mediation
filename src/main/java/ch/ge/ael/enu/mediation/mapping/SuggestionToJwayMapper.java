@@ -19,17 +19,17 @@
 package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.business.domain.v1_0.Suggestion;
-import ch.ge.ael.enu.mediation.jway.model.Application;
-import ch.ge.ael.enu.mediation.jway.model.File;
-import ch.ge.ael.enu.mediation.jway.model.Form;
-import ch.ge.ael.enu.mediation.jway.model.FormUrl;
-import ch.ge.ael.enu.mediation.jway.model.User;
+import ch.ge.ael.enu.mediation.model.jway.Application;
+import ch.ge.ael.enu.mediation.model.jway.File;
+import ch.ge.ael.enu.mediation.model.jway.Form;
+import ch.ge.ael.enu.mediation.model.jway.FormUrl;
+import ch.ge.ael.enu.mediation.model.jway.User;
 import org.springframework.context.annotation.Configuration;
 
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
-import static ch.ge.ael.enu.mediation.jway.model.Status.BLANK;
+import static ch.ge.ael.enu.mediation.model.jway.Status.BLANK;
 
 @Configuration
 public class SuggestionToJwayMapper {
