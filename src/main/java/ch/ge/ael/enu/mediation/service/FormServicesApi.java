@@ -40,7 +40,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -72,7 +71,7 @@ public class FormServicesApi {
     /**
      * Pour Spring WebClient: erreurs 4xx
      */
-    private final Function<ClientResponse, Mono<? extends Throwable>> clientErrorHandler = (response) -> {
+    private final Function<ClientResponse, Mono<? extends Throwable>> ClientErrorHandler = (response) -> {
         response.toEntity(String.class).subscribe(
                 entity -> log.error("Client error {}", entity)
         );
@@ -118,7 +117,7 @@ public class FormServicesApi {
                 .uri(path)
                 .header(REMOTE_USER, userId)
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .bodyToMono(new ParameterizedTypeReference<List<File>>(){}).block();
     }
@@ -158,7 +157,7 @@ public class FormServicesApi {
                     .header(REMOTE_USER,userId)
                     .bodyValue(jackson.writeValueAsString(file))
                     .retrieve()
-                    .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                    .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                     .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                     .bodyToMono(new ParameterizedTypeReference<File>(){}).block();
         } catch (JsonProcessingException e) {
@@ -180,7 +179,7 @@ public class FormServicesApi {
                     .header(REMOTE_USER,userId)
                     .bodyValue(jackson.writeValueAsString(file))
                     .retrieve()
-                    .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                    .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                     .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                     .bodyToMono(new ParameterizedTypeReference<File>(){}).block();
         } catch (JsonProcessingException e) {
@@ -198,9 +197,10 @@ public class FormServicesApi {
         log.info("Jway API: POST {} for user [{}]", path, userId);
         ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(path)
+                .header(REMOTE_USER,userId)
                 .header(X_CSRF_TOKEN, "fetch")
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .toBodilessEntity().block();
         String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
@@ -216,7 +216,7 @@ public class FormServicesApi {
                 .bodyValue(formData)
                 //.body(BodyInserters.fromMultipartData(formData))
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .bodyToMono(new ParameterizedTypeReference<Document>(){}).block();
 
@@ -235,9 +235,10 @@ public class FormServicesApi {
         log.info("Jway API: POST {} for user [{}]", path, userId);
         ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(path)
+                .header(REMOTE_USER,userId)
                 .header(X_CSRF_TOKEN, "fetch")
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .toBodilessEntity().block();
         String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
@@ -253,7 +254,7 @@ public class FormServicesApi {
                 .bodyValue(formData)
                 //.body(BodyInserters.fromMultipartData(formData))
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .bodyToMono(new ParameterizedTypeReference<Document>(){}).block();
 
@@ -274,9 +275,10 @@ public class FormServicesApi {
 
         ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(path)
+                .header(REMOTE_USER,userId)
                 .header(X_CSRF_TOKEN, "fetch")
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .toBodilessEntity().block();
         String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
@@ -290,7 +292,7 @@ public class FormServicesApi {
                 .bodyValue(doc)
                 //.body(BodyInserters.fromMultipartData(doc))
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, clientErrorHandler)
+                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .bodyToMono(new ParameterizedTypeReference<Document>(){}).block();
 
