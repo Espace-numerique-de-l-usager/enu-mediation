@@ -271,8 +271,8 @@ public class FormServicesApi {
      * API Jway Formsolutions POST new independant document
      */
     public void postDocument(MultiValueMap<String, HttpEntity<?>> doc, String demarcheUuid, String userId) {
-        String path = format("/document/ds/%s/attachment", demarcheUuid);
-//        String path = "/alpha/document";
+//        String path = format("/document/ds/%s/attachment", demarcheUuid);
+        String path = "/alpha/document";
         log.info("Jway API: POST {} for user [{}]", path, userId);
 
         ResponseEntity<Void> response = formServicesWebClient.head()
