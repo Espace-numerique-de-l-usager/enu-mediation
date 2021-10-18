@@ -61,6 +61,8 @@ import static java.lang.String.format;
 @Slf4j
 public class FormServicesApi {
 
+    private static final String CSRF_PATH = "/file/mine";
+
     @Value("${app.file.name.sanitization-regex}")
     private String fileNameSanitizationRegex;
 
@@ -196,7 +198,7 @@ public class FormServicesApi {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
         log.info("Jway API: POST {} for user [{}]", path, userId);
         ResponseEntity<Void> response = formServicesWebClient.head()
-                .uri("/")
+                .uri(CSRF_PATH)
                 .header(REMOTE_USER,userId)
                 .header(X_CSRF_TOKEN, "fetch")
                 .retrieve()
@@ -234,7 +236,7 @@ public class FormServicesApi {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
         log.info("Jway API: POST {} for user [{}]", path, userId);
         ResponseEntity<Void> response = formServicesWebClient.head()
-                .uri("/")
+                .uri(CSRF_PATH)
                 .header(REMOTE_USER,userId)
                 .header(X_CSRF_TOKEN, "fetch")
                 .retrieve()
@@ -274,7 +276,7 @@ public class FormServicesApi {
         log.info("Jway API: POST {} for user [{}]", path, userId);
 
         ResponseEntity<Void> response = formServicesWebClient.head()
-                .uri("/")
+                .uri(CSRF_PATH)
                 .header(REMOTE_USER,userId)
                 .header(X_CSRF_TOKEN, "fetch")
                 .retrieve()
