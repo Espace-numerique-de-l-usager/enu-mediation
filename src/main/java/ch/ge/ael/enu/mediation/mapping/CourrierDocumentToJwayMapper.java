@@ -19,6 +19,7 @@
 package ch.ge.ael.enu.mediation.mapping;
 
 import ch.ge.ael.enu.business.domain.v1_0.Courrier;
+import ch.ge.ael.enu.business.domain.v1_0.CourrierBinaire;
 import ch.ge.ael.enu.business.domain.v1_0.CourrierDocument;
 import ch.ge.ael.enu.business.domain.v1_0.CourrierDocumentBinaire;
 import ch.ge.ael.enu.mediation.model.jway.JwayDocumentType;
@@ -105,7 +106,7 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         return bodyBuilder.build();
     }
 
-    public MultiValueMap<String, Object> map(Courrier courrier, CourrierDocumentBinaire courrierDoc, String demarcheId) {
+    public MultiValueMap<String, HttpEntity<?>> map(CourrierBinaire courrier, CourrierDocumentBinaire courrierDoc, String demarcheId) {
         String categorie = courrier.getIdPrestation();
 
         // preparation des donnees : bytes du contenu
@@ -129,28 +130,26 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
 //        ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
 
         // construction de la requete multipart
-        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-        body.add("source", courrier.getClef());
-        body.add("name", name);
-        body.add("type", JwayDocumentType.OTHER.name());
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("source", courrier.getClef(), MediaType.TEXT_PLAIN);
+        bodyBuilder.part("name", name, MediaType.TEXT_PLAIN);
+        bodyBuilder.part("type", JwayDocumentType.OTHER.name(), MediaType.TEXT_PLAIN);
         if (demarcheId == null) {
             // courrier non lie a une demarche
-            body.add("tag", categorie);
+            bodyBuilder.part("tag", categorie, MediaType.TEXT_PLAIN);
         } else {
             // courrier lie a une demarche
-            body.add("fileUuid", demarcheId);
+            bodyBuilder.part("fileUuid", demarcheId, MediaType.TEXT_PLAIN);
         }
-        body.add("subtype", courrier.getLibelleCourrier());
+        bodyBuilder.part("subtype", courrier.getLibelleCourrier(), MediaType.TEXT_PLAIN);
 
-        if (courrierDoc.getContenu() != null) {
-            // cas d'un document a mettre en GED
-            HttpHeaders partHeaders = new HttpHeaders();
-            partHeaders.setContentType(MediaType.TEXT_PLAIN);
-            ByteArrayResource byteArrayResource = new CustomByteArrayResource(decodedContentAsBytes, fileName);
-            HttpEntity<ByteArrayResource> partEntity = new HttpEntity<>(byteArrayResource, partHeaders);
-            body.add("files", partEntity);
-        }
-        return body;
+        HttpHeaders partHeaders = new HttpHeaders();
+        partHeaders.setContentType(MediaType.TEXT_PLAIN);
+        ByteArrayResource byteArrayResource = new CustomByteArrayResource(decodedContentAsBytes, fileName);
+        HttpEntity<ByteArrayResource> partEntity = new HttpEntity<>(byteArrayResource, partHeaders);
+        bodyBuilder.part("files", partEntity, MediaType.TEXT_PLAIN);
+
+        return bodyBuilder.build();
     }
 
 }
