@@ -87,7 +87,7 @@ public class DocumentService {
         String demarcheUuid = getDemarcheUuid(newDocument.getIdDemarcheSiMetier(),idUsager);
 
         // requete HEAD pour recuperer un jeton CSRF. Sans cette phase, on obtient une erreur 403 plus bas
-        formServicesApi.postDocument(newDocument, demarcheUuid, idUsager);
+        formServicesApi.postDocumentBinaire(newDocument, demarcheUuid, idUsager);
     }
 
     public void handleCourrier(Courrier courrier) throws NotFoundException {
@@ -97,13 +97,15 @@ public class DocumentService {
 
         final String demarcheUuid = getDemarcheUuid(courrier.getIdDemarcheSiMetier(),courrier.getIdUsager());
 
+        formServicesApi.postCourrier(courrier, demarcheUuid, courrier.getIdUsager());
+
         // pour chacun des "n" documents, creation du document dans FormServices
-        courrier.documents.stream()
-                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuid))
-                .forEach(doc -> {
-                    formServicesApi.postDocument(doc, demarcheUuid, courrier.getIdUsager());
-                    log.info("Document de courrier créé");
-                });
+//        courrier.documents.stream()
+//                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuid))
+//                .forEach(doc -> {
+//                    formServicesApi.postCourrier(doc, demarcheUuid, courrier.getIdUsager());
+//                    log.info("Document de courrier créé");
+//                });
     }
 
     public void handleCourrier(CourrierBinaire courrierBinaire) throws NotFoundException {
@@ -111,13 +113,15 @@ public class DocumentService {
 
         final String demarcheUuid = getDemarcheUuid(courrierBinaire.getIdDemarcheSiMetier(),courrierBinaire.getIdUsager());
 
+        formServicesApi.postCourrierBinaire(courrierBinaire, demarcheUuid, courrierBinaire.getIdUsager());
+
         // pour chacun des "n" documents, creation du document dans FormServices
-        courrierBinaire.documents.stream()
-                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrierBinaire, courrierDoc, demarcheUuid))
-                .forEach(doc -> {
-                    formServicesApi.postDocument(doc, demarcheUuid, courrierBinaire.getIdUsager());
-                    log.info("Document de courrier créé");
-                });
+//        courrierBinaire.documents.stream()
+//                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrierBinaire, courrierDoc, demarcheUuid))
+//                .forEach(doc -> {
+//                    formServicesApi.postCourrierBinaire(doc, demarcheUuid, courrierBinaire.getIdUsager());
+//                    log.info("Document de courrier créé");
+//                });
     }
 
     public void handleCourrier(CourrierHorsDemarche courrierHorsDemarche) {

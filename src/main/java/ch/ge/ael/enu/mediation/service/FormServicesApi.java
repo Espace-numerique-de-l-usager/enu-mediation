@@ -18,8 +18,11 @@
  */
 package ch.ge.ael.enu.mediation.service;
 
+import ch.ge.ael.enu.business.domain.v1_0.Courrier;
+import ch.ge.ael.enu.business.domain.v1_0.CourrierBinaire;
 import ch.ge.ael.enu.business.domain.v1_0.DocumentUsager;
 import ch.ge.ael.enu.business.domain.v1_0.DocumentUsagerBinaire;
+import ch.ge.ael.enu.mediation.mapping.CourrierDocumentToJwayMapper;
 import ch.ge.ael.enu.mediation.model.exception.ValidationException;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
 import ch.ge.ael.enu.mediation.exception.TechnicalException;
@@ -44,6 +47,7 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -61,7 +65,7 @@ import static java.lang.String.format;
 @Slf4j
 public class FormServicesApi {
 
-    private static final String CSRF_PATH = "/file/mine";
+    private static final String CSRF_PATH = "/auth/me";
 
     @Value("${app.file.name.sanitization-regex}")
     private String fileNameSanitizationRegex;
@@ -69,6 +73,7 @@ public class FormServicesApi {
     private final ObjectMapper jackson;
     private final WebClient formServicesWebClient;
     private final DocumentToJwayMapper newDocumentToJwayMapper = new DocumentToJwayMapper(fileNameSanitizationRegex);
+    private final CourrierDocumentToJwayMapper courrierDocumentToJwayMapper = new CourrierDocumentToJwayMapper(fileNameSanitizationRegex);
 
     /**
      * Pour Spring WebClient: erreurs 4xx
@@ -197,31 +202,8 @@ public class FormServicesApi {
     public void postDocument(DocumentUsager newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
         log.info("Jway API: POST {} for user [{}]", path, userId);
-        ResponseEntity<Void> response = formServicesWebClient.head()
-                .uri(CSRF_PATH)
-                .header(REMOTE_USER,userId)
-                .header(X_CSRF_TOKEN, "fetch")
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
-                .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
-                .toBodilessEntity().block();
-        String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
-        log.info("Jeton CSRF obtenu = [{}]", csrfToken);
-
-        MultiValueMap<String, HttpEntity<?>> formData = newDocumentToJwayMapper.map(newDocument);
-
-        Document result = formServicesWebClient.post()
-                .uri(path)
-                .header(X_CSRF_TOKEN, csrfToken)
-                .header(REMOTE_USER,userId)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .bodyValue(formData)
-                //.body(BodyInserters.fromMultipartData(formData))
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
-                .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
-                .bodyToMono(new ParameterizedTypeReference<Document>(){}).block();
-
+        String csrfToken = getCsrfToken(userId);
+        Document result = postDocumentFormData(path, csrfToken, userId, newDocumentToJwayMapper.map(newDocument, csrfToken));
         if (result != null) {
             log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
         } else {
@@ -232,34 +214,11 @@ public class FormServicesApi {
     /**
      * API Jway Formsolutions POST new binary document attached to existing File
      */
-    public void postDocument(DocumentUsagerBinaire newDocument, String demarcheUuid, String userId) {
+    public void postDocumentBinaire(DocumentUsagerBinaire newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
         log.info("Jway API: POST {} for user [{}]", path, userId);
-        ResponseEntity<Void> response = formServicesWebClient.head()
-                .uri(CSRF_PATH)
-                .header(REMOTE_USER,userId)
-                .header(X_CSRF_TOKEN, "fetch")
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
-                .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
-                .toBodilessEntity().block();
-        String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
-        log.info("Jeton CSRF obtenu = [{}]", csrfToken);
-
-        MultiValueMap<String, HttpEntity<?>> formData = newDocumentToJwayMapper.map(newDocument);
-
-        Document result = formServicesWebClient.post()
-                .uri(path)
-                .header(X_CSRF_TOKEN, csrfToken)
-                .header(REMOTE_USER,userId)
-                .contentType(MediaType.MULTIPART_FORM_DATA)
-                .bodyValue(formData)
-                //.body(BodyInserters.fromMultipartData(formData))
-                .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
-                .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
-                .bodyToMono(new ParameterizedTypeReference<Document>(){}).block();
-
+        String csrfToken = getCsrfToken(userId);
+        Document result = postDocumentFormData(path, csrfToken, userId, newDocumentToJwayMapper.map(newDocument, csrfToken));
         if (result != null) {
             log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
         } else {
@@ -270,11 +229,52 @@ public class FormServicesApi {
     /**
      * API Jway Formsolutions POST new independant document
      */
-    public void postDocument(MultiValueMap<String, HttpEntity<?>> doc, String demarcheUuid, String userId) {
-//        String path = format("/document/ds/%s/attachment", demarcheUuid);
+    public void postCourrier(Courrier courrier, String demarcheUuid, String userId) {
         String path = "/alpha/document";
         log.info("Jway API: POST {} for user [{}]", path, userId);
+        String csrfToken = getCsrfToken(userId);
+        courrier.documents.stream()
+                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuid, csrfToken))
+                .forEach(doc -> {
+                    Document result = postDocumentFormData(path, csrfToken, userId, doc);
 
+                    if (result != null) {
+                        log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
+                    } else {
+                        log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
+                    }
+                });
+
+//        if (result != null) {
+//            log.info("Document seul " + result.getUuid() + " créé.");
+//        } else {
+//            log.warn("Échec de création de document.");
+//        }
+    }
+
+    public void postCourrierBinaire(CourrierBinaire courrierBinaire, String demarcheUuid, String userId) {
+        String path = "/alpha/document";
+        log.info("Jway API: POST {} for user [{}]", path, userId);
+        String csrfToken = getCsrfToken(userId);
+        courrierBinaire.documents.stream()
+                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrierBinaire, courrierDoc, demarcheUuid, csrfToken))
+                .forEach(doc -> {
+                    Document result = postDocumentFormData(path, csrfToken, userId, doc);
+                    if (result != null) {
+                        log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
+                    } else {
+                        log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
+                    }
+                });
+
+//        if (result != null) {
+//            log.info("Document seul " + result.getUuid() + " créé.");
+//        } else {
+//            log.warn("Échec de création de document.");
+//        }
+    }
+
+    private String getCsrfToken(String userId) {
         ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(CSRF_PATH)
                 .header(REMOTE_USER,userId)
@@ -285,8 +285,14 @@ public class FormServicesApi {
                 .toBodilessEntity().block();
         String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
         log.info("Jeton CSRF obtenu = [{}]", csrfToken);
+        return csrfToken;
+    }
 
-        Document result = formServicesWebClient.post()
+    private Document postDocumentFormData(String path,
+                                      String csrfToken,
+                                      String userId,
+                                      MultiValueMap<String, HttpEntity<?>> doc) {
+        return formServicesWebClient.post()
                 .uri(path)
                 .header(X_CSRF_TOKEN, csrfToken)
                 .header(REMOTE_USER,userId)
@@ -297,17 +303,5 @@ public class FormServicesApi {
                 .onStatus(HttpStatus::is4xxClientError, ClientErrorHandler)
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .bodyToMono(new ParameterizedTypeReference<Document>(){}).block();
-
-        if (result != null) {
-            log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
-        } else {
-            log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
-        }
-
-//        if (result != null) {
-//            log.info("Document seul " + result.getUuid() + " créé.");
-//        } else {
-//            log.warn("Échec de création de document.");
-//        }
     }
 }

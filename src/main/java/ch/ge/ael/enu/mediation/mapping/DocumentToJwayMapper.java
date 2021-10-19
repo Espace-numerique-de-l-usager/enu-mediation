@@ -47,7 +47,7 @@ public class DocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         super(fileNameSanitizationRegex);
     }
 
-    public MultiValueMap<String, HttpEntity<?>> map(DocumentUsager newDocument) {
+    public MultiValueMap<String, HttpEntity<?>> map(DocumentUsager newDocument, String csrfToken) {
         // preparation des donnees : name
         String name = newDocument.getLibelleDocument()
                 + "|" + newDocument.getIdDocumentSiMetier()
@@ -69,6 +69,7 @@ public class DocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("name", name, MediaType.TEXT_PLAIN);
         builder.part("type", type, MediaType.TEXT_PLAIN);
+        builder.part("token", csrfToken, MediaType.TEXT_PLAIN);
 
         byte[] decodedContentAsBytes = Base64.getDecoder().decode(DUMMY_CONTENTS);
         HttpHeaders partHeaders = new HttpHeaders();
@@ -80,7 +81,7 @@ public class DocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         return builder.build();
     }
 
-    public MultiValueMap<String, HttpEntity<?>> map(DocumentUsagerBinaire newDocument) {
+    public MultiValueMap<String, HttpEntity<?>> map(DocumentUsagerBinaire newDocument, String csrfToken) {
         // preparation des donnees : bytes du contenu
         byte[] decodedContentAsBytes = Base64.getDecoder().decode(newDocument.getContenu());
 
@@ -100,6 +101,7 @@ public class DocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("name", name, MediaType.TEXT_PLAIN);
         builder.part("type", type, MediaType.TEXT_PLAIN);
+        builder.part("token", csrfToken, MediaType.TEXT_PLAIN);
 
         HttpHeaders partHeaders = new HttpHeaders();
         partHeaders.setContentType(MediaType.TEXT_PLAIN);

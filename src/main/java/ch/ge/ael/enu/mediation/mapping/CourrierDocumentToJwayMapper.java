@@ -45,7 +45,7 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         super(fileNameSanitizationRegex);
     }
 
-    public MultiValueMap<String, HttpEntity<?>> map(Courrier courrier, CourrierDocument courrierDoc, String demarcheId) {
+    public MultiValueMap<String, HttpEntity<?>> map(Courrier courrier, CourrierDocument courrierDoc, String demarcheId, String csrfToken) {
         String categorie = courrier.getIdPrestation();
 
         // attendu par FormSolution:  provider|version|idDocument|hashAlgorithm|hash
@@ -74,6 +74,7 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         bodyBuilder.part("source", courrier.getClef(), MediaType.TEXT_PLAIN);
         bodyBuilder.part("name", name, MediaType.TEXT_PLAIN);
         bodyBuilder.part("type", JwayDocumentType.OTHER.name(), MediaType.TEXT_PLAIN);
+        bodyBuilder.part("token", csrfToken, MediaType.TEXT_PLAIN);
         if (demarcheId == null) {
             // courrier non lie a une demarche
             bodyBuilder.part("tag", categorie, MediaType.TEXT_PLAIN);
@@ -106,7 +107,7 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         return bodyBuilder.build();
     }
 
-    public MultiValueMap<String, HttpEntity<?>> map(CourrierBinaire courrier, CourrierDocumentBinaire courrierDoc, String demarcheId) {
+    public MultiValueMap<String, HttpEntity<?>> map(CourrierBinaire courrier, CourrierDocumentBinaire courrierDoc, String demarcheId, String csrfToken) {
         String categorie = courrier.getIdPrestation();
 
         // preparation des donnees : bytes du contenu
@@ -134,6 +135,7 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         bodyBuilder.part("source", courrier.getClef(), MediaType.TEXT_PLAIN);
         bodyBuilder.part("name", name, MediaType.TEXT_PLAIN);
         bodyBuilder.part("type", JwayDocumentType.OTHER.name(), MediaType.TEXT_PLAIN);
+        bodyBuilder.part("token", csrfToken, MediaType.TEXT_PLAIN);
         if (demarcheId == null) {
             // courrier non lie a une demarche
             bodyBuilder.part("tag", categorie, MediaType.TEXT_PLAIN);
