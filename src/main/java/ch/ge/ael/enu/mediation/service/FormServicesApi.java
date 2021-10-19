@@ -72,8 +72,15 @@ public class FormServicesApi {
 
     private final ObjectMapper jackson;
     private final WebClient formServicesWebClient;
-    private final DocumentToJwayMapper newDocumentToJwayMapper = new DocumentToJwayMapper(fileNameSanitizationRegex);
-    private final CourrierDocumentToJwayMapper courrierDocumentToJwayMapper = new CourrierDocumentToJwayMapper(fileNameSanitizationRegex);
+
+    private DocumentToJwayMapper newDocumentToJwayMapper;
+    private CourrierDocumentToJwayMapper courrierDocumentToJwayMapper;
+
+    @PostConstruct
+    public void postConstruct() {
+        newDocumentToJwayMapper = new DocumentToJwayMapper(fileNameSanitizationRegex);
+        courrierDocumentToJwayMapper = new CourrierDocumentToJwayMapper(fileNameSanitizationRegex);
+    }
 
     /**
      * Pour Spring WebClient: erreurs 4xx
