@@ -51,6 +51,7 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 
 import static ch.ge.ael.enu.mediation.model.Header.REMOTE_USER;
@@ -240,8 +241,9 @@ public class FormServicesApi {
         String path = "/alpha/document";
         log.info("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
+        AtomicInteger index = new AtomicInteger(0);
         courrier.documents.stream()
-                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuid, csrfToken))
+                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuid, csrfToken, index.getAndIncrement()))
                 .forEach(doc -> {
                     Document result = postDocumentFormData(path, csrfToken, userId, doc);
 
@@ -263,8 +265,9 @@ public class FormServicesApi {
         String path = "/alpha/document";
         log.info("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
+        AtomicInteger index = new AtomicInteger(0);
         courrierBinaire.documents.stream()
-                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrierBinaire, courrierDoc, demarcheUuid, csrfToken))
+                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrierBinaire, courrierDoc, demarcheUuid, csrfToken, index.getAndIncrement()))
                 .forEach(doc -> {
                     Document result = postDocumentFormData(path, csrfToken, userId, doc);
                     if (result != null) {
@@ -281,6 +284,9 @@ public class FormServicesApi {
 //        }
     }
 
+    /**
+     * Gets the CSRF token for POST/PUT queries
+     */
     private String getCsrfToken(String userId) {
         ResponseEntity<Void> response = formServicesWebClient.head()
                 .uri(CSRF_PATH)
@@ -295,6 +301,9 @@ public class FormServicesApi {
         return csrfToken;
     }
 
+    /**
+     * Posts document multipart form data to Formsolutions API
+     */
     private Document postDocumentFormData(String path,
                                       String csrfToken,
                                       String userId,

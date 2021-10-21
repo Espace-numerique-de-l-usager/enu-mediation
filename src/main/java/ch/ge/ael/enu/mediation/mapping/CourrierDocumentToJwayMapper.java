@@ -45,13 +45,15 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         super(fileNameSanitizationRegex);
     }
 
-    public MultiValueMap<String, HttpEntity<?>> map(Courrier courrier, CourrierDocument courrierDoc, String demarcheId, String csrfToken) {
+    public MultiValueMap<String, HttpEntity<?>> map(Courrier courrier, CourrierDocument courrierDoc, String demarcheId, String csrfToken, Integer index) {
         String categorie = courrier.getIdPrestation();
 
         // attendu par FormSolution:  provider|version|idDocument|hashAlgorithm|hash
         // preparation des donnees : name
         String name = courrierDoc.getLibelleDocument()
                 + "|" + courrierDoc.getIdDocumentSiMetier()
+                + "|" + index
+                + "|" + courrier.getDocuments().size()
                 + "|" + courrierDoc.getGed().getFournisseur()
                 + "|" + courrierDoc.getGed().getVersion()
                 + "|" + courrierDoc.getGed().getIdDocument()
@@ -107,7 +109,7 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         return bodyBuilder.build();
     }
 
-    public MultiValueMap<String, HttpEntity<?>> map(CourrierBinaire courrier, CourrierDocumentBinaire courrierDoc, String demarcheId, String csrfToken) {
+    public MultiValueMap<String, HttpEntity<?>> map(CourrierBinaire courrier, CourrierDocumentBinaire courrierDoc, String demarcheId, String csrfToken, Integer index) {
         String categorie = courrier.getIdPrestation();
 
         // preparation des donnees : bytes du contenu
@@ -119,7 +121,9 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
 
         // preparation des donnees : name
         String name = courrierDoc.getLibelleDocument()
-                + "|" + courrierDoc.getIdDocumentSiMetier();
+                + "|" + courrierDoc.getIdDocumentSiMetier()
+                + "|" + index
+                + "|" + courrier.getDocuments().size();
 
         // preparation des donnees : fileName
         String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());

@@ -94,34 +94,14 @@ public class DocumentService {
         // ajout au courrier d'une clef technique. Cette clef sera affectee a chaque document constituant le
         // courrier et permettra donc de regrouper les documents du courrier
         courrier.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
-
         final String demarcheUuid = getDemarcheUuid(courrier.getIdDemarcheSiMetier(),courrier.getIdUsager());
-
         formServicesApi.postCourrier(courrier, demarcheUuid, courrier.getIdUsager());
-
-        // pour chacun des "n" documents, creation du document dans FormServices
-//        courrier.documents.stream()
-//                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuid))
-//                .forEach(doc -> {
-//                    formServicesApi.postCourrier(doc, demarcheUuid, courrier.getIdUsager());
-//                    log.info("Document de courrier créé");
-//                });
     }
 
     public void handleCourrier(CourrierBinaire courrierBinaire) throws NotFoundException {
         courrierBinaire.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
-
         final String demarcheUuid = getDemarcheUuid(courrierBinaire.getIdDemarcheSiMetier(),courrierBinaire.getIdUsager());
-
         formServicesApi.postCourrierBinaire(courrierBinaire, demarcheUuid, courrierBinaire.getIdUsager());
-
-        // pour chacun des "n" documents, creation du document dans FormServices
-//        courrierBinaire.documents.stream()
-//                .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrierBinaire, courrierDoc, demarcheUuid))
-//                .forEach(doc -> {
-//                    formServicesApi.postCourrierBinaire(doc, demarcheUuid, courrierBinaire.getIdUsager());
-//                    log.info("Document de courrier créé");
-//                });
     }
 
     public void handleCourrier(CourrierHorsDemarche courrierHorsDemarche) {
