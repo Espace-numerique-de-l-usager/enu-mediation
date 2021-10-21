@@ -28,6 +28,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -58,6 +61,11 @@ public class DocumentService {
     private String fileNameSanitizationRegex;
 
     private final FormServicesApi formServicesApi;
+
+    /*-------------------------*/
+    /* WORKAROUND BLOCAGE JWAY */
+    /*-------------------------*/
+    private DemarcheService demarcheService;
 
     private CourrierDocumentToJwayMapper courrierDocumentToJwayMapper;
 
@@ -96,6 +104,21 @@ public class DocumentService {
         courrier.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
         final String demarcheUuid = getDemarcheUuid(courrier.getIdDemarcheSiMetier(),courrier.getIdUsager());
         formServicesApi.postCourrier(courrier, demarcheUuid, courrier.getIdUsager());
+
+        /*-------------------------*/
+        /* WORKAROUND BLOCAGE JWAY */
+        /*-------------------------*/
+        DemarcheTerminee demarcheTerminee = new DemarcheTerminee();
+        try {
+            demarcheTerminee.setUrlRenouvellement(new URL("https://www.ge.ch"));
+        } catch (MalformedURLException e) {
+            log.error("Should not happen: " + e);
+        }
+        demarcheTerminee.setDateCloture(LocalDateTime.now());
+        demarcheTerminee.setIdDemarcheSiMetier(courrier.getIdDemarcheSiMetier());
+        demarcheTerminee.setIdPrestation(courrier.getIdPrestation());
+        demarcheTerminee.setIdUsager(courrier.getIdUsager());
+        demarcheService.handleDemarcheTermineeWORKAROUND(demarcheTerminee);
     }
 
     public void handleCourrier(CourrierBinaire courrierBinaire) throws NotFoundException {

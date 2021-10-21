@@ -154,6 +154,24 @@ public class DemarcheService {
     }
 
     public void handleDemarcheTerminee(DemarcheTerminee demarcheTerminee) throws NotFoundException {
+//        File demarcheExistante;
+//        demarcheExistante = formServicesApi.getFile(demarcheTerminee.getIdDemarcheSiMetier(), demarcheTerminee.getIdUsager());
+//        if(demarcheExistante.getWorkflowStatus().equals(Status.CORRECTION.toString())) {
+//            FileForStep file = new FileForStep();
+//            file.setStep(Status.DONE.toString());
+//            file.setLastUpdate(demarcheTerminee.getDateCloture().format(FORMATTER));
+//            formServicesApi.postFileStep(file, demarcheTerminee.getIdUsager(), demarcheExistante.getUuid());
+//
+//            FileForWorkflow fileForWorkflow = new FileForWorkflow();
+//            fileForWorkflow.setName(demarcheTerminee.getIdDemarcheSiMetier());
+//            fileForWorkflow.setWorkflowStatus(Status.DONE.toString());
+//            formServicesApi.putFileWorkflow(fileForWorkflow, demarcheTerminee.getIdUsager(), demarcheExistante.getUuid());
+//        } else {
+//            log.warn("ECHEC passage demarche terminée: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getWorkflowStatus());
+//        }
+    }
+
+    public void handleDemarcheTermineeWORKAROUND(DemarcheTerminee demarcheTerminee) throws NotFoundException {
         File demarcheExistante;
         demarcheExistante = formServicesApi.getFile(demarcheTerminee.getIdDemarcheSiMetier(), demarcheTerminee.getIdUsager());
         if(demarcheExistante.getWorkflowStatus().equals(Status.CORRECTION.toString())) {
@@ -170,42 +188,4 @@ public class DemarcheService {
             log.warn("ECHEC passage demarche terminée: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getWorkflowStatus());
         }
     }
-
-//    public File getDemarche(String demarcheId, String userId) {
-//        final String SEARCH_PATH = "file/mine?name=%s&max=1&order=id&reverse=true";
-//        String path = format(SEARCH_PATH, demarcheId);
-//        List<File> demarches = formServices.get(path, userId,  new ParameterizedTypeReference<List<File>>(){});
-//        if (demarches.isEmpty()) {
-//            // si on ne trouve pas de demarche, on cherche avec le prefixe "DRAFT"
-//            path = format(SEARCH_PATH, "(DRAFT)" + demarcheId);
-//            demarches = formServices.get(path, userId,  new ParameterizedTypeReference<List<File>>(){});
-//            if (demarches.isEmpty()) {
-//                throw new ValidationException("Pas trouve la demarche \"" + demarcheId + "\"");
-//            }
-//        }
-//        return demarches.get(0);
-//    }
-
-//    public void changeStatus(StatusChange statusChange) {
-//        String idUsager = statusChange.getIdUsager();
-//
-//        // recuperation de l'uuid de la demarche dans FormServices
-//        File demarche = formServicesApi.getFile(statusChange.getIdDemarcheSiMetier(), statusChange.getIdUsager());
-//        String demarcheUuid = demarche.getUuid().toString();
-//        log.info("UUID demarche = [{}]", demarcheUuid);
-//
-//        // etape 1 : changement du step dans FormServices
-//        formServicesApi.postFileStep(
-//                statusChangeToJwayStep1Mapper.map(statusChange),
-//                idUsager,
-//                demarche.getUuid()
-//        );
-//
-//        // etape 2 : changement du workflow dans FormServices
-//        formServicesApi.putFileWorkflow(
-//                statusChangeToJwayStep2Mapper.map(statusChange),
-//                idUsager,
-//                demarche.getUuid()
-//        );
-//    }
 }
