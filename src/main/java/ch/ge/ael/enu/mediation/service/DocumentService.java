@@ -65,7 +65,7 @@ public class DocumentService {
     /*-------------------------*/
     /* WORKAROUND BLOCAGE JWAY */
     /*-------------------------*/
-    private DemarcheService demarcheService;
+    private final DemarcheService demarcheService;
 
     private CourrierDocumentToJwayMapper courrierDocumentToJwayMapper;
 
