@@ -154,24 +154,6 @@ public class DemarcheService {
     }
 
     public void handleDemarcheTerminee(DemarcheTerminee demarcheTerminee) throws NotFoundException {
-//        File demarcheExistante;
-//        demarcheExistante = formServicesApi.getFile(demarcheTerminee.getIdDemarcheSiMetier(), demarcheTerminee.getIdUsager());
-//        if(demarcheExistante.getWorkflowStatus().equals(Status.CORRECTION.toString())) {
-//            FileForStep file = new FileForStep();
-//            file.setStep(Status.DONE.toString());
-//            file.setLastUpdate(demarcheTerminee.getDateCloture().format(FORMATTER));
-//            formServicesApi.postFileStep(file, demarcheTerminee.getIdUsager(), demarcheExistante.getUuid());
-//
-//            FileForWorkflow fileForWorkflow = new FileForWorkflow();
-//            fileForWorkflow.setName(demarcheTerminee.getIdDemarcheSiMetier());
-//            fileForWorkflow.setWorkflowStatus(Status.DONE.toString());
-//            formServicesApi.putFileWorkflow(fileForWorkflow, demarcheTerminee.getIdUsager(), demarcheExistante.getUuid());
-//        } else {
-//            log.warn("ECHEC passage demarche terminée: {}, status prédédent = {}", demarcheExistante.getName(), demarcheExistante.getWorkflowStatus());
-//        }
-    }
-
-    public void handleDemarcheTermineeWORKAROUND(DemarcheTerminee demarcheTerminee) throws NotFoundException {
         File demarcheExistante;
         demarcheExistante = formServicesApi.getFile(demarcheTerminee.getIdDemarcheSiMetier(), demarcheTerminee.getIdUsager());
         if(demarcheExistante.getWorkflowStatus().equals(Status.CORRECTION.toString())) {

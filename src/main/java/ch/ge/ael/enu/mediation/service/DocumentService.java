@@ -57,22 +57,7 @@ public class DocumentService {
     @Value("${app.document.mime-types}")
     private List<String> allowedMimeTypes;
 
-    @Value("${app.file.name.sanitization-regex}")
-    private String fileNameSanitizationRegex;
-
     private final FormServicesApi formServicesApi;
-
-    /*-------------------------*/
-    /* WORKAROUND BLOCAGE JWAY */
-    /*-------------------------*/
-    private final DemarcheService demarcheService;
-
-    private CourrierDocumentToJwayMapper courrierDocumentToJwayMapper;
-
-    @PostConstruct
-    public void postConstruct() {
-        courrierDocumentToJwayMapper = new CourrierDocumentToJwayMapper(fileNameSanitizationRegex);
-    }
 
     private String getDemarcheUuid(String idDemarcheSiMetier, String idUsager) throws NotFoundException {
         // recuperation dans FormServices de l'uuid de la demarche
@@ -104,21 +89,6 @@ public class DocumentService {
         courrier.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
         final String demarcheUuid = getDemarcheUuid(courrier.getIdDemarcheSiMetier(),courrier.getIdUsager());
         formServicesApi.postCourrier(courrier, demarcheUuid, courrier.getIdUsager());
-
-        /*-------------------------*/
-        /* WORKAROUND BLOCAGE JWAY */
-        /*-------------------------*/
-        DemarcheTerminee demarcheTerminee = new DemarcheTerminee();
-        try {
-            demarcheTerminee.setUrlRenouvellement(new URL("https://www.ge.ch"));
-        } catch (MalformedURLException e) {
-            log.error("Should not happen: " + e);
-        }
-        demarcheTerminee.setDateCloture(LocalDateTime.now());
-        demarcheTerminee.setIdDemarcheSiMetier(courrier.getIdDemarcheSiMetier());
-        demarcheTerminee.setIdPrestation(courrier.getIdPrestation());
-        demarcheTerminee.setIdUsager(courrier.getIdUsager());
-        demarcheService.handleDemarcheTermineeWORKAROUND(demarcheTerminee);
     }
 
     public void handleCourrier(CourrierBinaire courrierBinaire) throws NotFoundException {
