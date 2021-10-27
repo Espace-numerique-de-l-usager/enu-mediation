@@ -21,16 +21,11 @@ package ch.ge.ael.enu.mediation.service;
 import ch.ge.ael.enu.business.domain.v1_0.*;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
 import ch.ge.ael.enu.mediation.model.jway.File;
-import ch.ge.ael.enu.mediation.mapping.CourrierDocumentToJwayMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
 

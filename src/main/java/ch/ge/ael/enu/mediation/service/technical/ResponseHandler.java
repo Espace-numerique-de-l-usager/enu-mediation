@@ -31,9 +31,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
+import static ch.ge.ael.enu.business.domain.v1_0.EnuMediaType.RESPONSE;
 import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.KO;
 import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.OK;
-import static ch.ge.ael.enu.mediation.model.EnuMediaType.RESPONSE;
 import static ch.ge.ael.enu.mediation.model.Header.CONTENT_TYPE;
 import static ch.ge.ael.enu.mediation.model.Header.CORRELATION_ID;
 import static ch.ge.ael.enu.mediation.model.Header.SI_METIER;
@@ -82,9 +82,10 @@ public class ResponseHandler {
     }
 
     private void sendReplyMessage(ResponseType type, String description, Message originalMessage) {
-        Response response = new Response();
-        response.setResultat(type);
-        response.setDescription(description);
+        Response response = Response.builder()
+                .resultat(type)
+                .description(description)
+                .build();
         String jsonResponse = "Reponse mal formee";
         try {
             jsonResponse = objectMapper.writeValueAsString(response);

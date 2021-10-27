@@ -44,7 +44,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Set;
 
-import static ch.ge.ael.enu.mediation.model.EnuMediaType.*;
+import static ch.ge.ael.enu.business.domain.v1_0.EnuMediaType.*;
 import static ch.ge.ael.enu.mediation.model.Header.CONTENT_TYPE;
 
 /**

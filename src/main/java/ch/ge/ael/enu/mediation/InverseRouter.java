@@ -32,9 +32,7 @@ import javax.annotation.Resource;
 import java.util.Arrays;
 import java.util.List;
 
-import static ch.ge.ael.enu.mediation.model.EnuMediaType.BROUILLON_ABANDON;
-import static ch.ge.ael.enu.mediation.model.EnuMediaType.DOCUMENT_ACCES;
-import static ch.ge.ael.enu.mediation.model.EnuMediaType.DOCUMENT_RECEPTION_MODE;
+import static ch.ge.ael.enu.business.domain.v1_0.EnuMediaType.*;
 import static ch.ge.ael.enu.mediation.model.Header.CONTENT_TYPE;
 
 /**

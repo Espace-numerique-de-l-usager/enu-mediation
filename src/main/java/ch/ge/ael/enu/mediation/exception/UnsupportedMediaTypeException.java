@@ -18,11 +18,8 @@
  */
 package ch.ge.ael.enu.mediation.exception;
 
-import ch.ge.ael.enu.mediation.model.EnuMediaType;
-
 /**
  * ENU only supports a specific list of media types.
- * @see EnuMediaType for supported media types.
  */
 public class UnsupportedMediaTypeException extends Exception {
     public UnsupportedMediaTypeException(String message) {

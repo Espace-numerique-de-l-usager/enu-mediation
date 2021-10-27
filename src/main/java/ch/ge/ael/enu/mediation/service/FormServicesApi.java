@@ -237,7 +237,7 @@ public class FormServicesApi {
     /**
      * API Jway Formsolutions POST new independant document
      */
-    public void postCourrier(Courrier courrier, String demarcheUuid, String userId) {
+    public void postCourrier(@org.jetbrains.annotations.NotNull Courrier courrier, String demarcheUuid, String userId) {
         String path = "/alpha/document";
         log.info("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
