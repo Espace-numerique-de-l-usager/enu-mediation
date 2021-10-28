@@ -68,7 +68,7 @@ public class DocumentToJwayMapper extends AbstractDocumentToJwayMapper {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("name", name, MediaType.TEXT_PLAIN);
-        builder.part("type", type, MediaType.TEXT_PLAIN);
+        builder.part("type", type.toString(), MediaType.TEXT_PLAIN);
         builder.part("token", csrfToken, MediaType.TEXT_PLAIN);
 
         byte[] decodedContentAsBytes = Base64.getDecoder().decode(DUMMY_CONTENTS);
@@ -100,7 +100,7 @@ public class DocumentToJwayMapper extends AbstractDocumentToJwayMapper {
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("name", name, MediaType.TEXT_PLAIN);
-        builder.part("type", type, MediaType.TEXT_PLAIN);
+        builder.part("type", type.toString(), MediaType.TEXT_PLAIN);
         builder.part("token", csrfToken, MediaType.TEXT_PLAIN);
 
         HttpHeaders partHeaders = new HttpHeaders();

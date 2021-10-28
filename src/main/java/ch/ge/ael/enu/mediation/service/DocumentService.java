@@ -65,16 +65,12 @@ public class DocumentService {
     public void handleDocument(DocumentUsager newDocument) throws NotFoundException {
         String idUsager = newDocument.getIdUsager();
         String demarcheUuid = getDemarcheUuid(newDocument.getIdDemarcheSiMetier(),idUsager);
-
-        // requete HEAD pour recuperer un jeton CSRF. Sans cette phase, on obtient une erreur 403 plus bas
         formServicesApi.postDocument(newDocument, demarcheUuid, idUsager);
     }
 
     public void handleDocument(DocumentUsagerBinaire newDocument) throws NotFoundException {
         String idUsager = newDocument.getIdUsager();
         String demarcheUuid = getDemarcheUuid(newDocument.getIdDemarcheSiMetier(),idUsager);
-
-        // requete HEAD pour recuperer un jeton CSRF. Sans cette phase, on obtient une erreur 403 plus bas
         formServicesApi.postDocumentBinaire(newDocument, demarcheUuid, idUsager);
     }
 
