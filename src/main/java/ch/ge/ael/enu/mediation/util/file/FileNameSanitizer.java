@@ -20,7 +20,7 @@ package ch.ge.ael.enu.mediation.util.file;
 
 public class FileNameSanitizer {
 
-    public static final String sanitizationRegex = "[^a-zA-Z0-9âàçéèêôùÂÀÉÈ\\\\.]";
+    public static final String sanitizationRegex = "[^a-zA-Z0-9âàçéèêôùÂÀÉÈ.]";
 
     public String sanitize(String fileName) {
         String ret = null;
