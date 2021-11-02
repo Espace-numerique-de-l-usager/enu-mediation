@@ -18,19 +18,9 @@
  */
 package ch.ge.ael.enu.mediation.util.file;
 
-import org.apache.commons.lang3.StringUtils;
-
 public class FileNameSanitizer {
 
-    private final String sanitizationRegex;
-
-    public FileNameSanitizer(String sanitizationRegex) {
-        if (StringUtils.isBlank(sanitizationRegex)) {
-            throw new IllegalArgumentException("The regex in the constructor of "
-                    + getClass().getSimpleName() + " is blank");
-        }
-        this.sanitizationRegex = sanitizationRegex;
-    }
+    public static final String sanitizationRegex = "[^a-zA-Z0-9âàçéèêôùÂÀÉÈ\\\\.]";
 
     public String sanitize(String fileName) {
         String ret = null;
@@ -39,5 +29,4 @@ public class FileNameSanitizer {
         }
         return ret;
     }
-
 }

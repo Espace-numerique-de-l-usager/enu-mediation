@@ -47,7 +47,6 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -68,20 +67,10 @@ public class FormServicesApi {
 
     private static final String CSRF_PATH = "/auth/me";
 
-    @Value("${app.file.name.sanitization-regex}")
-    private String fileNameSanitizationRegex;
-
     private final ObjectMapper jackson;
     private final WebClient formServicesWebClient;
-
-    private DocumentToJwayMapper newDocumentToJwayMapper;
-    private CourrierDocumentToJwayMapper courrierDocumentToJwayMapper;
-
-    @PostConstruct
-    public void postConstruct() {
-        newDocumentToJwayMapper = new DocumentToJwayMapper(fileNameSanitizationRegex);
-        courrierDocumentToJwayMapper = new CourrierDocumentToJwayMapper(fileNameSanitizationRegex);
-    }
+    private final DocumentToJwayMapper newDocumentToJwayMapper;
+    private final CourrierDocumentToJwayMapper courrierDocumentToJwayMapper;
 
     /**
      * Pour Spring WebClient: erreurs 4xx

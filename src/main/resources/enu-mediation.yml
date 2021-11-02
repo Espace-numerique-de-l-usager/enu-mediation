@@ -9,18 +9,10 @@ app:
     max-file-content-size: '100'
   document:
     mime-types: application/pdf
-  file:
-    name:
-      sanitization-regex: '[^a-zA-Z0-9âàçéèêôùÂÀÉÈ\\.]'
   rabbitmq:
-    dlq:
-      exchange: enu-to-all-dead-letter-x # echange ou on ecrit les messages en erreur technique
-    reply:
-      exchange: enu-to-all-reply # echange ou on ecrit les messages de reponse aux SI metier
-    main:
-      queue: all-to-enu-q # queue ou on lit les messages des SI metier
-    inverse:
-      exchange: enu-to-all-x # flux inverse : echange ou on ecrit en passe-plat les messages venus de enu-backend
+    dlx: enu-to-all-dead-letter-x # Exchange où on écrit les messages en erreur
+    queue-in: all-to-enu-q # queue où on lit les messages des SI métier
+    exchange-out: enu-to-all-x # Exchange d'envoi des messages aux SI métier
 
 spring:
   rabbitmq:

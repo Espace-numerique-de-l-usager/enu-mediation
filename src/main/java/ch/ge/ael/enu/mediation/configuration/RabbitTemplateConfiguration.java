@@ -9,16 +9,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RabbitTemplateConfiguration {
 
-    @Value("${app.rabbitmq.inverse.exchange}")
-    private String exchangeName;
+    @Value("${app.rabbitmq.exchange-out}")
+    private String exchange;
 
-    @Value("${app.rabbitmq.dlq.exchange}")
+    @Value("${app.rabbitmq.dlx}")
     private String deadLetterExchange;
 
     @Bean("defaultTemplate")
     public RabbitTemplate rabbitTemplate(ConnectionFactory connectionFactory) {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
-        rabbitTemplate.setExchange(exchangeName);
+        rabbitTemplate.setExchange(exchange);
         return rabbitTemplate;
     }
 

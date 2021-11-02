@@ -68,7 +68,7 @@ public class MainRouter {
     /**
      * Le principal point d'entree de l'application : consommation d'un message RabbitMQ du flux principal.
      */
-    @RabbitListener(queues = "${app.rabbitmq.main.queue}", autoStartup = "true", ackMode = "AUTO")
+    @RabbitListener(queues = "${app.rabbitmq.queue-in}", autoStartup = "true", ackMode = "AUTO")
     public void consume(Message message) throws JsonProcessingException {
         messageLoggingService.logMessage(message, true);
 
