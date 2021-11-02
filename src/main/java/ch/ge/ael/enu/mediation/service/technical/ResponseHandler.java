@@ -24,8 +24,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -55,15 +55,7 @@ public class ResponseHandler {
                 objectMapper.writeValueAsString(Response.builder()
                         .resultat(ResponseType.OK)
                         .build()),
-                msg -> {
-                    msg.getMessageProperties().setHeader(CONTENT_TYPE, RESPONSE);
-                    msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
-                    msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
-                    msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
-                    msg.getMessageProperties().setContentType(RESPONSE);
-                    msg.getMessageProperties().setContentEncoding("UTF-8");
-                    return msg;
-                });
+                msg -> processMessage(originalMessage, msg));
     }
 
     /**
@@ -77,14 +69,17 @@ public class ResponseHandler {
                         .resultat(ResponseType.KO)
                         .description(e.getMessage())
                         .build()),
-                msg -> {
-                    msg.getMessageProperties().setHeader(CONTENT_TYPE, RESPONSE);
-                    msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
-                    msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
-                    msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
-                    msg.getMessageProperties().setContentType(RESPONSE);
-                    msg.getMessageProperties().setContentEncoding("UTF-8");
-                    return msg;
-                });
+                msg -> processMessage(originalMessage, msg));
+    }
+
+    @NotNull
+    private Message processMessage(Message originalMessage, Message msg) {
+        msg.getMessageProperties().setHeader(CONTENT_TYPE, RESPONSE);
+        msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
+        msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
+        msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
+        msg.getMessageProperties().setContentType(RESPONSE);
+        msg.getMessageProperties().setContentEncoding("UTF-8");
+        return msg;
     }
 }
