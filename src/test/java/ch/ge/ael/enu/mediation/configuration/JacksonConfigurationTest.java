@@ -29,7 +29,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@SpringBootTest
+@SpringBootTest(classes = {JacksonConfiguration.class})
 @Slf4j
 public class JacksonConfigurationTest {
 
