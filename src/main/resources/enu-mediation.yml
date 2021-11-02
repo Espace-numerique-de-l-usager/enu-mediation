@@ -9,8 +9,6 @@ app:
     max-file-content-size: '100'
   document:
     mime-types: application/pdf
-  prestation:
-    simetier: '{"permisPeche": "simetier2", "changementAdresse": "simetier2", "delaiSuccession": "simetier2", "declarationImpots": "simetier3"}'
   file:
     name:
       sanitization-regex: '[^a-zA-Z0-9âàçéèêôùÂÀÉÈ\\.]'
