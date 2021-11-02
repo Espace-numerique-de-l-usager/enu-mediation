@@ -19,15 +19,16 @@
 package ch.ge.ael.enu.mediation;
 
 import ch.ge.ael.enu.business.domain.v1_0.*;
-import ch.ge.ael.enu.mediation.model.exception.ValidationException;
 import ch.ge.ael.enu.mediation.exception.IllegalMessageException;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
 import ch.ge.ael.enu.mediation.exception.UnsupportedMediaTypeException;
+import ch.ge.ael.enu.mediation.model.exception.ValidationException;
 import ch.ge.ael.enu.mediation.service.DemarcheService;
 import ch.ge.ael.enu.mediation.service.DocumentService;
 import ch.ge.ael.enu.mediation.service.SuggestionService;
 import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import ch.ge.ael.enu.mediation.service.technical.ResponseHandler;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -58,27 +59,23 @@ public class MainRouter {
     private final ObjectMapper mapper;
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
-
     private final MessageLoggingService messageLoggingService;
-
     private final DemarcheService demarcheService;
-
     private final SuggestionService suggestionService;
-
     private final DocumentService courrierService;
-
     private final ResponseHandler responseHandler;
 
     /**
      * Le principal point d'entree de l'application : consommation d'un message RabbitMQ du flux principal.
      */
-    @RabbitListener(queues = "${app.rabbitmq.main.queue}")
-    public void consume(Message message) {
+    @RabbitListener(queues = "${app.rabbitmq.main.queue}", autoStartup = "true", ackMode = "AUTO")
+    public void consume(Message message) throws JsonProcessingException {
         messageLoggingService.logMessage(message, true);
 
         try {
             route(message);
             log.info("Traitement OK");
+            responseHandler.handleOk(message);
         } catch (Exception e) {
             responseHandler.handleKo(e, message);
         }
@@ -166,6 +163,5 @@ public class MainRouter {
                 suggestionService.handleNewSuggestion((Suggestion) object);
                 break;
         }
-        responseHandler.handleOk(message);
     }
 }

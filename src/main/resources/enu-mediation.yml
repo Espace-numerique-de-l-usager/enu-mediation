@@ -16,34 +16,40 @@ app:
       sanitization-regex: '[^a-zA-Z0-9âàçéèêôùÂÀÉÈ\\.]'
   rabbitmq:
     dlq:
-      exchange: enu-dlq # echange ou on ecrit les messages en erreur technique
-      routing-key: enu-dlq-q
+      exchange: enu-to-all-dead-letter-x # echange ou on ecrit les messages en erreur technique
     reply:
       exchange: enu-to-all-reply # echange ou on ecrit les messages de reponse aux SI metier
-    backend-to-mediation:
-      queue: backend-to-mediation-q # flux inverse : queue ou on lit les messages de enu-backend
     main:
-      queue: all-to-enu-main-q # queue ou on lit les messages des SI metier
+      queue: all-to-enu-q # queue ou on lit les messages des SI metier
     inverse:
-      exchange: enu-to-all-main # flux inverse : echange ou on ecrit en passe-plat les messages venus de enu-backend
+      exchange: enu-to-all-x # flux inverse : echange ou on ecrit en passe-plat les messages venus de enu-backend
 
 spring:
-  http:
-    log-request-details: 'true'
   rabbitmq:
     host: ${RABBITMQ_HOST}
     port: '5672'
     virtual-host: aelenu
-    username: ${RABBITMQ_USER}
-    password: ${RABBITMQ_PASS}
     ssl:
-      verify-hostname: 'false'
+      verify-hostname: false
       trust-store: classpath:security/gina.20191003.jks
       trust-store-password: ${SSL_TRUSTSTORE_PASS}
-      enabled: 'true'
+      enabled: true
     listener:
       direct:
         acknowledge-mode: auto
+  security:
+    oauth2:
+      client:
+        provider:
+          sso:
+            issuer-uri: ${RABBITMQ_UAA}
+        registration:
+          sso:
+            client-id: ${UAA_CLIENT_ID}
+            client-secret: ${UAA_CLIENT_SECRET}
+            username: ${UAA_USERNAME}
+            password: ${UAA_PASSWORD}
+            authorization-grant-type: password
 
 logging:
   level:

@@ -20,88 +20,71 @@ package ch.ge.ael.enu.mediation.service.technical;
 
 import ch.ge.ael.enu.business.domain.v1_0.Response;
 import ch.ge.ael.enu.business.domain.v1_0.ResponseType;
-import ch.ge.ael.enu.mediation.model.exception.ValidationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Message;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.amqp.core.MessagePostProcessor;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-
 import static ch.ge.ael.enu.business.domain.v1_0.EnuMediaType.RESPONSE;
-import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.KO;
-import static ch.ge.ael.enu.business.domain.v1_0.ResponseType.OK;
 import static ch.ge.ael.enu.mediation.model.Header.CONTENT_TYPE;
 import static ch.ge.ael.enu.mediation.model.Header.CORRELATION_ID;
-import static ch.ge.ael.enu.mediation.model.Header.SI_METIER;
-import static ch.ge.ael.enu.mediation.model.Header.TECHNICAL_ERROR;
 
 /**
- * Gestionnaire d'erreurs du consommateur enu-mediation.
+ * Gestion des réponses de la médiation aux SI Métiers: OK / KO
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class ResponseHandler {
 
-    @Resource
-    private AmqpTemplate template;
+    private final RabbitTemplate defaultTemplate;
+    private final RabbitTemplate dlxTemplate;
+    private final ObjectMapper objectMapper;
 
-    @Resource
-    private ObjectMapper objectMapper;
-
-    @Value("${app.rabbitmq.reply.exchange}")
-    private String replyExchange;
-
-    @Value("${app.rabbitmq.dlq.exchange}")
-    private String deadLetterExchange;
-
-    @Value("${app.rabbitmq.dlq.routing-key}")
-    private String deadLetterRoutingKey;
-
-    public void handleOk(Message originalMessage) {
+    /**
+     * Les messages OK sont envoyés par le même exchange que les messages métier normaux
+     */
+    public void handleOk(Message originalMessage) throws JsonProcessingException {
         log.info("Envoi a RabbitMQ d'un message de reussite");
-        sendReplyMessage(OK, null, originalMessage);
+
+        defaultTemplate.convertAndSend(originalMessage.getMessageProperties().getReceivedRoutingKey(),
+                objectMapper.writeValueAsString(Response.builder()
+                        .resultat(ResponseType.OK)
+                        .build()),
+                msg -> {
+                    msg.getMessageProperties().setHeader(CONTENT_TYPE, RESPONSE);
+                    msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
+                    msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
+                    msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
+                    msg.getMessageProperties().setContentType(RESPONSE);
+                    msg.getMessageProperties().setContentEncoding("UTF-8");
+                    return msg;
+                });
     }
 
     /**
-     * Si erreur due au client, une reponse est renvoyee au client (queue de reponse).
-     * Si erreur due a la mediation, le message est rejete dans la queue d'erreur (DLQ).
+     * Les erreurs sont rejetées dans la DLQ.
      */
-    public void handleKo(Exception e, Message originalMessage) {
-        if (e instanceof ValidationException) {
-            log.info("Envoi a RabbitMQ du message d'erreur client suivant : {}", e.getMessage());
-            sendReplyMessage(KO, e.getMessage(), originalMessage);
-        } else {
-            log.error("Envoi a RabbitMQ d'un message d'erreur serveur (DLQ), suite a ", e);
-            originalMessage.getMessageProperties().setHeader(TECHNICAL_ERROR, e.getMessage());
-            template.send(deadLetterExchange, "", originalMessage);
-        }
-    }
+    public void handleKo(Exception e, Message originalMessage) throws JsonProcessingException {
+        log.info("Envoi a RabbitMQ d'un message d'erreur -> Dead Letter");
 
-    private void sendReplyMessage(ResponseType type, String description, Message originalMessage) {
-        Response response = Response.builder()
-                .resultat(type)
-                .description(description)
-                .build();
-        String jsonResponse = "Reponse mal formee";
-        try {
-            jsonResponse = objectMapper.writeValueAsString(response);
-        } catch (JsonProcessingException e2) {
-            log.error("Erreur lors du traitement d'erreur", e2);
-        }
-        String replyRoutingKey = originalMessage.getMessageProperties().getHeader(SI_METIER);
-        template.convertAndSend(replyExchange, replyRoutingKey, jsonResponse, msg -> {
-            msg.getMessageProperties().setHeader(CONTENT_TYPE, RESPONSE);
-            msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
-            msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
-            msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
-            msg.getMessageProperties().setContentType(RESPONSE);
-            msg.getMessageProperties().setContentEncoding("UTF-8");
-            return msg;
-        });
+        dlxTemplate.convertAndSend(originalMessage.getMessageProperties().getReceivedRoutingKey(),
+                objectMapper.writeValueAsString(Response.builder()
+                        .resultat(ResponseType.KO)
+                        .description(e.getMessage())
+                        .build()),
+                msg -> {
+                    msg.getMessageProperties().setHeader(CONTENT_TYPE, RESPONSE);
+                    msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
+                    msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
+                    msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
+                    msg.getMessageProperties().setContentType(RESPONSE);
+                    msg.getMessageProperties().setContentEncoding("UTF-8");
+                    return msg;
+                });
     }
-
 }

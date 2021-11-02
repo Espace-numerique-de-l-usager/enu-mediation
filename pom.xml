@@ -35,7 +35,7 @@
         <sonar.projectKey>enu-mediation</sonar.projectKey>
         <sonar.projectName>enu-mediation</sonar.projectName>
         <java.version>8</java.version>
-        <camel.version>3.11.1</camel.version>
+        <camel.version>3.12.0</camel.version>
         <spring-boot.version>2.5.5</spring-boot.version>
         <lombok.version>1.18.20</lombok.version>
         <jackson.version>2.11.1</jackson.version>
