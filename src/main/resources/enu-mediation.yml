@@ -3,16 +3,17 @@ app:
     url: ${FORMSERVICES_BASEURL}/rest
     ssl:
       trust-store:
-        resource: classpath:security/gina.20191003.jks
+        resource: classpath:security/gina_20211015.jks
         password: ${SSL_TRUSTSTORE_PASS}
   logging:
     max-file-content-size: '100'
   document:
     mime-types: application/pdf
   rabbitmq:
-    dlx: enu-to-all-dead-letter-x # Exchange où on écrit les messages en erreur
+    dlx: enu-to-all-dead-letter-x # Exchange où on écrit les messages en erreur destinés aux SI métier
     queue-in: all-to-enu-q # queue où on lit les messages des SI métier
     exchange-out: enu-to-all-x # Exchange d'envoi des messages aux SI métier
+    dlq: enu-to-nobody-dead-letter-q # Queue pour les messages en erreur propres à ENU
 
 spring:
   rabbitmq:
@@ -21,7 +22,7 @@ spring:
     virtual-host: aelenu
     ssl:
       verify-hostname: false
-      trust-store: classpath:security/gina.20191003.jks
+      trust-store: classpath:security/gina_20211015.jks
       trust-store-password: ${SSL_TRUSTSTORE_PASS}
       enabled: true
     listener:
