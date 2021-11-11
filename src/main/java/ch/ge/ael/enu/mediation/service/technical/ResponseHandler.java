@@ -30,8 +30,6 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import static ch.ge.ael.enu.business.domain.v1_0.EnuMediaType.RESPONSE;
-import static ch.ge.ael.enu.mediation.model.Header.CONTENT_TYPE;
-import static ch.ge.ael.enu.mediation.model.Header.CORRELATION_ID;
 
 /**
  * Gestion des réponses de la médiation aux SI Métiers: OK / KO
@@ -74,8 +72,6 @@ public class ResponseHandler {
 
     @NotNull
     private Message processMessage(Message originalMessage, Message msg) {
-        msg.getMessageProperties().setHeader(CONTENT_TYPE, RESPONSE);
-        msg.getMessageProperties().setHeader(CORRELATION_ID, originalMessage.getMessageProperties().getHeader(CORRELATION_ID));
         msg.getMessageProperties().setAppId(originalMessage.getMessageProperties().getAppId());
         msg.getMessageProperties().setCorrelationId(originalMessage.getMessageProperties().getCorrelationId());
         msg.getMessageProperties().setContentType(RESPONSE);

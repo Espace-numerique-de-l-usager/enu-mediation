@@ -26,7 +26,6 @@ import ch.ge.ael.enu.mediation.model.exception.ValidationException;
 import ch.ge.ael.enu.mediation.service.DemarcheService;
 import ch.ge.ael.enu.mediation.service.DocumentService;
 import ch.ge.ael.enu.mediation.service.SuggestionService;
-import ch.ge.ael.enu.mediation.service.technical.MessageLoggingService;
 import ch.ge.ael.enu.mediation.service.technical.ResponseHandler;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -59,7 +58,6 @@ public class MainRouter {
     private final ObjectMapper mapper;
     private final ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
     private final Validator validator = factory.getValidator();
-    private final MessageLoggingService messageLoggingService;
     private final DemarcheService demarcheService;
     private final SuggestionService suggestionService;
     private final DocumentService courrierService;
