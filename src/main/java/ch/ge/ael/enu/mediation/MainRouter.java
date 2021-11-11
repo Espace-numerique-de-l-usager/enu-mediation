@@ -70,8 +70,9 @@ public class MainRouter {
      */
     @RabbitListener(queues = "${app.rabbitmq.queue-in}", autoStartup = "true", ackMode = "AUTO")
     public void consume(Message message) throws JsonProcessingException {
-        messageLoggingService.logMessage(message, true);
-
+        log.info("=******************************=");
+        log.info("=** Message reçu de RabbitMQ **=");
+        log.info("=******************************=");
         try {
             route(message);
             log.info("Traitement OK");
@@ -87,13 +88,16 @@ public class MainRouter {
             contentType = message.getMessageProperties().getContentType();
         }
         if(contentType == null || contentType.isEmpty()) {
+            log.error("Content-Type vide ou null !");
             throw new UnsupportedMediaTypeException("L'en-tête \"" + CONTENT_TYPE + "\" manque dans le message ou est vide.");
         }
         TypeReference<?> typeReference = typeReferenceMap.get(contentType);
         if(typeReference == null) {
+            log.error("Content-Type non supporté : [{}]",contentType);
             throw new UnsupportedMediaTypeException(
                     "La valeur \"" + contentType + "\" de l'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
         }
+        log.info("ContentType={}",contentType);
         Object object;
         try {
             object = mapper.readValue(message.getBody(), typeReference);
@@ -101,8 +105,8 @@ public class MainRouter {
             log.warn("Erreur lors de la deserialisation en un {} : {}", typeReference.getType().getTypeName(), e.getMessage());
             throw new IllegalMessageException("Erreur lors de la deserialisation du message JSON : " + e.getMessage());
         }
-
-        log.info("{} = {}", typeReference.getType().getTypeName(), object);
+        log.info("MessageType={}", typeReference.getType().getTypeName());
+        log.info("MessageBody={}", object);
 
         // validation metier du message
         Set<ConstraintViolation<Object>> errors = validator.validate(object);
