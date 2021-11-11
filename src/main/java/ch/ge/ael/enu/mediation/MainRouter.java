@@ -82,9 +82,9 @@ public class MainRouter {
     }
 
     private void route(Message message) throws UnsupportedMediaTypeException, ValidationException, NotFoundException {
-        String contentType = message.getMessageProperties().getContentType();
+        String contentType = message.getMessageProperties().getHeader(CONTENT_TYPE);
         if(contentType == null) {
-            contentType = message.getMessageProperties().getHeader(CONTENT_TYPE);
+            contentType = message.getMessageProperties().getContentType();
         }
         if(contentType == null || contentType.isEmpty()) {
             throw new UnsupportedMediaTypeException("L'en-tête \"" + CONTENT_TYPE + "\" manque dans le message ou est vide.");
