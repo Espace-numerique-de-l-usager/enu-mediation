@@ -32,26 +32,6 @@ public class Header {
     public static final String CONTENT_TYPE = "ContentType";
 
     /**
-     * Contexte : RabbitMQ.
-     * L'identifiant de correlation, permettant au producteur de faire le lien entre le message de reponse
-     * de la mediation et son message d'origine.
-     */
-    public static final String CORRELATION_ID = "CorrelationId";
-
-    /**
-     * Contexte : RabbitMQ.
-     * L'identifiant du SI metier producteur du message d'origine.
-     * Cet identifiant permet a la mediation de router le message de reponse vers la queue du bon SI metier.
-     */
-    public static final String SI_METIER = "SiMetier";
-
-    /**
-     * Contexte : RabbitMQ.
-     * Permet d'enrichir le message rejete dans la DLQ apres une erreur technique.
-     */
-    public static final String TECHNICAL_ERROR = "TechnicalError";
-
-    /**
      * Contexte : HTTP.
      * Necessaire pour certains appels REST à FormServices.
      */

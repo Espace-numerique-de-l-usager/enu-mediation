@@ -81,9 +81,9 @@ public class MainRouter {
     }
 
     private void route(Message message) throws UnsupportedMediaTypeException, ValidationException, NotFoundException {
-        String contentType = message.getMessageProperties().getHeader(CONTENT_TYPE);
-        if(contentType == null) {
-            contentType = message.getMessageProperties().getContentType();
+        String contentType =  message.getMessageProperties().getContentType();
+        if(contentType == null) { // Workaround temporaire pour GSDU
+            contentType = message.getMessageProperties().getHeader(CONTENT_TYPE);
         }
         if(contentType == null || contentType.isEmpty()) {
             log.error("Content-Type vide ou null !");
