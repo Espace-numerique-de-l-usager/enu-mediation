@@ -235,11 +235,10 @@ public class FormServicesApi {
                 .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuid, csrfToken, index.getAndIncrement()))
                 .forEach(doc -> {
                     Document result = postDocumentFormData(path, csrfToken, userId, doc);
-
                     if (result != null) {
-                        log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
+                        log.info("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
                     } else {
-                        log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
+                        log.warn("Échec de création de courrier pour pour l'utilisateur " + userId + ".");
                     }
                 });
 
@@ -260,9 +259,9 @@ public class FormServicesApi {
                 .forEach(doc -> {
                     Document result = postDocumentFormData(path, csrfToken, userId, doc);
                     if (result != null) {
-                        log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
+                        log.info("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
                     } else {
-                        log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
+                        log.warn("Échec de création de courrier pour pour l'utilisateur " + userId + ".");
                     }
                 });
 

@@ -78,14 +78,22 @@ public class DocumentService {
         // ajout au courrier d'une clef technique. Cette clef sera affectee a chaque document constituant le
         // courrier et permettra donc de regrouper les documents du courrier
         courrier.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
-        final String demarcheUuid = getDemarcheUuid(courrier.getIdDemarcheSiMetier(),courrier.getIdUsager());
-        formServicesApi.postCourrier(courrier, demarcheUuid, courrier.getIdUsager());
+        if(courrier.getIdDemarcheSiMetier() != null) {
+            final String demarcheUuid = getDemarcheUuid(courrier.getIdDemarcheSiMetier(),courrier.getIdUsager());
+            formServicesApi.postCourrier(courrier, demarcheUuid, courrier.getIdUsager());
+        } else {
+            formServicesApi.postCourrier(courrier, null, courrier.getIdUsager());
+        }
     }
 
     public void handleCourrier(CourrierBinaire courrierBinaire) throws NotFoundException {
         courrierBinaire.setClef("Courrier-" + ZonedDateTime.now().toEpochSecond());
-        final String demarcheUuid = getDemarcheUuid(courrierBinaire.getIdDemarcheSiMetier(),courrierBinaire.getIdUsager());
-        formServicesApi.postCourrierBinaire(courrierBinaire, demarcheUuid, courrierBinaire.getIdUsager());
+        if(courrierBinaire.getIdDemarcheSiMetier() != null) {
+            final String demarcheUuid = getDemarcheUuid(courrierBinaire.getIdDemarcheSiMetier(),courrierBinaire.getIdUsager());
+            formServicesApi.postCourrierBinaire(courrierBinaire, demarcheUuid, courrierBinaire.getIdUsager());
+        } else {
+            formServicesApi.postCourrierBinaire(courrierBinaire, null, courrierBinaire.getIdUsager());
+        }
     }
 
     public void handleCourrier(CourrierHorsDemarche courrierHorsDemarche) {
