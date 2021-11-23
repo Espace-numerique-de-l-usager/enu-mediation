@@ -12,6 +12,8 @@ variables:
   CLM_MAVEN_GOAL: com.sonatype.clm:clm-maven-plugin:2.12.1:evaluate
   CLM_SERVER_ID: clm_server
   CLM_APPLICATION_ID: enu-mediation
+  DOCKER_IMAGE: $DOCKER_URL/ch/ge/cti/build/alpine-maven-git-node:11
+  #   DOCKER_IMAGE: $DOCKER_URL/ch/ge/cti/build/docker-npm-maven:1.0.1
 
 default:
   tags:
@@ -19,8 +21,7 @@ default:
     - 'host:restricted-container'
     - 'net:soca-dev'
   image:
-  #   DOCKER_IMAGE: $DOCKER_URL/ch/ge/cti/build/alpine-maven-git-node:6
-    name: $DOCKER_URL/ch/ge/cti/build/docker-npm-maven:1.0.1
+    name: $DOCKER_IMAGE
 
 # Cache downloaded dependencies and plugins between builds.
 # To keep cache across branches add 'key: "$CI_JOB_NAME"'

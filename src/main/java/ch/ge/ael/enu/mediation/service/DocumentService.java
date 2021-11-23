@@ -58,7 +58,7 @@ public class DocumentService {
         // recuperation dans FormServices de l'uuid de la demarche
         File demarche = formServicesApi.getFile(idDemarcheSiMetier, idUsager);
         String demarcheUuid = demarche.getUuid().toString();
-        log.info("UUID demarche = [{}]", demarcheUuid);
+        log.debug("UUID demarche = [{}]", demarcheUuid);
         return demarcheUuid;
     }
 

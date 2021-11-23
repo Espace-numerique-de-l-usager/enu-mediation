@@ -46,5 +46,5 @@ logging:
   level:
     root: INFO
     org.apache.camel: INFO
-    org.springframework: ERROR
-    org.springframework.web.reactive.function.client.ExchangeFunctions: TRACE
+    org.springframework: INFO
+    ch.ge.ael.enu.mediation: DEBUG

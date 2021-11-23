@@ -60,7 +60,7 @@ public class DemarcheService {
             demarcheExistante = formServicesApi.postFile(
                     brouillonToJwayMapper.map(brouillonDemarche),
                     brouillonDemarche.getIdUsager());
-            log.info("Demarche Deposee - Creation: {}", demarcheExistante);
+            log.debug("Demarche Deposee - Creation: {}", demarcheExistante);
         }
     }
 
@@ -103,7 +103,7 @@ public class DemarcheService {
             demarcheExistante = formServicesApi.postFile(
                     demarcheDeposeeToJwayMapper.map(demarcheDeposee),
                     demarcheDeposee.getIdUsager());
-            log.info("Demarche Deposee - Creation: {}", demarcheExistante);
+            log.debug("Demarche Deposee - Creation: {}", demarcheExistante);
         }
         if(demarcheExistante.getWorkflowStatus().equals(Status.START.toString())) {
             updateDemarcheStatus(demarcheDeposee.getIdDemarcheSiMetier(),

@@ -20,6 +20,6 @@ public class SuggestionService {
         // creation dans FormServices de la demarche a l'etat de pre-brouillon
         File file = newSuggestionToJwayMapper.map(newSuggestion);
         File createdFile = formServicesApi.postFile(file, newSuggestion.getIdUsager());
-        log.info("Suggestion creee, uuid = [{}]", createdFile.getUuid());
+        log.debug("Suggestion créée, uuid = [{}]", createdFile.getUuid());
     }
 }

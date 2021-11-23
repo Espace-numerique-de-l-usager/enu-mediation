@@ -68,12 +68,12 @@ public class MainRouter {
      */
     @RabbitListener(queues = "${app.rabbitmq.queue-in}", autoStartup = "true", ackMode = "AUTO")
     public void consume(Message message) throws JsonProcessingException {
-        log.info("=******************************=");
-        log.info("=** Message reçu de RabbitMQ **=");
-        log.info("=******************************=");
+        log.debug("=******************************=");
+        log.debug("=** Message reçu de RabbitMQ **=");
+        log.debug("=******************************=");
         try {
             route(message);
-            log.info("Traitement OK");
+            log.debug("Traitement OK");
             responseHandler.handleOk(message);
         } catch (Exception e) {
             responseHandler.handleKo(e, message);
@@ -95,7 +95,7 @@ public class MainRouter {
             throw new UnsupportedMediaTypeException(
                     "La valeur \"" + contentType + "\" de l'en-tête " + CONTENT_TYPE + " n'est pas prise en charge");
         }
-        log.info("ContentType={}",contentType);
+        log.debug("ContentType={}",contentType);
         Object object;
         try {
             object = mapper.readValue(message.getBody(), typeReference);
@@ -103,8 +103,8 @@ public class MainRouter {
             log.warn("Erreur lors de la deserialisation en un {} : {}", typeReference.getType().getTypeName(), e.getMessage());
             throw new IllegalMessageException("Erreur lors de la deserialisation du message JSON : " + e.getMessage());
         }
-        log.info("MessageType={}", typeReference.getType().getTypeName());
-        log.info("MessageBody={}", object);
+        log.debug("MessageType={}", typeReference.getType().getTypeName());
+        log.debug("MessageBody={}", object);
 
         // validation metier du message
         Set<ConstraintViolation<Object>> errors = validator.validate(object);

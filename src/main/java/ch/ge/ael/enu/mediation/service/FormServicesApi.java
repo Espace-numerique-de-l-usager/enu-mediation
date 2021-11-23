@@ -98,6 +98,7 @@ public class FormServicesApi {
     public File getFile(String demarcheId, String userId) throws NotFoundException {
         final String SEARCH_PATH = "/file/mine?name=%s&max=1&order=id&reverse=true";
         String path = format(SEARCH_PATH, demarcheId);
+        log.debug("Jway GET File: " + path);
 
         List<File> demarches = getFileList(path,userId);
 
@@ -116,7 +117,7 @@ public class FormServicesApi {
      * Call API Formsolutions
      */
     private List<File> getFileList(String path, String userId) {
-        log.info("Jway GET File List: " + path);
+        log.debug("Jway GET File List: " + path);
         return formServicesWebClient.get()
                 .uri(path)
                 .header(REMOTE_USER, userId)
@@ -153,7 +154,7 @@ public class FormServicesApi {
      * API Jway Formsolutions POST new File
      */
     private File postFileData(String path, Object file, String userId) {
-        log.info("Jway API: POST " + path);
+        log.debug("Jway API: POST " + path);
         File createdFile;
         try {
             createdFile = formServicesWebClient.post()
@@ -175,7 +176,7 @@ public class FormServicesApi {
      * API Jway Formsolutions PUT new date into existing File
      */
     private File putFileData(String path, Object file, String userId) {
-        log.info("Jway API: PUT " + path);
+        log.debug("Jway API: PUT " + path);
         File updatedFile;
         try {
             updatedFile = formServicesWebClient.put()
@@ -198,11 +199,11 @@ public class FormServicesApi {
      */
     public void postDocument(DocumentUsager newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
-        log.info("Jway API: POST {} for user [{}]", path, userId);
+        log.debug("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
         Document result = postDocumentFormData(path, csrfToken, userId, newDocumentToJwayMapper.map(newDocument, csrfToken));
         if (result != null) {
-            log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
+            log.debug("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
         } else {
             log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
         }
@@ -213,11 +214,11 @@ public class FormServicesApi {
      */
     public void postDocumentBinaire(DocumentUsagerBinaire newDocument, String demarcheUuid, String userId) {
         String path = format("/document/ds/%s/attachment", demarcheUuid);
-        log.info("Jway API: POST {} for user [{}]", path, userId);
+        log.debug("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
         Document result = postDocumentFormData(path, csrfToken, userId, newDocumentToJwayMapper.map(newDocument, csrfToken));
         if (result != null) {
-            log.info("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
+            log.debug("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
         } else {
             log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
         }
@@ -228,7 +229,7 @@ public class FormServicesApi {
      */
     public void postCourrier(@org.jetbrains.annotations.NotNull Courrier courrier, String demarcheUuid, String userId) {
         String path = "/alpha/document";
-        log.info("Jway API: POST {} for user [{}]", path, userId);
+        log.debug("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
         AtomicInteger index = new AtomicInteger(0);
         courrier.documents.stream()
@@ -236,22 +237,16 @@ public class FormServicesApi {
                 .forEach(doc -> {
                     Document result = postDocumentFormData(path, csrfToken, userId, doc);
                     if (result != null) {
-                        log.info("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
+                        log.debug("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
                     } else {
                         log.warn("Échec de création de courrier pour pour l'utilisateur " + userId + ".");
                     }
                 });
-
-//        if (result != null) {
-//            log.info("Document seul " + result.getUuid() + " créé.");
-//        } else {
-//            log.warn("Échec de création de document.");
-//        }
     }
 
     public void postCourrierBinaire(CourrierBinaire courrierBinaire, String demarcheUuid, String userId) {
         String path = "/alpha/document";
-        log.info("Jway API: POST {} for user [{}]", path, userId);
+        log.debug("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
         AtomicInteger index = new AtomicInteger(0);
         courrierBinaire.documents.stream()
@@ -259,17 +254,11 @@ public class FormServicesApi {
                 .forEach(doc -> {
                     Document result = postDocumentFormData(path, csrfToken, userId, doc);
                     if (result != null) {
-                        log.info("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
+                        log.debug("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
                     } else {
                         log.warn("Échec de création de courrier pour pour l'utilisateur " + userId + ".");
                     }
                 });
-
-//        if (result != null) {
-//            log.info("Document seul " + result.getUuid() + " créé.");
-//        } else {
-//            log.warn("Échec de création de document.");
-//        }ë
     }
 
     /**
@@ -285,7 +274,7 @@ public class FormServicesApi {
                 .onStatus(HttpStatus::is5xxServerError, ServerErrorHandler)
                 .toBodilessEntity().block();
         String csrfToken = Objects.requireNonNull(Objects.requireNonNull(response).getHeaders().get(X_CSRF_TOKEN)).get(0);
-        log.info("Jeton CSRF obtenu = [{}]", csrfToken);
+        log.debug("Jeton CSRF obtenu = [{}]", csrfToken);
         return csrfToken;
     }
 

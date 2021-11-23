@@ -57,13 +57,13 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
                 + "|" + courrierDoc.getGed().getAlgorithmeHash()
                 + "|" + courrierDoc.getGed().getHash();
 
-        log.info("Document name = [{}]", name);
+        log.debug("Document name = [{}]", name);
 
         // preparation des donnees : fileName
         String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());
         fileName = "\"" + new FileNameSanitizer().sanitize(fileName) + "\"";
         // note : l'upload va supprimer les caracteres accentues
-        log.info("fileName apres assainissement = [{}]", fileName);
+        log.debug("fileName apres assainissement = [{}]", fileName);
 
         // pour les champs contenant du texte, il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
 //        ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);
@@ -90,19 +90,6 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         ByteArrayResource byteArrayResource = new CustomByteArrayResource(decodedContentAsBytes, fileName);
         HttpEntity<ByteArrayResource> partEntity = new HttpEntity<>(byteArrayResource, partHeaders);
         bodyBuilder.part("files", partEntity, MediaType.TEXT_PLAIN);
-
-//        MultiValueMap<String, Object> body = new LinkedMultiValueMap<>();
-//        body.add("source", courrier.getClef());
-//        body.add("name", name);
-//        body.add("type", JwayDocumentType.OTHER.name());
-//        if (demarcheId == null) {
-//            // courrier non lie a une demarche
-//            body.add("tag", categorie);
-//        } else {
-//            // courrier lie a une demarche
-//            body.add("fileUuid", demarcheId);
-//        }
-//        body.add("subtype", courrier.getLibelleCourrier());
         return bodyBuilder.build();
     }
 
@@ -126,7 +113,7 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         String fileName = courrierDoc.getLibelleDocument() + "." + MimeUtils.getFileExtension(courrierDoc.getMime());
         fileName = "\"" + new FileNameSanitizer().sanitize(fileName) + "\"";
         // note : l'upload va supprimer les caracteres accentues
-        log.info("fileName apres assainissement = [{}]", fileName);
+        log.debug("fileName apres assainissement = [{}]", fileName);
 
         // pour les champs contenant du texte, il faut creer un ContentType UTF-8, sinon les accents sont mal transmis
 //        ContentType textPlainUtf8 = ContentType.create("text/plain", MIME.UTF8_CHARSET);

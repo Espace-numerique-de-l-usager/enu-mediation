@@ -62,7 +62,7 @@ public class DocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         fileName = "\"" + new FileNameSanitizer().sanitize(fileName) + "\"";
 
         // preparation des donnees : type
-        log.info("fileName apres assainissement = [{}]", fileName);
+        log.debug("fileName apres assainissement = [{}]", fileName);
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("name", name, MediaType.TEXT_PLAIN);
@@ -94,7 +94,7 @@ public class DocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         fileName = "\"" + new FileNameSanitizer().sanitize(fileName) + "\"";
 
         // preparation des donnees : type
-        log.info("fileName apres assainissement = [{}]", fileName);
+        log.debug("fileName apres assainissement = [{}]", fileName);
 
         MultipartBodyBuilder builder = new MultipartBodyBuilder();
         builder.part("name", name, MediaType.TEXT_PLAIN);
