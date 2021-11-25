@@ -35,7 +35,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -203,11 +202,7 @@ public class FormServicesApi {
         log.debug("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
         Document result = postDocumentFormData(path, csrfToken, userId, newDocumentToJwayMapper.map(newDocument, csrfToken, demarcheUuid));
-        if (result != null) {
-            log.debug("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
-        } else {
-            log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
-        }
+        log.debug("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
     }
 
     /**
@@ -218,11 +213,7 @@ public class FormServicesApi {
         log.debug("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
         Document result = postDocumentFormData(path, csrfToken, userId, newDocumentToJwayMapper.map(newDocument, csrfToken));
-        if (result != null) {
-            log.debug("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
-        } else {
-            log.warn("Échec de création de document pour la démarche " + demarcheUuid + ".");
-        }
+        log.debug("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
     }
 
     /**
@@ -237,11 +228,7 @@ public class FormServicesApi {
                 .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrier, courrierDoc, demarcheUuid, csrfToken, index.getAndIncrement()))
                 .forEach(doc -> {
                     Document result = postDocumentFormData(path, csrfToken, userId, doc);
-                    if (result != null) {
-                        log.debug("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
-                    } else {
-                        log.warn("Échec de création de courrier pour pour l'utilisateur " + userId + ".");
-                    }
+                    log.debug("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
                 });
     }
 
@@ -254,11 +241,7 @@ public class FormServicesApi {
                 .map(courrierDoc -> courrierDocumentToJwayMapper.map(courrierBinaire, courrierDoc, demarcheUuid, csrfToken, index.getAndIncrement()))
                 .forEach(doc -> {
                     Document result = postDocumentFormData(path, csrfToken, userId, doc);
-                    if (result != null) {
-                        log.debug("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
-                    } else {
-                        log.warn("Échec de création de courrier pour pour l'utilisateur " + userId + ".");
-                    }
+                    log.debug("Courrier " + result.getUuid() + " créé pour l'utilisateur " + userId + ".");
                 });
     }
 
