@@ -47,10 +47,9 @@ import java.security.cert.CertificateException;
 @RequiredArgsConstructor
 public class FormServicesConfiguration {
 
-    @Value("${app.formservices.ssl.trust-store.resource}")
+    @Value("#{systemProperties['javax.net.ssl.trustStore']}")
     private String trustStorePath;
-
-    @Value("${app.formservices.ssl.trust-store.password}")
+    @Value("#{systemProperties['javax.net.ssl.trustStorePassword']}")
     private String trustStorePassword;
 
     @Value("${app.formservices.url}")

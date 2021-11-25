@@ -26,9 +26,9 @@ import java.security.cert.CertificateException;
 @Configuration
 @Slf4j
 public class RabbitMQConfiguration {
-    @Value("${spring.rabbitmq.ssl.trust-store}")
+    @Value("#{systemProperties['javax.net.ssl.trustStore']}")
     private String trustStorePath;
-    @Value("${spring.rabbitmq.ssl.trust-store-password}")
+    @Value("#{systemProperties['javax.net.ssl.trustStorePassword']}")
     private String trustStorePassword;
 
     @Value("${spring.rabbitmq.virtual-host}")

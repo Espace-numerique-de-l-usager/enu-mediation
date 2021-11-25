@@ -114,48 +114,63 @@ public class MainRouter {
             errors.forEach(error -> texts.add(error.getPropertyPath() + ": " + error.getMessage() + ". Valeur passée: (" + error.getInvalidValue() + ")" ));
             throw new ValidationException(texts.toString());
         }
+        log.info("RabbitMQ -> Received: [{}]", contentType);
+        if(object instanceof MessageENU) {
+            log.info(" - prestation [{}], usager [{}]", ((MessageENU) object).getIdPrestation(), ((MessageENU) object).getIdUsager());
+        }
 
         switch (contentType) {
             case BROUILLON_ABANDON:
                 log.warn(BROUILLON_ABANDON + ": message non implémenté");
                 break;
             case BROUILLON_DEMARCHE:
+                assert object instanceof BrouillonDemarche;
                 demarcheService.handleDemarcheBrouillon((BrouillonDemarche) object);
                 break;
             case COURRIER:
+                assert object instanceof Courrier;
                 courrierService.handleCourrier((Courrier) object);
                 break;
             case COURRIER_BINAIRE:
+                assert object instanceof CourrierBinaire;
                 courrierService.handleCourrier((CourrierBinaire) object);
                 break;
             case COURRIER_HORS_DEMARCHE:
+                assert object instanceof CourrierHorsDemarche;
                 courrierService.handleCourrier((CourrierHorsDemarche) object);
                 break;
             case COURRIER_HORS_DEMARCHE_BINAIRE:
+                assert object instanceof CourrierHorsDemarcheBinaire;
                 courrierService.handleCourrier((CourrierHorsDemarcheBinaire) object);
                 break;
             case DEMARCHE_ABANDONNEE:
                 log.warn(DEMARCHE_ABANDONNEE + ": message non implémenté");
                 break;
             case DEMARCHE_ACTION_REQUISE:
+                assert object instanceof DemarcheActionRequise;
                 demarcheService.handleDemarcheActionRequise((DemarcheActionRequise) object);
                 break;
             case DEMARCHE_DEPOSEE:
+                assert object instanceof DemarcheDeposee;
                 demarcheService.handleDemarcheDeposee((DemarcheDeposee) object);
                 break;
             case DEMARCHE_EN_TRAITEMENT:
+                assert object instanceof DemarcheEnTraitement;
                 demarcheService.handleDemarcheEnTraitement((DemarcheEnTraitement) object);
                 break;
             case DEMARCHE_TERMINEE:
+                assert object instanceof DemarcheTerminee;
                 demarcheService.handleDemarcheTerminee((DemarcheTerminee) object);
                 break;
             case DOCUMENT_ACCES:
                 log.warn(DOCUMENT_ACCES + ": message non implémenté");
                 break;
             case DOCUMENT:
+                assert object instanceof DocumentUsager;
                 courrierService.handleDocument((DocumentUsager) object);
                 break;
             case DOCUMENT_BINAIRE:
+                assert object instanceof DocumentUsagerBinaire;
                 courrierService.handleDocument((DocumentUsagerBinaire) object);
                 break;
             case SEQUENCE_MESSAGES:
@@ -165,6 +180,7 @@ public class MainRouter {
                 log.warn(SUGGESTION_ABANDON + ": message non implémenté");
                 break;
             case SUGGESTION:
+                assert object instanceof Suggestion;
                 suggestionService.handleNewSuggestion((Suggestion) object);
                 break;
         }
