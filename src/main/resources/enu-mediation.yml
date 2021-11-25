@@ -10,9 +10,6 @@ app:
     queue-in: all-to-enu-q # queue où on lit les messages des SI métier
     exchange-out: enu-to-all-x # Exchange d'envoi des messages aux SI métier
     dlq: enu-to-nobody-dead-letter-q # Queue pour les messages en erreur propres à ENU
-
-spring:
-  rabbitmq:
     host: ${RABBITMQ_HOST}
     port: '5672'
     virtual-host: aelenu
@@ -22,6 +19,8 @@ spring:
     listener:
       direct:
         acknowledge-mode: auto
+
+spring:
   security:
     oauth2:
       client:

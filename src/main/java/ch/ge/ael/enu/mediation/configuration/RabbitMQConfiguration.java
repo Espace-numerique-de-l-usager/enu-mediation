@@ -31,11 +31,11 @@ public class RabbitMQConfiguration {
     @Value("#{systemProperties['javax.net.ssl.trustStorePassword']}")
     private String trustStorePassword;
 
-    @Value("${spring.rabbitmq.virtual-host}")
+    @Value("${app.rabbitmq.virtual-host}")
     private String vhost;
-    @Value("${spring.rabbitmq.host}")
+    @Value("${app.rabbitmq.host}")
     private String host;
-    @Value("${spring.rabbitmq.port}")
+    @Value("${app.rabbitmq.port}")
     private Integer port;
     @Value("${spring.security.oauth2.client.registration.sso.username}")
     private String username;
