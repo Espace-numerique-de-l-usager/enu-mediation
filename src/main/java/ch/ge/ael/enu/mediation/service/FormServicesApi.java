@@ -198,10 +198,11 @@ public class FormServicesApi {
      * API Jway Formsolutions POST new GED document attached to existing File
      */
     public void postDocument(DocumentUsager newDocument, String demarcheUuid, String userId) {
-        String path = format("/document/ds/%s/attachment", demarcheUuid);
+        String path = "/alpha/document";
+//        String path = format("/document/ds/%s/attachment", demarcheUuid);
         log.debug("Jway API: POST {} for user [{}]", path, userId);
         String csrfToken = getCsrfToken(userId);
-        Document result = postDocumentFormData(path, csrfToken, userId, newDocumentToJwayMapper.map(newDocument, csrfToken));
+        Document result = postDocumentFormData(path, csrfToken, userId, newDocumentToJwayMapper.map(newDocument, csrfToken, demarcheUuid));
         if (result != null) {
             log.debug("Document " + result.getUuid() + " créé pour la démarche " + demarcheUuid + ".");
         } else {

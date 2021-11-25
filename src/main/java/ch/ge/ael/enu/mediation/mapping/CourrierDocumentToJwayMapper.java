@@ -83,7 +83,6 @@ public class CourrierDocumentToJwayMapper extends AbstractDocumentToJwayMapper {
         }
         bodyBuilder.part("subtype", courrier.getLibelleCourrier(), MediaType.TEXT_PLAIN);
 
-
         byte[] decodedContentAsBytes = Base64.getDecoder().decode(DUMMY_CONTENTS);
         HttpHeaders partHeaders = new HttpHeaders();
         partHeaders.setContentType(MediaType.TEXT_PLAIN);
