@@ -114,7 +114,7 @@ public class MainRouter {
             errors.forEach(error -> texts.add(error.getPropertyPath() + ": " + error.getMessage() + ". Valeur passée: (" + error.getInvalidValue() + ")" ));
             throw new ValidationException(texts.toString());
         }
-        log.info("RabbitMQ -> Received: [{}]", contentType);
+        log.info("RabbitMQ -> Received: [{}] - CorrelationID: [{}]", contentType, message.getMessageProperties().getCorrelationId());
         if(object instanceof MessageENU) {
             log.info(" - prestation [{}], usager [{}]", ((MessageENU) object).getIdPrestation(), ((MessageENU) object).getIdUsager());
         }
