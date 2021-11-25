@@ -47,20 +47,20 @@ public class ResponseHandler {
      * Les messages OK sont envoyés par le même exchange que les messages métier normaux
      */
     public void handleOk(Message originalMessage) throws JsonProcessingException {
-        log.debug("RabbitMQ -> OK");
+        log.debug("RabbitMQ -> Traitement OK");
 
-        defaultTemplate.convertAndSend(originalMessage.getMessageProperties().getReceivedRoutingKey(),
-                objectMapper.writeValueAsString(Response.builder()
-                        .resultat(ResponseType.OK)
-                        .build()),
-                msg -> processMessage(originalMessage, msg));
+//        defaultTemplate.convertAndSend(originalMessage.getMessageProperties().getReceivedRoutingKey(),
+//                objectMapper.writeValueAsString(Response.builder()
+//                        .resultat(ResponseType.OK)
+//                        .build()),
+//                msg -> processMessage(originalMessage, msg));
     }
 
     /**
      * Les erreurs sont rejetées dans la DLQ.
      */
     public void handleKo(Exception e, Message originalMessage) throws JsonProcessingException {
-        log.debug("RabbitMQ -> Dead Letter");
+        log.warn("RabbitMQ -> KO, Dead Letter [{}]", originalMessage);
 
         dlxTemplate.convertAndSend(originalMessage.getMessageProperties().getReceivedRoutingKey(),
                 objectMapper.writeValueAsString(Response.builder()

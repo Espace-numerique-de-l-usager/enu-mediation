@@ -26,7 +26,7 @@ default:
 # Cache downloaded dependencies and plugins between builds.
 # To keep cache across branches add 'key: "$CI_JOB_NAME"'
 cache:
-  untracked: true
+  untracked: false
   key: "$CI_PROJECT_ID"
   paths:
     - .m2/repository
