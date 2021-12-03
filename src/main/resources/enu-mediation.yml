@@ -6,10 +6,10 @@ app:
   document:
     mime-types: application/pdf
   rabbitmq:
-    dlx: enu-to-all-dead-letter-x # Exchange où on écrit les messages en erreur destinés aux SI métier
-    queue-in: all-to-enu-q # queue où on lit les messages des SI métier
-    exchange-out: enu-to-all-x # Exchange d'envoi des messages aux SI métier
-    dlq: enu-to-nobody-dead-letter-q # Queue pour les messages en erreur propres à ENU
+    dlx: usager-dead-letter-x # Exchange où on écrit les messages en erreur destinés aux SI métier
+    queue-in: usager-q # queue où on lit les messages des SI métier
+    exchange-out: usager-x # Exchange d'envoi des messages aux SI métier
+    dlq: usager-dead-letter-q # Queue pour les messages en erreur propres à ENU
     host: ${RABBITMQ_HOST}
     port: '5672'
     virtual-host: aelenu
@@ -41,3 +41,20 @@ logging:
     org.apache.camel: INFO
     org.springframework: INFO
     ch.ge.ael.enu.mediation: DEBUG
+
+# GSDU:
+#exchange: etat-x
+#dlx: etat-dead-letter-x
+#q: gsdu-q
+#dlq: gsdu-dead-letter-q
+#
+# ENU:
+#exchange: usager-x
+#dlx: usager-dead-letter-x
+#q: usager-q
+#dlq: usager-dead-letter-q
+#
+#
+#routing keys GSDU: OCV.PERMISINT, SESAC.DISPENSE
+#routing keys ENUBO: changementAdresse, delaiSuccession, permisPeche
+#
