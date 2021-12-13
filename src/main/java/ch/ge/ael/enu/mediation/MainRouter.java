@@ -19,7 +19,6 @@
 package ch.ge.ael.enu.mediation;
 
 import ch.ge.ael.enu.business.domain.v1_0.*;
-import ch.ge.ael.enu.mediation.configuration.OAuthToken;
 import ch.ge.ael.enu.mediation.exception.IllegalMessageException;
 import ch.ge.ael.enu.mediation.exception.NotFoundException;
 import ch.ge.ael.enu.mediation.exception.UnsupportedMediaTypeException;
@@ -63,18 +62,15 @@ public class MainRouter {
     private final SuggestionService suggestionService;
     private final DocumentService courrierService;
     private final ResponseHandler responseHandler;
-    private final OAuthToken oAuthToken;
 
     /**
      * Le principal point d'entree de l'application : consommation d'un message RabbitMQ du flux principal.
      */
     @RabbitListener(queues = "${app.rabbitmq.queue-in}", autoStartup = "true", ackMode = "AUTO")
-    public void consume(Message message) throws Exception {
+    public void consume(Message message) throws JsonProcessingException {
         log.debug("=******************************=");
         log.debug("=** Message reçu de RabbitMQ **=");
         log.debug("=******************************=");
-        log.debug("Oauth Token = {}", oAuthToken.getLatestToken());
-        log.debug("  --------------");
         try {
             route(message);
             log.debug("Traitement OK");

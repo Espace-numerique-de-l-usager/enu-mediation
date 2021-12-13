@@ -4,6 +4,7 @@ import com.rabbitmq.client.impl.CredentialsProvider;
 import com.rabbitmq.client.impl.CredentialsRefreshService;
 import com.rabbitmq.client.impl.DefaultCredentialsRefreshService;
 import com.rabbitmq.client.impl.OAuth2ClientCredentialsGrantCredentialsProvider.OAuth2ClientCredentialsGrantCredentialsProviderBuilder;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -25,6 +26,7 @@ import java.security.cert.CertificateException;
 
 @Configuration
 @Slf4j
+@RequiredArgsConstructor
 public class RabbitMQConfiguration {
     @Value("#{systemProperties['javax.net.ssl.trustStore']}")
     private String trustStorePath;
@@ -69,7 +71,8 @@ public class RabbitMQConfiguration {
     public com.rabbitmq.client.ConnectionFactory rabbitConnectionFactory(
             CredentialsProvider credentialsProvider,
             CredentialsRefreshService credentialsRefreshService,
-            SSLContext sslContext) {
+            SSLContext sslContext,
+            OAuthToken oAuthToken) throws Exception {
         com.rabbitmq.client.ConnectionFactory rabbitConnectionFactory = new com.rabbitmq.client.ConnectionFactory();
         rabbitConnectionFactory.setCredentialsProvider(credentialsProvider);
         rabbitConnectionFactory.setCredentialsRefreshService(credentialsRefreshService);
@@ -79,6 +82,7 @@ public class RabbitMQConfiguration {
         rabbitConnectionFactory.useSslProtocol(sslContext);
         rabbitConnectionFactory.setAutomaticRecoveryEnabled(false); // Avoids a warning at launch
         log.info("RabbitMQ ConnectionFactory created for {}:{}/{}",host,port,vhost);
+        log.debug("Oauth Token = {}", oAuthToken.getLatestToken());
         return rabbitConnectionFactory;
     }
 
