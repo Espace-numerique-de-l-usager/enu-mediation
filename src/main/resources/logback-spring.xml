@@ -23,19 +23,14 @@
 	<springProfile name="!dev">
 		<root level="INFO">
 			<appender-ref ref="FILE" />
+			<appender-ref ref="STDOUT" />
 		</root>
 	</springProfile>
 
 	<springProfile name="dev">
 		<root level="INFO">
+			<appender-ref ref="FILE" />
 			<appender-ref ref="STDOUT" />
 		</root>
 	</springProfile>
-
-	<logger name="sun.net.www.http.HttpClient" level="TRACE"/>
-	<logger name="sun.net.www.protocol.http.HttpURLConnection" level="TRACE"/>
-	<logger name="java.net.HttpURLConnection" level="TRACE"/>
-	<logger name="sun.security.ssl.SSLSocketImpl" level="TRACE"/>
-	<logger name="com.rabbitmq.client" level="TRACE"/>
-
 </configuration>

@@ -39,9 +39,31 @@ spring:
             password: ${UAA_PASSWORD}
             authorization-grant-type: password
 
+#logging:
+#  level:
+#    root: INFO
+#    org.apache.camel: INFO
+#    org.springframework: INFO
+#    ch.ge.ael.enu.mediation: DEBUG
+#    sun.net: TRACE
+#    sun.net.www: TRACE
+#    sun.net.www.http.HttpClient: TRACE
+#    sun.net.www.protocol.http.HttpURLConnection: TRACE
+#    java.net: TRACE
+#    java.net.HttpURLConnection: TRACE
+#    sun.security.ssl.SSLSocketImpl: TRACE
+#    com.rabbitmq.client: TRACE
+
 logging:
   level:
-    root: INFO
+    root: TRACE
+    org.apache: INFO
+    io.netty: INFO
+    JMX: INFO
+    org.springdoc: INFO
+    reactor.netty: INFO
+    reactor.util: INFO
+    org.hibernate: INFO
     org.apache.camel: INFO
     org.springframework: INFO
     ch.ge.ael.enu.mediation: DEBUG
