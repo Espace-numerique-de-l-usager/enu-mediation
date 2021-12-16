@@ -43,20 +43,8 @@ logging:
     org.apache.camel: INFO
     org.springframework: INFO
     ch.ge.ael.enu.mediation: DEBUG
-
-# GSDU:
-#exchange: etat-x
-#dlx: etat-dead-letter-x
-#q: gsdu-q
-#dlq: gsdu-dead-letter-q
-#
-# ENU:
-#exchange: usager-x
-#dlx: usager-dead-letter-x
-#q: usager-q
-#dlq: usager-dead-letter-q
-#
-#
-#routing keys GSDU: OCV.PERMISINT, SESAC.DISPENSE
-#routing keys ENUBO: changementAdresse, delaiSuccession, permisPeche
-#
+    java.net: TRACE
+    sun.net.www: TRACE
+    sun.security.ssl: TRACE
+    com.rabbitmq.client: TRACE
+    java.net.HttpURLConnection: TRACE
