@@ -22,7 +22,10 @@ app:
       direct:
         acknowledge-mode: auto
 
+
 spring:
+  main:
+    banner-mode: LOG
   security:
     oauth2:
       client:
@@ -43,8 +46,9 @@ logging:
     org.apache.camel: INFO
     org.springframework: INFO
     ch.ge.ael.enu.mediation: DEBUG
-    java.net: TRACE
     sun.net.www: TRACE
-    sun.security.ssl: TRACE
-    com.rabbitmq.client: TRACE
+    sun.net.www.http.HttpClient: TRACE
+    sun.net.www.protocol.http.HttpURLConnection: TRACE
     java.net.HttpURLConnection: TRACE
+    sun.security.ssl.SSLSocketImpl: TRACE
+    com.rabbitmq.client: TRACE
