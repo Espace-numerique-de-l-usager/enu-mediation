@@ -22,7 +22,6 @@ app:
       direct:
         acknowledge-mode: auto
 
-
 spring:
   main:
     banner-mode: LOG
