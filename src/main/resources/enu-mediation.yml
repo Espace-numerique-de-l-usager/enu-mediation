@@ -13,6 +13,8 @@ app:
     host: ${RABBITMQ_HOST}
     port: '5672'
     virtual-host: aelenu
+    timeout-cnx: 60000
+    timeout-read: 60000
     ssl:
       verify-hostname: false
       enabled: true

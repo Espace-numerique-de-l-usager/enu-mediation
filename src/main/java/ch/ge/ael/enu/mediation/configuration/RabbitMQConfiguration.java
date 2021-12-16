@@ -53,6 +53,11 @@ public class RabbitMQConfiguration {
     @Value("${spring.security.oauth2.client.provider.sso.issuer-uri}")
     private String tokenEndpointUri;
 
+    @Value("${app.rabbitmq.timeout-cnx}")
+    private Integer timeoutCnx;
+    @Value("${app.rabbitmq.timeout-read}")
+    private Integer timeoutRead;
+
     /**
      * Caching connection factory on top of the Rabbit Connection Factory
      */
@@ -95,6 +100,8 @@ public class RabbitMQConfiguration {
         return new OAuth2ClientCredentialsGrantCredentialsProviderBuilder()
                 .tokenEndpointUri(tokenEndpointUri)
                 .clientId(clientId)
+                .connectionConfigurator(httpURLConnection -> httpURLConnection.setConnectTimeout(timeoutCnx))
+                .connectionConfigurator(httpURLConnection -> httpURLConnection.setReadTimeout(timeoutRead))
                 .clientSecret(clientSecret)
                 .grantType(grantType)
                 .parameter("username", username)
