@@ -115,6 +115,7 @@ Il s'agit ici de créer un courrier, c'est-à-dire l'équivalent numérique d'un
 Le courrier est constitué d'un ou plusieurs documents, ainsi que d'un en-tête.
 Le courrier peut soit porter sur une démarche qui a été précédemment créée, soit ne porter sur aucune démarche.
 
+
 En-têtes nécessaires :
 - `Content-Type` = `application/new-courrier-v1.0+json`
 - `CorrelationId` (voir au bas de cette page)
